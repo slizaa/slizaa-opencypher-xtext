@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.slizaa.neo4j.opencypher
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.slizaa.neo4j.opencypher; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext,
+ org.eclipse.xtext.xbase,
+ org.eclipse.equinox.common;bundle-version="3.5.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.util,
+ org.eclipse.xtend.lib,
+ org.eclipse.emf.common
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.slizaa.neo4j.opencypher.openCypher.impl,
+ org.slizaa.neo4j.opencypher.parser.antlr.internal,
+ org.slizaa.neo4j.opencypher.validation,
+ org.slizaa.neo4j.opencypher.services,
+ org.slizaa.neo4j.opencypher.parser.antlr,
+ org.slizaa.neo4j.opencypher,
+ org.slizaa.neo4j.opencypher.parser.antlr.lexer,
+ org.slizaa.neo4j.opencypher.formatting2,
+ org.slizaa.neo4j.opencypher.openCypher,
+ org.slizaa.neo4j.opencypher.generator,
+ org.slizaa.neo4j.opencypher.openCypher.util,
+ org.slizaa.neo4j.opencypher.scoping,
+ org.slizaa.neo4j.opencypher.serializer
+Import-Package: org.apache.log4j

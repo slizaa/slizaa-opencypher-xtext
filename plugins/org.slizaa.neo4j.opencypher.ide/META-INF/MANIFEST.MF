@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.slizaa.neo4j.opencypher.ide
+Bundle-Vendor: My Company
+Bundle-Version: 1.0.0.qualifier
+Bundle-SymbolicName: org.slizaa.neo4j.opencypher.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.slizaa.neo4j.opencypher,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.slizaa.neo4j.opencypher.ide.contentassist.antlr.lexer,
+ org.slizaa.neo4j.opencypher.ide.contentassist.antlr,
+ org.slizaa.neo4j.opencypher.ide.contentassist.antlr.internal
+

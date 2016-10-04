@@ -1,0 +1,13 @@
+target/
+bin/
+src-gen/
+xtend-gen/
+
+.antlr*.jar
+
+# OS generated files
+.DS_Store
+Thumbs.db
+coverage.ec
+.bak
+.xml.bak

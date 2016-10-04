@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.slizaa.neo4j.opencypher</groupId>
+		<artifactId>org.slizaa.neo4j.opencypher.parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>org.slizaa.neo4j.opencypher</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	
+	<build>
+	
+		<sourceDirectory>src</sourceDirectory>
+	
+		<resources>
+			<resource>
+				<directory>${project.build.directory}/mwe2</directory>
+			</resource>
+		</resources>
+	
+		<plugins>
+			<!-- Clean the src-gen folders of the ui and test project. The Xtext generator 
+				will create files in those directories during generation. The ui and test 
+				project will *not* clean those directories later. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets combine.children="append">
+						<fileset>
+							<directory>${basedir}/../org.slizaa.neo4j.opencypher.ui/src-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/../../tests/org.slizaa.neo4j.opencypher.tests/src-gen</directory>
+							<includes>
+								<include>**</include>
+							</includes>
+							<excludes>
+								<exclude>.gitignore</exclude>
+							</excludes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/mwe2</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src</directory>
+									<includes>
+										<include>**/*.mwe2</include>
+										<include>**/*.xtext</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includeProjectDependencies>false</includeProjectDependencies>
+					<includePluginDependencies>true</includePluginDependencies>
+					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
+					<arguments>
+						<argument>file://${project.basedir}/src/org/slizaa/neo4j/opencypher/GenerateOpenCypher.mwe2</argument>
+						<argument>
+							-p
+						</argument>
+						<argument>
+							runtimeProject=/${project.basedir}
+						</argument>
+					</arguments>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.xtext</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.xbase</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.equinox</groupId>
+						<artifactId>common</artifactId>
+						<version>3.6.200-v20130402-1505</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>
