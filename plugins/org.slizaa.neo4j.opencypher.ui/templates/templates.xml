@@ -2,44 +2,111 @@
 <templates>
 
 	<!-- Create uniqueness constraint -->
-	<template id="opencypher.build-in.createConstraintIsUnique"
-		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Match"
+	<template id="opencypher.build-in.command.createConstraintIsUnique"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
 		deleted="false" description="Create uniqueness constraint" enabled="true"
 		name="createConstraintIsUnique"><![CDATA[CREATE CONSTRAINT ON (${variable}:${label}) ASSERT ${variable}.${property} IS UNIQUE;${cursor}]]></template>
 
 	<!-- Drop uniqueness constraint -->
-	<template id="opencypher.build-in.dropConstraintIsUnique"
-		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Match"
+	<template id="opencypher.build-in.command.dropConstraintIsUnique"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
 		deleted="false" description="Drop uniqueness constraint" enabled="true"
 		name="dropConstraintIsUnique"><![CDATA[DROP CONSTRAINT ON (${variable}:${label}) ASSERT ${variable}.${property} IS UNIQUE;${cursor}]]></template>
+
+	<!-- Create index -->
+	<template id="opencypher.build-in.command.createIndex"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Create index" enabled="true" name="createIndex"><![CDATA[CREATE INDEX ON :${label}(${property});${cursor}]]></template>
+
+	<!-- Drop index -->
+	<template id="opencypher.build-in.command.dropIndex"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Drop index" enabled="true" name="dropIndex"><![CDATA[DROP INDEX ON :${label}(${property});${cursor}]]></template>
+
+	<!-- Create node property existence constraint -->
+	<template
+		id="opencypher.build-in.command.createNodePropertyExistenceConstraint"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Create node property existence constraint"
+		enabled="true" name="createNodePropertyExistenceConstraint"><![CDATA[CREATE CONSTRAINT ON (${variable}:${label}) ASSERT exists(${variable}.${property});${cursor}]]></template>
+
+	<!-- Drop node property existence constraint -->
+	<template
+		id="opencypher.build-in.command.dropNodePropertyExistenceConstraint"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Drop node property existence constraint"
+		enabled="true" name="dropNodePropertyExistenceConstraint"><![CDATA[DROP CONSTRAINT ON (${variable}:${label}) ASSERT exists(${variable}.${property});${cursor}]]></template>
+
+	<!-- Create relationship property existence constraint -->
+	<template
+		id="opencypher.build-in.command.createRelationshipPropertyExistenceConstraint"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Create relationship property existence constraint"
+		enabled="true" name="createRelationshipPropertyExistenceConstraint"><![CDATA[CREATE CONSTRAINT ON ()-[${variable}:${type}]-() ASSERT exists(${variable}.${property});${cursor}]]></template>
+
+	<!-- Drop relationship property existence constraint -->
+	<template
+		id="opencypher.build-in.command.dropRelationshipPropertyExistenceConstraint"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Command"
+		deleted="false" description="Drop relationship property existence constraint"
+		enabled="true" name="dropRelationshipPropertyExistenceConstraint"><![CDATA[DROP CONSTRAINT ON ()-[${variable}:${type}]-() ASSERT exists(${variable}.${property});${cursor}]]></template>
 
 	<!-- Match -->
 	<template id="opencypher.build-in.match" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.Match" deleted="false"
-		description="Match" enabled="true" name="match"><![CDATA[MATCH (${variable}:${label})${cursor} ${cursor}]]></template>
+		description="Match" enabled="true" name="match"><![CDATA[MATCH (${cursor})]]></template>
+
+	<!-- Optional Match -->
+	<template id="opencypher.build-in.optionalMatch" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.Match" deleted="false"
+		description="Optional Match" enabled="true" name="optionalMatch"><![CDATA[OPTIONAL MATCH (${cursor})]]></template>
 
 	<!-- Node -->
 	<template id="opencypher.build-in.node" autoinsert="true"
-		context="org.slizaa.neo4j.opencypher.openCypher.AnonymousPatternPart"
-		deleted="false" description="Node" enabled="true" name="node"><![CDATA[(${variable}:${label})]]></template>
+		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternPart" deleted="false"
+		description="Node" enabled="true" name="node"><![CDATA[(${cursor})]]>
+	</template>
 
 	<!-- Outgoing Relation -->
 	<template id="opencypher.build-in.outgoingRelation"
 		autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Outgoing Relation" enabled="true"
-		name="outgoingRelation"><![CDATA[-[${var1}:${type}]->(${var2}:${label})${cursor}]]></template>
+		name="outgoingRelation"><![CDATA[-[${cursor}]->()]]></template>
 
 	<!-- Incoming Relation -->
 	<template id="opencypher.build-in.incomingRelation"
 		autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Incoming Relation" enabled="true"
-		name="incomingRelation"><![CDATA[<-[${var1}:${type}]-(${var2}:${label})${cursor}]]></template>
+		name="incomingRelation"><![CDATA[<-[${cursor}]-()]]></template>
 
 	<!-- Where -->
 	<template id="opencypher.build-in.where" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.Where" deleted="false"
-		description="Where" enabled="true" name="where"><![CDATA[WHERE ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
+		description="where" enabled="true" name="where"><![CDATA[WHERE ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
+
+	<!-- Return -->
+	<template id="opencypher.build-in.return" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.Return" deleted="false"
+		description="return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]>
+	</template>
+
+	<!-- Order by properties -->
+	<template id="opencypher.build-in.orderByProperties"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Order"
+		deleted="false" description="Order nodes by multiple properties"
+		enabled="true" name="orderByProperties"><![CDATA[ORDER BY ${node1}.${property1}, ${node2}.${property2}${cursor}]]></template>
+
+	<!-- Order by property -->
+	<template id="opencypher.build-in.orderByProperty" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.Order" deleted="false"
+		description="Order nodes by property" enabled="true" name="orderByProperty"><![CDATA[ORDER BY ${node}.${property}${cursor}]]></template>
+
+	<!-- id() -->
+	<template id="opencypher.build-in.id" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.FunctionInvocation"
+		deleted="false" description="Returns the id of the relationship or node."
+		enabled="true" name="id()"><![CDATA[id(${nodeOrRelationship})${cursor}]]></template>
 
 </templates>
