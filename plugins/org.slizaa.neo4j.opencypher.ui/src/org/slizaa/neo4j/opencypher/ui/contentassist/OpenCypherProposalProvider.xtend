@@ -18,7 +18,7 @@ import org.slizaa.neo4j.opencypher.ui.contentassist.service.MetaGraphProviderImp
  */
 class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
-	private static final Set<String> BLACKLIST_KEYWORDS = Sets.newHashSet("[", "IN", "STARTS", "ENDS", "CONTAINS", "IS",
+	private static final Set<String> BLACKLIST_KEYWORDS = Sets.newHashSet("CYPHER", "DROP", "EXPLAIN", "PROFILE", "USING", "[", "IN", "STARTS", "ENDS", "CONTAINS", "IS",
 		"(", "CREATE", "DELETE", "DETACH", "FOREACH", "LOAD", "MATCH", "MERGE", "OPTIONAL", "REMOVE", "RETURN", "SET", "START", "UNION", "UNWIND", "WITH");
 
 	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
@@ -31,14 +31,15 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
 
-		println("completeKeyword" + keyword)
-
-		// https://kthoms.wordpress.com/2012/05/22/xtext-content-assist-filtering-keyword-proposals/
-		if (BLACKLIST_KEYWORDS.contains(keyword.getValue())) {
-			// don't propose keyword
-			return;
-		}
-		super.completeKeyword(keyword, contentAssistContext, acceptor);
+//		println("completeKeyword" + keyword)
+//
+//		// https://kthoms.wordpress.com/2012/05/22/xtext-content-assist-filtering-keyword-proposals/
+//		if (BLACKLIST_KEYWORDS.contains(keyword.getValue())) {
+//			// don't propose keyword
+//			return;
+//		}
+//		super.completeKeyword(keyword, contentAssistContext, acceptor);
+return;
 	}
 
 //	override protected doCreateProposal(String proposal, StyledString displayString, Image image, int priority,
