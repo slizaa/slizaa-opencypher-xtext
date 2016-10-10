@@ -4,29 +4,70 @@
 package org.slizaa.neo4j.opencypher.formatting2
 
 import com.google.inject.Inject
+import java.util.function.Consumer
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
-import org.slizaa.neo4j.opencypher.openCypher.AllOptions
+import org.eclipse.xtext.formatting2.IHiddenRegionFormatter
+import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
+import org.slizaa.neo4j.opencypher.openCypher.Clause
 import org.slizaa.neo4j.opencypher.openCypher.Cypher
-import org.slizaa.neo4j.opencypher.openCypher.CypherOption
+import org.slizaa.neo4j.opencypher.openCypher.Match
+import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess
 
 class OpenCypherFormatter extends AbstractFormatter2 {
 	
 	@Inject extension OpenCypherGrammarAccess
 
-	def dispatch void format(Cypher cypher, extension IFormattableDocument document) {
-		// TODO: format HiddenRegions around keywords, attributes, cross references, etc. 
-		cypher.getOptions.format;
-		cypher.getStatement.format;
+	Cypher cypher;
+
+	def dispatch void format(Cypher c, extension IFormattableDocument document) {
+
+		cypher = c;
+
+		formatKeyword("(", [surround[noSpace]])
+		formatKeyword(")", [surround[noSpace]])
+		formatKeyword("-", [surround[noSpace]])
+		formatKeyword("[", [surround[noSpace]])
+		formatKeyword("]", [surround[noSpace]])
+
+//		//
+//		for (Clause clause : singleQuery.clauses) {
+//			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
+//			if (!hasFollowingSemicolon) {
+//				clause.append[newLine]
+//			}
+//			format(clause, document);
+//		}
 	}
 
-	def dispatch void format(AllOptions allOptions, extension IFormattableDocument document) {
-		// TODO: format HiddenRegions around keywords, attributes, cross references, etc. 
-		for (CypherOption cypherOption : allOptions.getCypherOption()) {
-			cypherOption.format;
+	def dispatch void format(SingleQuery singleQuery, extension IFormattableDocument document) {
+
+		//
+		for (Clause clause : singleQuery.clauses) {
+			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
+			if (!hasFollowingSemicolon) {
+				clause.append[newLine]
+			}
+			format(clause, document);
 		}
 	}
-	
-	// TODO: implement for CypherOption, RegularQuery, BulkImportQuery, SingleQuery, LoadCSVQuery, Union, CreateIndex, DropUniqueConstraint, DropNodePropertyExistenceConstraint, DropRelationshipPropertyExistenceConstraint, DropIndex, UniqueConstraintSyntax, NodePropertyExistenceConstraintSyntax, RelationshipPropertyExistenceConstraintSyntax, RelationshipPatternSyntax, LoadCSV, Match, Unwind, Merge, MergeAction, Create, SetClause, SetItem, Delete, Remove, RemoveItem, Foreach, With, Return, ReturnItems, ReturnItem, Order, Skip, Limit, SortItem, IndexHint, JoinHint, ScanHint, Start, StartPoint, IdentifiedIndexLookup, IndexQuery, IdLookup, Where, Pattern, PatternPart, ShortestPath, AllShortestPath, PatternElement, NodePattern, PatternElementChain, RelationshipPattern, RelationshipDetail, NodeLabels, ExpressionOr, ExpressionXor, ExpressionAnd, Expression, ExpressionComparison, ExpressionPlusMinus, ExpressionMulDiv, ExpressionPower, Index, RegExpMatching, InCollection, StartsWith, EndsWith, Contains, ExpressionNodeLabelsAndPropertyLookup, CaseExpression, ExpressionList, Filter, All, Any, None, Single, Reduce, ParenthesizedExpression, RelationshipsPattern, FilterExpression, IdInColl, FunctionInvocation, ListComprehension, CaseAlternatives, MapLiteral, MapLiteralEntry
+
+	def dispatch void format(Match match, extension IFormattableDocument document) {
+		match.interior[indent]
+		match.where?.prepend[newLine].append[newLine];
+		match.pattern.interior[noSpace]
+	}
+
+	def private formatKeyword(String keyword, Consumer<? super ISemanticRegion> consumer) {
+		cypher.allRegionsFor.keywords(keyword).forEach(consumer)
+	}
+
+	protected def void noLineWrap(IHiddenRegionFormatter it) {
+		setNewLines(0, 0, 0)
+	}
+
+	protected def void defaultLineWrap(IHiddenRegionFormatter it) {
+		setNewLines(1, 2, 2)
+	}
 }

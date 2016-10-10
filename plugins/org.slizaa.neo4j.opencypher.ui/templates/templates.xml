@@ -3,43 +3,43 @@
 
 	<!-- Create uniqueness constraint -->
 	<template id="opencypher.build-in.createConstraintIsUnique"
-		autoinsert="true" context="de.gerdwuetherich.opencypher.OpenCypher.Match"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Match"
 		deleted="false" description="Create uniqueness constraint" enabled="true"
 		name="createConstraintIsUnique"><![CDATA[CREATE CONSTRAINT ON (${variable}:${label}) ASSERT ${variable}.${property} IS UNIQUE;${cursor}]]></template>
 
 	<!-- Drop uniqueness constraint -->
 	<template id="opencypher.build-in.dropConstraintIsUnique"
-		autoinsert="true" context="de.gerdwuetherich.opencypher.OpenCypher.Match"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Match"
 		deleted="false" description="Drop uniqueness constraint" enabled="true"
 		name="dropConstraintIsUnique"><![CDATA[DROP CONSTRAINT ON (${variable}:${label}) ASSERT ${variable}.${property} IS UNIQUE;${cursor}]]></template>
 
 	<!-- Match -->
 	<template id="opencypher.build-in.match" autoinsert="true"
-		context="de.gerdwuetherich.opencypher.OpenCypher.Match" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.Match" deleted="false"
 		description="Match" enabled="true" name="match"><![CDATA[MATCH (${variable}:${label})${cursor} ${cursor}]]></template>
 
 	<!-- Node -->
 	<template id="opencypher.build-in.node" autoinsert="true"
-		context="de.gerdwuetherich.opencypher.openCypher.AnonymousPatternPart"
+		context="org.slizaa.neo4j.opencypher.openCypher.AnonymousPatternPart"
 		deleted="false" description="Node" enabled="true" name="node"><![CDATA[(${variable}:${label})]]></template>
 
 	<!-- Outgoing Relation -->
 	<template id="opencypher.build-in.outgoingRelation"
 		autoinsert="true"
-		context="de.gerdwuetherich.opencypher.OpenCypher.PatternElementChain"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Outgoing Relation" enabled="true"
 		name="outgoingRelation"><![CDATA[-[${var1}:${type}]->(${var2}:${label})${cursor}]]></template>
 
 	<!-- Incoming Relation -->
 	<template id="opencypher.build-in.incomingRelation"
 		autoinsert="true"
-		context="de.gerdwuetherich.opencypher.OpenCypher.PatternElementChain"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Incoming Relation" enabled="true"
 		name="incomingRelation"><![CDATA[<-[${var1}:${type}]-(${var2}:${label})${cursor}]]></template>
 
 	<!-- Where -->
 	<template id="opencypher.build-in.where" autoinsert="true"
-		context="de.gerdwuetherich.opencypher.OpenCypher.Where" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.Where" deleted="false"
 		description="Where" enabled="true" name="where"><![CDATA[WHERE ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
 
 </templates>

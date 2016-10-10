@@ -5,7 +5,15 @@ package org.slizaa.neo4j.opencypher.ui.labeling
 
 import com.google.inject.Inject
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider
+import org.eclipse.xtext.serializer.ISerializer
 import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
+import org.slizaa.neo4j.opencypher.openCypher.Cypher
+import org.slizaa.neo4j.opencypher.openCypher.Match
+import org.slizaa.neo4j.opencypher.openCypher.Pattern
+import org.slizaa.neo4j.opencypher.openCypher.PatternElement
+import org.slizaa.neo4j.opencypher.openCypher.Return
+import org.slizaa.neo4j.opencypher.openCypher.Where
+import org.slizaa.neo4j.opencypher.openCypher.With
 
 /**
  * Provides labels for EObjects.
@@ -14,18 +22,39 @@ import org.eclipse.xtext.ui.label.DefaultEObjectLabelProvider
  */
 class OpenCypherLabelProvider extends DefaultEObjectLabelProvider {
 
+	@javax.inject.Inject
+	private ISerializer _serializer;
+
 	@Inject
 	new(AdapterFactoryLabelProvider delegate) {
 		super(delegate);
 	}
 
-	// Labels and icons can be computed like this:
+	def text(Cypher cypher) {
+		'Cypher'
+	}
+
+	def text(Match match) {
+		'Match'
+	}
+
+	def text(Where match) {
+		'Where'
+	}
+
+	def text(With match) {
+		'With'
+	}
+
+	def text(Return match) {
+		'Return'
+	}
+
+	def text(Pattern pattern) {
+		_serializer.serialize(pattern).trim;
+	}
 	
-//	def text(Greeting ele) {
-//		'A greeting to ' + ele.name
-//	}
-//
-//	def image(Greeting ele) {
-//		'Greeting.gif'
-//	}
+	def text(PatternElement pattern) {
+		_serializer.serialize(pattern).trim;
+	}
 }

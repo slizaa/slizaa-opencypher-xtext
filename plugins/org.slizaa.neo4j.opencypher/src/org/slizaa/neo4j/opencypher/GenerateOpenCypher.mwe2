@@ -14,12 +14,14 @@ Workflow {
 				rootPath = rootPath
 				runtimeTest = {
 					enabled = true
+					root = "../../tests/org.slizaa.neo4j.opencypher.tests"
 				}
 				eclipsePlugin = {
 					enabled = true
 				}
 				eclipsePluginTest = {
 					enabled = true
+					root = "../../tests/org.slizaa.neo4j.opencypher.ui.tests"
 				}
 				createEclipseMetaData = true
 			}

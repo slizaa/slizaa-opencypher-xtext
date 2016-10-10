@@ -3,11 +3,53 @@
  */
 package org.slizaa.neo4j.opencypher.ui
 
+import com.google.inject.Binder
+import com.google.inject.name.Names
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider
+import org.eclipse.xtext.ui.editor.contentassist.XtextContentAssistProcessor
+import org.eclipse.xtext.ui.editor.model.ResourceForIEditorInputFactory
+import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
+import org.eclipse.xtext.ui.resource.SimpleResourceSetProvider
+import org.eclipse.xtext.ui.shared.Access
+import org.slizaa.neo4j.opencypher.ui.contentassist.OpenCypherTemplateProposalProvider
+import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherHighlightingConfiguration
+import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherSemanticHighlightingCalculator
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
  */
 @FinalFieldsConstructor
 class OpenCypherUiModule extends AbstractOpenCypherUiModule {
+
+	override bindIResourceForEditorInputFactory() {
+		ResourceForIEditorInputFactory
+	}
+
+	override bindIResourceSetProvider() {
+		SimpleResourceSetProvider
+	}
+
+	override provideIAllContainersState() {
+		return Access.getWorkspaceProjectsState();
+	}
+
+	override configure(Binder binder) {
+		super.configure(binder)
+		binder.bind(String).annotatedWith(Names.named((XtextContentAssistProcessor.COMPLETION_AUTO_ACTIVATION_CHARS))).
+			toInstance(".");
+	}
+
+	override Class<? extends ITemplateProposalProvider> bindITemplateProposalProvider() {
+		return OpenCypherTemplateProposalProvider
+	}
+
+	public def Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator() {
+		return OpenCypherSemanticHighlightingCalculator
+	}
+
+	public def Class<? extends IHighlightingConfiguration> bindILexicalHighlightingConfiguration() {
+		return OpenCypherHighlightingConfiguration;
+	}
 }
