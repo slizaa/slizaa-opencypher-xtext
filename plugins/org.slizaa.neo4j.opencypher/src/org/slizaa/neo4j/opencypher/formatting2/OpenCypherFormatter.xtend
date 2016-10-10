@@ -3,33 +3,75 @@
  */
 package org.slizaa.neo4j.opencypher.formatting2
 
-import com.google.inject.Inject
-import java.util.function.Consumer
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
-import org.eclipse.xtext.formatting2.IHiddenRegionFormatter
-import org.eclipse.xtext.formatting2.regionaccess.ISemanticRegion
-import org.slizaa.neo4j.opencypher.openCypher.Clause
-import org.slizaa.neo4j.opencypher.openCypher.Cypher
 import org.slizaa.neo4j.opencypher.openCypher.Match
-import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
-import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess
+import org.slizaa.neo4j.opencypher.openCypher.NodeLabel
+import org.slizaa.neo4j.opencypher.openCypher.NodeLabels
+import org.slizaa.neo4j.opencypher.openCypher.NodePattern
+import org.slizaa.neo4j.opencypher.openCypher.PatternElement
+import org.slizaa.neo4j.opencypher.openCypher.Return
+import org.slizaa.neo4j.opencypher.openCypher.ReturnBody
+import org.slizaa.neo4j.opencypher.openCypher.Where
 
 class OpenCypherFormatter extends AbstractFormatter2 {
-	
-	@Inject extension OpenCypherGrammarAccess
 
-	Cypher cypher;
+	def dispatch void format(Match match, extension IFormattableDocument document) {
 
-	def dispatch void format(Cypher c, extension IFormattableDocument document) {
+		match.regionFor.keyword("MATCH").append[newLine];
+		match.interior[indent];
 
-		cypher = c;
+		match.pattern.allRegionsFor.keyword(",").append[newLine].prepend[noSpace]
 
-		formatKeyword("(", [surround[noSpace]])
-		formatKeyword(")", [surround[noSpace]])
-		formatKeyword("-", [surround[noSpace]])
-		formatKeyword("[", [surround[noSpace]])
-		formatKeyword("]", [surround[noSpace]])
+		for (patterPart : match.pattern.getPatterns()) {
+			format(patterPart, document);
+		}
+
+		//
+		format(match.where, document);
+	}
+
+	def dispatch void format(Return ret, extension IFormattableDocument document) {
+		ret.regionFor.keyword("RETURN").prepend[newLine].append[newLine];
+		ret.interior[indent];
+		format(ret.body, document);
+	}
+
+	def dispatch void format(Where where, extension IFormattableDocument document) {
+		where.regionFor.keyword("WHERE").prepend[newLine].append[newLine];
+		where.interior[indent];
+		format(where.expression, document);
+	}
+
+	def dispatch void format(ReturnBody returnBody, extension IFormattableDocument document) {
+
+	}
+
+//	def dispatch void format(PatternPart patternPart, extension IFormattableDocument document) {
+//		
+//	}
+//	
+	def dispatch void format(PatternElement patternElement, extension IFormattableDocument document) {
+//		patternElement.prepend[oneSpace]
+//		patternElement.append[newLine]
+		format(patternElement.nodepattern, document);
+	}
+
+	def dispatch void format(NodePattern nodePattern, extension IFormattableDocument document) {
+		nodePattern.regionFor.keyword("(").append[noSpace]
+		nodePattern.regionFor.keyword(")").prepend[noSpace]
+		format(nodePattern.nodeLabels, document);
+	}
+
+	def dispatch void format(NodeLabels nodeLabels, extension IFormattableDocument document) {
+		for (nodeLabel : nodeLabels.nodeLabels) {
+			format(nodeLabel, document);
+		}
+	}
+
+	def dispatch void format(NodeLabel nodeLabel, extension IFormattableDocument document) {
+		nodeLabel.regionFor.keyword(":").surround[noSpace]
+	}
 
 //		//
 //		for (Clause clause : singleQuery.clauses) {
@@ -39,35 +81,34 @@ class OpenCypherFormatter extends AbstractFormatter2 {
 //			}
 //			format(clause, document);
 //		}
-	}
-
-	def dispatch void format(SingleQuery singleQuery, extension IFormattableDocument document) {
-
-		//
-		for (Clause clause : singleQuery.clauses) {
-			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
-			if (!hasFollowingSemicolon) {
-				clause.append[newLine]
-			}
-			format(clause, document);
-		}
-	}
-
-	def dispatch void format(Match match, extension IFormattableDocument document) {
-		match.interior[indent]
-		match.where?.prepend[newLine].append[newLine];
-		match.pattern.interior[noSpace]
-	}
-
-	def private formatKeyword(String keyword, Consumer<? super ISemanticRegion> consumer) {
-		cypher.allRegionsFor.keywords(keyword).forEach(consumer)
-	}
-
-	protected def void noLineWrap(IHiddenRegionFormatter it) {
-		setNewLines(0, 0, 0)
-	}
-
-	protected def void defaultLineWrap(IHiddenRegionFormatter it) {
-		setNewLines(1, 2, 2)
-	}
+//
+////	def dispatch void format(SingleQuery singleQuery, extension IFormattableDocument document) {
+////
+////		//
+////		for (Clause clause : singleQuery.clauses) {
+////			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
+////			if (!hasFollowingSemicolon) {
+////				clause.append[newLine]
+////			}
+////			format(clause, document);
+////		}
+////	}
+////
+////	def dispatch void format(Match match, extension IFormattableDocument document) {
+////		match.interior[indent]
+////		match.where?.prepend[newLine].append[newLine];
+////		match.pattern.interior[noSpace]
+////	}
+////
+////	def private formatKeyword(String keyword, Consumer<? super ISemanticRegion> consumer) {
+////		cypher.allRegionsFor.keywords(keyword).forEach(consumer)
+////	}
+//
+//	protected def void noLineWrap(IHiddenRegionFormatter it) {
+//		setNewLines(0, 0, 0)
+//	}
+//
+//	protected def void defaultLineWrap(IHiddenRegionFormatter it) {
+//		setNewLines(1, 2, 2)
+//	}
 }
