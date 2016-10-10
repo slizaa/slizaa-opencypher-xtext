@@ -41,12 +41,12 @@ class OpenCypherTemplateProposalProvider extends DefaultTemplateProposalProvider
 	override protected getContextTypes(ContentAssistContext context) {
 		val TemplateContextType[] check = super.getContextTypes(context)
 
-		if (context.currentModel instanceof SingleQuery) {
-
-			// here we have to implement the logic which clause can used and which not...
-			println(dump(context.currentModel, ""))
-			return #[];
-		}
+//		if (context.currentModel instanceof SingleQuery) {
+//
+//			// here we have to implement the logic which clause can used and which not...
+//			println(dump(context.currentModel, ""))
+//			return #[];
+//		}
 //		else if (context.currentModel instanceof SingleQuery) {
 //
 //			// here we have to implement the logic which clause can used and which not...

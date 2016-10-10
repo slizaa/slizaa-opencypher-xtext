@@ -50,11 +50,11 @@ class OpenCypherLabelProvider extends DefaultEObjectLabelProvider {
 		'Return'
 	}
 
-	def text(Pattern pattern) {
-		_serializer.serialize(pattern).trim;
-	}
-	
-	def text(PatternElement pattern) {
-		_serializer.serialize(pattern).trim;
-	}
+//	def text(Pattern pattern) {
+////		_serializer.serialize(pattern).trim;
+//	}
+//	
+//	def text(PatternElement pattern) {
+////		_serializer.serialize(pattern).trim;
+//	}
 }

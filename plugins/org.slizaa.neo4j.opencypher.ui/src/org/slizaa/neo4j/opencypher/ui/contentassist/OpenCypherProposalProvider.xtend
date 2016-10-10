@@ -18,15 +18,16 @@ import org.slizaa.neo4j.opencypher.ui.contentassist.service.MetaGraphProviderImp
  */
 class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
-	private static final Set<String> BLACKLIST_KEYWORDS = Sets.newHashSet("CYPHER", "DROP", "EXPLAIN", "PROFILE", "USING", "[", "IN", "STARTS", "ENDS", "CONTAINS", "IS",
-		"(", "CREATE", "DELETE", "DETACH", "FOREACH", "LOAD", "MATCH", "MERGE", "OPTIONAL", "REMOVE", "RETURN", "SET", "START", "UNION", "UNWIND", "WITH");
+	private static final Set<String> BLACKLIST_KEYWORDS = Sets.newHashSet("CYPHER", "DROP", "EXPLAIN", "PROFILE",
+		"USING", "[", "IN", "STARTS", "ENDS", "CONTAINS", "IS", "(", "CREATE", "DELETE", "DETACH", "FOREACH", "LOAD",
+		"MATCH", "MERGE", "OPTIONAL", "REMOVE", "RETURN", "SET", "START", "UNION", "UNWIND", "WITH");
 
-	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext, ICompletionProposalAcceptor acceptor) {
+	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext,
+		ICompletionProposalAcceptor acceptor) {
 		println("ruleCall " + ruleCall)
 		super.completeRuleCall(ruleCall, contentAssistContext, acceptor)
-		
-	}
 
+	}
 
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
@@ -39,7 +40,6 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 //			return;
 //		}
 //		super.completeKeyword(keyword, contentAssistContext, acceptor);
-return;
 	}
 
 //	override protected doCreateProposal(String proposal, StyledString displayString, Image image, int priority,
@@ -61,6 +61,7 @@ return;
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_PropertyKeyName(model, ruleCall, context, acceptor)
 
+		// TODO
 		acceptor.accept(createCompletionProposal("fqn", context));
 		acceptor.accept(createCompletionProposal("name", context));
 		acceptor.accept(createCompletionProposal("sourceFileName", context));

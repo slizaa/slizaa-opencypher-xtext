@@ -29,10 +29,13 @@ public class OpenCypherHighlightingConfiguration implements IHighlightingConfigu
 
 	public static final String TASK_ID = HighlightingStyles.TASK_ID;
 
+  public static final String RELATIONSHIP_TYPES_ID = null;
+
 	@Override
 	public void configure(IHighlightingConfigurationAcceptor acceptor) {
 	  acceptor.acceptDefaultHighlighting(VARIABLE_ID, "Variable", variableTextStyle());
 	   acceptor.acceptDefaultHighlighting(VARIABLE_REF_ID, "Variable Reference", variableReferenceTextStyle());
+     acceptor.acceptDefaultHighlighting(RELATIONSHIP_TYPES_ID, "Relationship Type", relationshipTypeTextStyle());
 		acceptor.acceptDefaultHighlighting(KEYWORD_ID, "Keyword", keywordTextStyle());
 		acceptor.acceptDefaultHighlighting(PUNCTUATION_ID, "Punctuation character", punctuationTextStyle());
 		acceptor.acceptDefaultHighlighting(COMMENT_ID, "Comment", commentTextStyle());
@@ -43,7 +46,13 @@ public class OpenCypherHighlightingConfiguration implements IHighlightingConfigu
 		acceptor.acceptDefaultHighlighting(INVALID_TOKEN_ID, "Invalid Symbol", errorTextStyle());
 	}
 	
-	private TextStyle variableReferenceTextStyle() {
+	private TextStyle relationshipTypeTextStyle() {
+    TextStyle textStyle = new TextStyle();
+    textStyle.setColor(new RGB(63, 127, 95));
+    return textStyle;
+  }
+
+  private TextStyle variableReferenceTextStyle() {
     TextStyle textStyle = new TextStyle();
     textStyle.setColor(new RGB(63, 127, 95));
     return textStyle;

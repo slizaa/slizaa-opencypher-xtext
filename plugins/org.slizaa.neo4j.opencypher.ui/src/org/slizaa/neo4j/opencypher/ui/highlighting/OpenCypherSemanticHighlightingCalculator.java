@@ -9,10 +9,12 @@ import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.util.CancelIndicator;
 import org.slizaa.neo4j.opencypher.openCypher.OpenCypherPackage;
+import org.slizaa.neo4j.opencypher.openCypher.RelationshipTypes;
 import org.slizaa.neo4j.opencypher.openCypher.StringConstant;
 import org.slizaa.neo4j.opencypher.openCypher.Variable;
 import org.slizaa.neo4j.opencypher.openCypher.VariableRef;
 import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess;
+import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess.RelTypeElements;
 
 import com.google.inject.Inject;
 
@@ -47,6 +49,14 @@ public class OpenCypherSemanticHighlightingCalculator extends DefaultSemanticHig
       for (INode node : NodeModelUtils.findNodesForFeature(stringConstant,
           OpenCypherPackage.Literals.STRING_CONSTANT__VALUE)) {
         acceptor.addPosition(node.getOffset(), node.getLength(), OpenCypherHighlightingConfiguration.STRING_ID);
+      }
+    }
+    
+    //
+    for (RelationshipTypes relTypes : EcoreUtil2.getAllContentsOfType(rootObject, RelationshipTypes.class)) {
+      for (INode node : NodeModelUtils.findNodesForFeature(relTypes,
+          OpenCypherPackage.Literals.RELATIONSHIP_TYPES__REL_TYPE_NAME)) {
+        acceptor.addPosition(node.getOffset(), node.getLength(), OpenCypherHighlightingConfiguration.RELATIONSHIP_TYPES_ID);
       }
     }
 
