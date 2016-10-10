@@ -3,112 +3,31 @@
  */
 package org.slizaa.neo4j.opencypher.formatting2
 
+import com.google.inject.Inject
 import org.eclipse.xtext.formatting2.AbstractFormatter2
 import org.eclipse.xtext.formatting2.IFormattableDocument
-import org.slizaa.neo4j.opencypher.openCypher.Match
-import org.slizaa.neo4j.opencypher.openCypher.NodeLabel
-import org.slizaa.neo4j.opencypher.openCypher.NodeLabels
-import org.slizaa.neo4j.opencypher.openCypher.NodePattern
-import org.slizaa.neo4j.opencypher.openCypher.PatternElement
-import org.slizaa.neo4j.opencypher.openCypher.Return
-import org.slizaa.neo4j.opencypher.openCypher.ReturnBody
-import org.slizaa.neo4j.opencypher.openCypher.Where
+import org.slizaa.neo4j.opencypher.openCypher.AllOptions
+import org.slizaa.neo4j.opencypher.openCypher.Cypher
+import org.slizaa.neo4j.opencypher.openCypher.CypherOption
+import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess
 
 class OpenCypherFormatter extends AbstractFormatter2 {
 
-	def dispatch void format(Match match, extension IFormattableDocument document) {
+	@Inject extension OpenCypherGrammarAccess
 
-		match.regionFor.keyword("MATCH").append[newLine];
-		match.interior[indent];
-
-		match.pattern.allRegionsFor.keyword(",").append[newLine].prepend[noSpace]
-
-		for (patterPart : match.pattern.getPatterns()) {
-			format(patterPart, document);
-		}
-
-		//
-		format(match.where, document);
+	def dispatch void format(Cypher cypher, extension IFormattableDocument document) {
+		// TODO: format HiddenRegions around keywords, attributes, cross references, etc. 
+		cypher.getOptions.format;
+		cypher.getStatement.format;
 	}
 
-	def dispatch void format(Return ret, extension IFormattableDocument document) {
-		ret.regionFor.keyword("RETURN").prepend[newLine].append[newLine];
-		ret.interior[indent];
-		format(ret.body, document);
-	}
-
-	def dispatch void format(Where where, extension IFormattableDocument document) {
-		where.regionFor.keyword("WHERE").prepend[newLine].append[newLine];
-		where.interior[indent];
-		format(where.expression, document);
-	}
-
-	def dispatch void format(ReturnBody returnBody, extension IFormattableDocument document) {
-
-	}
-
-//	def dispatch void format(PatternPart patternPart, extension IFormattableDocument document) {
-//		
-//	}
-//	
-	def dispatch void format(PatternElement patternElement, extension IFormattableDocument document) {
-//		patternElement.prepend[oneSpace]
-//		patternElement.append[newLine]
-		format(patternElement.nodepattern, document);
-	}
-
-	def dispatch void format(NodePattern nodePattern, extension IFormattableDocument document) {
-		nodePattern.regionFor.keyword("(").append[noSpace]
-		nodePattern.regionFor.keyword(")").prepend[noSpace]
-		format(nodePattern.nodeLabels, document);
-	}
-
-	def dispatch void format(NodeLabels nodeLabels, extension IFormattableDocument document) {
-		for (nodeLabel : nodeLabels.nodeLabels) {
-			format(nodeLabel, document);
+	def dispatch void format(AllOptions allOptions, extension IFormattableDocument document) {
+		// TODO: format HiddenRegions around keywords, attributes, cross references, etc. 
+		for (CypherOption cypherOption : allOptions.getCypherOption()) {
+			cypherOption.format;
 		}
 	}
+	
+	// TODO: implement for CypherOption, RegularQuery, BulkImportQuery, SingleQuery, LoadCSVQuery, Union, CreateIndex, DropUniqueConstraint, DropNodePropertyExistenceConstraint, DropRelationshipPropertyExistenceConstraint, DropIndex, UniqueConstraintSyntax, NodePropertyExistenceConstraintSyntax, RelationshipPropertyExistenceConstraintSyntax, RelationshipPatternSyntax, LoadCSV, Match, Unwind, Merge, MergeAction, Create, SetClause, SetItem, Delete, Remove, RemoveItem, Foreach, With, Return, ReturnItems, ReturnItem, Order, Skip, Limit, SortItem, IndexHint, JoinHint, ScanHint, Start, StartPoint, IdentifiedIndexLookup, IndexQuery, IdLookup, Where, Pattern, PatternPart, ShortestPath, AllShortestPath, PatternElement, NodePattern, PatternElementChain, RelationshipPattern, RelationshipDetail, NodeLabels, ExpressionOr, ExpressionXor, ExpressionAnd, Expression, ExpressionComparison, ExpressionPlusMinus, ExpressionMulDiv, ExpressionPower, Index, RegExpMatching, InCollection, StartsWith, EndsWith, Contains, ExpressionNodeLabelsAndPropertyLookup, CaseExpression, ExpressionList, Filter, All, Any, None, Single, Reduce, ParenthesizedExpression, RelationshipsPattern, FilterExpression, IdInColl, FunctionInvocation, ListComprehension, CaseAlternatives, MapLiteral, MapLiteralEntry
 
-	def dispatch void format(NodeLabel nodeLabel, extension IFormattableDocument document) {
-		nodeLabel.regionFor.keyword(":").surround[noSpace]
-	}
-
-//		//
-//		for (Clause clause : singleQuery.clauses) {
-//			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
-//			if (!hasFollowingSemicolon) {
-//				clause.append[newLine]
-//			}
-//			format(clause, document);
-//		}
-//
-////	def dispatch void format(SingleQuery singleQuery, extension IFormattableDocument document) {
-////
-////		//
-////		for (Clause clause : singleQuery.clauses) {
-////			val boolean hasFollowingSemicolon = clause.immediatelyFollowing.keyword(";") != null;
-////			if (!hasFollowingSemicolon) {
-////				clause.append[newLine]
-////			}
-////			format(clause, document);
-////		}
-////	}
-////
-////	def dispatch void format(Match match, extension IFormattableDocument document) {
-////		match.interior[indent]
-////		match.where?.prepend[newLine].append[newLine];
-////		match.pattern.interior[noSpace]
-////	}
-////
-////	def private formatKeyword(String keyword, Consumer<? super ISemanticRegion> consumer) {
-////		cypher.allRegionsFor.keywords(keyword).forEach(consumer)
-////	}
-//
-//	protected def void noLineWrap(IHiddenRegionFormatter it) {
-//		setNewLines(0, 0, 0)
-//	}
-//
-//	protected def void defaultLineWrap(IHiddenRegionFormatter it) {
-//		setNewLines(1, 2, 2)
-//	}
 }
