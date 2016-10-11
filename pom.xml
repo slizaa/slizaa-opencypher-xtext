@@ -10,7 +10,7 @@
 
 	<groupId>org.slizaa.neo4j.opencypher</groupId>
 	<artifactId>org.slizaa.neo4j.opencypher.parent</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -22,10 +22,14 @@
 	</properties>
 
 	<modules>
-		<module>releng/org.slizaa.neo4j.opencypher.target</module>
+		
 		<module>plugins/org.slizaa.neo4j.opencypher</module>
 		<module>plugins/org.slizaa.neo4j.opencypher.ui</module>
 		<module>plugins/org.slizaa.neo4j.opencypher.ide</module>
+		<module>tests/org.slizaa.neo4j.opencypher.tests</module>
+		<module>releng/org.slizaa.neo4j.opencypher.target</module>
+		<module>releng/org.slizaa.neo4j.opencypher.p2</module>
+		<module>releng/org.slizaa.neo4j.opencypher.feature</module>
 	</modules>
 
 	<build>
@@ -71,7 +75,7 @@
 				</executions>
 			</plugin>
 		</plugins>
-		
+
 		<pluginManagement>
 			<plugins>
 				<!-- xtend-maven-plugin is in pluginManagement instead of in plugins 

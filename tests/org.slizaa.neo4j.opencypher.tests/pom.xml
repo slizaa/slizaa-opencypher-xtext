@@ -10,8 +10,8 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.slizaa.neo4j.opencypher.ui</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<artifactId>org.slizaa.neo4j.opencypher.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
     <build>
         <sourceDirectory>src</sourceDirectory>    
 		<plugins>

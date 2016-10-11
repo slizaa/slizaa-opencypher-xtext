@@ -3,7 +3,8 @@ module org.slizaa.neo4j.opencypher.GenerateOpenCypher
 import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
 
-var rootPath = ".."
+var workspace = ".."
+var rootPath = "${workspace}/"
 
 Workflow {
 	
@@ -14,14 +15,14 @@ Workflow {
 				rootPath = rootPath
 				runtimeTest = {
 					enabled = true
-					root = "../../tests/org.slizaa.neo4j.opencypher.tests"
+					root = "${rootPath}/../tests/org.slizaa.neo4j.opencypher.tests"
 				}
 				eclipsePlugin = {
 					enabled = true
 				}
 				eclipsePluginTest = {
 					enabled = true
-					root = "../../tests/org.slizaa.neo4j.opencypher.ui.tests"
+					root = "${rootPath}/../tests/org.slizaa.neo4j.opencypher.ui.tests"
 				}
 				createEclipseMetaData = true
 			}

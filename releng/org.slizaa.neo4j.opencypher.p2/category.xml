@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.slizaa.neo4j.opencypher.feature_0.0.0.jar" id="org.slizaa.neo4j.opencypher.feature" version="0.0.0">
+      <category name="org.slizaa.neo4j.opencypher"/>
+   </feature>
+   <category-def name="org.slizaa.neo4j.opencypher.feature" label="Xtext openCypher implementation"/>
+</site>
