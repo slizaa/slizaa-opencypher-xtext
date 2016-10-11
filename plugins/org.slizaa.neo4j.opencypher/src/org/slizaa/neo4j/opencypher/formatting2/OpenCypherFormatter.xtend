@@ -17,7 +17,7 @@ class OpenCypherFormatter extends AbstractFormatter2 {
 
 	def dispatch void format(Cypher cypher, extension IFormattableDocument document) {
 		// TODO: format HiddenRegions around keywords, attributes, cross references, etc. 
-		cypher.getOptions.format;
+		cypher.queryOptions.format;
 		cypher.getStatement.format;
 	}
 

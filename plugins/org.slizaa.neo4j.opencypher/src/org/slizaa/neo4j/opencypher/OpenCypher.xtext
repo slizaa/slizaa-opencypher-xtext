@@ -5,16 +5,17 @@ generate openCypher "http://www.slizaa.org/neo4j/opencypher/OpenCypher"
 
 Cypher:
 /*
- * cypher : ws allOptions statement ws ';'? ws ;
+ * cypher : ws queryOptions statement ( ws ';' )? ws ;
  */
-	{Cypher} options=AllOptions statement=Statement ';'?;
+	{Cypher} queryOptions=QueryOptions statement=Statement ';'?;
 
-AllOptions:
+QueryOptions:
 /*
- * allOptions : ( anyCypherOption ws )* ;
+ * queryOptions : ( anyCypherOption ws )* ;
  * anyCypherOption : cypherOption
- *              | explain
- *              | profile;
+ *                 | explain
+ *                 | profile
+ *                 ;
  * explain : EXPLAIN ;
  * profile : PROFILE ;
  */
@@ -28,15 +29,18 @@ CypherOption:
 
 VersionNumber:
 /*
- * versionNumber : digitString '.' digitString ;
+ * versionNumber : DecimalInteger '.' DecimalInteger ;
+ * 
+ * Comment: Format of DecimalInteger is checked via 
+ * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkVersionNumberFormat(VersionNumber)
  */
 	versionNumber=Number;
 
 ConfigurationOption:
 /*
- * configurationOption : symbolicNameString ws '=' ws symbolicNameString ;
+ * configurationOption : symbolicName ws '=' ws symbolicName ;
  */
-	key=SYMBOLIC_NAME_STRING '=' value=SYMBOLIC_NAME_STRING;
+	key=SYMBOLIC_NAME '=' value=SYMBOLIC_NAME;
 
 Statement:
 /*
@@ -89,6 +93,7 @@ Union:
  */
 	('UNION' all?='ALL'? singleQuery=SingleQuery);
 
+	// HERE
 Clause:
 /*
  * clause : loadCSV
@@ -97,101 +102,111 @@ Clause:
  *        | unwind
  *        | merge
  *        | create
- *        | setClause
+ *        | createUnique
+ *        | set
  *        | delete
  *        | remove
  *        | foreach
  *        | with
  *        | return
- *       ;
+ *        ;
+ * 
+ * Comment: We handle 'createUnique' within the 'create' clause
  */
-	LoadCSV | Start | Match | Unwind | Merge | Create | SetClause | Delete | Remove | Foreach | With | Return;
+	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return;
 
 Command:
 /*
- * command : createUniqueConstraint
- *         | createNodePropertyExistenceConstraint
- *         | createRelationshipPropertyExistenceConstraint
- *         | createIndex
- *         | dropUniqueConstraint
- *         | dropNodePropertyExistenceConstraint
- *         | dropRelationshipPropertyExistenceConstraint
+ * command : createIndex
  *         | dropIndex
- *      ;
+ *         | createUniqueConstraint
+ *         | dropUniqueConstraint
+ *         | createNodePropertyExistenceConstraint
+ *         | dropNodePropertyExistenceConstraint
+ *         | createRelationshipPropertyExistenceConstraint
+ *         | dropRelationshipPropertyExistenceConstraint
+ *         ;
  */
-	CreateUniqueConstraint | CreateNodePropertyExistenceConstraint | CreateRelationshipPropertyExistenceConstraint |
-	CreateIndex | DropUniqueConstraint | DropNodePropertyExistenceConstraint |
-	DropRelationshipPropertyExistenceConstraint | DropIndex;
+	CreateIndex | DropIndex | CreateUniqueConstraint | DropUniqueConstraint | CreateNodePropertyExistenceConstraint |
+	DropNodePropertyExistenceConstraint | CreateRelationshipPropertyExistenceConstraint |
+	DropRelationshipPropertyExistenceConstraint;
 
 CreateUniqueConstraint:
 /*
- * createUniqueConstraint : CREATE ws uniqueConstraintSyntax ;
+ * createUniqueConstraint : CREATE sp uniqueConstraint ;
  */
-	'CREATE' UniqueConstraintSyntax;
+	'CREATE' UniqueConstraint;
 
 CreateNodePropertyExistenceConstraint:
 /*
- * createNodePropertyExistenceConstraint : CREATE ws nodePropertyExistenceConstraintSyntax ;
+ * createNodePropertyExistenceConstraint : CREATE sp nodePropertyExistenceConstraint ;
  */
-	'CREATE' NodePropertyExistenceConstraintSyntax;
+	'CREATE' NodePropertyExistenceConstraint;
 
 CreateRelationshipPropertyExistenceConstraint:
 /*
- * createRelationshipPropertyExistenceConstraint : CREATE ws relationshipPropertyExistenceConstraintSyntax ;
+ * createRelationshipPropertyExistenceConstraint : CREATE sp relationshipPropertyExistenceConstraint ;
  */
-	'CREATE' RelationshipPropertyExistenceConstraintSyntax;
+	'CREATE' RelationshipPropertyExistenceConstraint;
 
 CreateIndex:
 /*
- * createIndex : CREATE sp INDEX sp ON ws nodeLabel '(' propertyKeyName ')' ;
+ * createIndex : CREATE sp index ;
  */
-	'CREATE' 'INDEX' 'ON' nodeLabel=NodeLabel '(' propertyKeyName=PropertyKeyName ')';
+	'CREATE' index=Index;
 
 DropUniqueConstraint:
 /*
- * dropUniqueConstraint : DROP sp uniqueConstraintSyntax ;
+ * dropUniqueConstraint : DROP sp uniqueConstraint ;
  */
-	'DROP' uniqueConstraint=UniqueConstraintSyntax;
+	'DROP' uniqueConstraint=UniqueConstraint;
 
 DropNodePropertyExistenceConstraint:
 /*
- * dropNodePropertyExistenceConstraint : DROP sp nodePropertyExistenceConstraintSyntax ;
+ * dropNodePropertyExistenceConstraint : DROP sp nodePropertyExistenceConstraint ;
  */
-	'DROP' nodePropertyExistenceConstraint=NodePropertyExistenceConstraintSyntax;
+	'DROP' nodePropertyExistenceConstraint=NodePropertyExistenceConstraint;
 
 DropRelationshipPropertyExistenceConstraint:
 /*
- * dropRelationshipPropertyExistenceConstraint : DROP sp relationshipPropertyExistenceConstraintSyntax ;
+ * dropRelationshipPropertyExistenceConstraint : DROP sp relationshipPropertyExistenceConstraint ;
  */
-	'DROP' relationshipPropertyExistenceConstraint=RelationshipPropertyExistenceConstraintSyntax;
+	'DROP' relationshipPropertyExistenceConstraint=RelationshipPropertyExistenceConstraint;
 
 DropIndex:
 /*
- * dropIndex : DROP sp INDEX sp ON ws nodeLabel '(' propertyKeyName ')' ;
+ * dropIndex : DROP sp index ;
  */
-	'DROP' 'INDEX' 'ON' nodeLabel=NodeLabel '(' propertyKeyName=PropertyKeyName ')';
+	'DROP' index=Index;
 
-UniqueConstraintSyntax:
+Index:
 /*
- * uniqueConstraintSyntax : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ASSERT propertyExpression IS sp UNIQUE ;
+ * index : INDEX sp ON ws nodeLabel '(' propertyKeyName ')' ;
+ */	
+	'INDEX' 'ON' nodeLabel=NodeLabel '(' propertyKeyName=PropertyKeyName ')';
+
+UniqueConstraint:
+/*
+ * uniqueConstraint : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ws ASSERT sp propertyExpression sp IS sp UNIQUE ;
  */
 	'CONSTRAINT' 'ON' '(' variable=Variable nodeLabel=NodeLabel ')' 'ASSERT' propertyExpression=PropertyExpression 'IS'
 	'UNIQUE';
 
-NodePropertyExistenceConstraintSyntax:
+NodePropertyExistenceConstraint:
 /*
- * nodePropertyExistenceConstraintSyntax : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ASSERT sp EXISTS '(' propertyExpression ')' ;
+ * nodePropertyExistenceConstraint : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ws ASSERT sp EXISTS ws '(' propertyExpression ')' ;
  */
 	'CONSTRAINT' 'ON' '(' variable=Variable nodeLabel=NodeLabel ')' 'ASSERT' 'EXISTS' '('
 	propertyExpression=PropertyExpression ')';
 
-RelationshipPropertyExistenceConstraintSyntax:
+RelationshipPropertyExistenceConstraint:
 /*
- * relationshipPropertyExistenceConstraintSyntax : CONSTRAINT sp ON ws relationshipPatternSyntax ASSERT sp EXISTS '(' propertyExpression ')' ;
+ * relationshipPropertyExistenceConstraint : CONSTRAINT sp ON ws relationshipPatternSyntax ws ASSERT sp EXISTS ws '(' propertyExpression ')' ;
  */
 	'CONSTRAINT' 'ON' relationshipPattern=RelationshipPatternSyntax 'ASSERT' 'EXISTS' '('
 	propertyExpression=PropertyExpression ')';
 
+// Here
 RelationshipPatternSyntax:
 /*
  * relationshipPatternSyntax : ( '(' ws ')' dash '[' variable relType ']' dash '(' ws ')' )
@@ -210,7 +225,7 @@ LoadCSV:
 
 Match:
 /*
- * match : ( OPTIONAL sp )? MATCH ws pattern ws ( hint )* where? ;
+ * match : ( OPTIONAL sp )? MATCH ws pattern ( hint )* ( ws where )? ;
  */
 	optional?='OPTIONAL'? 'MATCH' pattern=Pattern (hints+=Hint)* where=Where?;
 
@@ -228,19 +243,23 @@ Merge:
 
 MergeAction:
 /*
- * mergeAction : ( ON sp MATCH sp setClause )
- *             | ( ON sp CREATE sp setClause );
+ * mergeAction : ( ON sp MATCH sp set )
+ *             | ( ON sp CREATE sp set )
+ *             ;
  */
-	'ON' action=('MATCH' | 'CREATE') setClause=SetClause;
+	'ON' action=('MATCH' | 'CREATE') set=Set;
 
 Create:
 /*
- * create : ( CREATE sp UNIQUE ws pattern )
- *        | ( CREATE ws pattern );
+ * create : CREATE ws pattern ;
+ * createUnique : CREATE sp UNIQUE ws pattern ;
+ * 
+ * Comment: We handle 'create' and 'createUnqiue' here
  */
 	'CREATE' unique?='UNIQUE'? pattern=Pattern;
 
-SetClause:
+//HERE
+Set:
 /*
  * setClause : SET setItem ( ',' setItem )* ;
  */
@@ -386,13 +405,13 @@ IdentifiedIndexLookup:
 /*
  * identifiedIndexLookup : ':' symbolicNameString '(' symbolicNameString '=' ( StringLiteral | parameter ) ')' ; 
  */
-	':' indexName=SYMBOLIC_NAME_STRING '(' key=SYMBOLIC_NAME_STRING '=' (value=STRING_LITERAL | parameter=Parameter) ')';
+	':' indexName=SYMBOLIC_NAME '(' key=SYMBOLIC_NAME '=' (value=STRING_LITERAL | parameter=Parameter) ')';
 
 IndexQuery:
 /*
  * indexQuery : ':' symbolicNameString '(' ( StringLiteral | parameter ) ')' ;
  */
-	':' indexName=SYMBOLIC_NAME_STRING '(' (query=STRING_LITERAL | parameter=Parameter) ')';
+	':' indexName=SYMBOLIC_NAME '(' (query=STRING_LITERAL | parameter=Parameter) ')';
 
 IdLookup:
 /*
@@ -746,7 +765,7 @@ Parameter:
  * parameter : '{' ws ( symbolicNameString | unsignedDecimalInteger ) ws '}' ;
  */
 // TODO: CHECK - Number (positive Integer)
-	'{' parameter=(SYMBOLIC_NAME_STRING | Number) '}';
+	'{' parameter=(SYMBOLIC_NAME | Number) '}';
 
 PropertyExpression:
 /*
@@ -765,7 +784,7 @@ LoadCSVWithHeaders:
 	'WITH' 'HEADERS';
 
 PropertyKeyName:
-	SYMBOLIC_NAME_STRING;
+	SYMBOLIC_NAME;
 
 LeftArrowHead:
 // TODO!
@@ -865,20 +884,20 @@ SYMBOLIC_NAME_STRING_X:
  *                  | L_0X
  *                   ;
  */
-	SYMBOLIC_NAME_STRING | 'CYPHER' | 'EXPLAIN' | 'PROFILE' | 'USING' | 'PERIODIC' | 'COMMIT' | 'UNION' | 'ALL' |
-	'CREATE' | 'INDEX' | 'ON' | 'DROP' | 'CONSTRAINT' | 'ASSERT' | 'IS' | 'UNIQUE' | 'EXISTS' | 'LOAD' | 'CSV' | 'WITH' |
-	'HEADERS' | 'FROM' | 'AS' | 'FIELDTERMINATOR' | 'OPTIONAL' | 'MATCH' | 'UNWIND' | 'MERGE' | 'SET' | 'DELETE' |
-	'DETACH' | 'REMOVE' | 'FOREACH' | 'IN' | 'DISTINCT' | 'RETURN' | 'ORDER' | 'BY' | 'SKIP' | 'LIMIT' | 'DESCENDING' |
-	'DESC' | 'ASCENDING' | 'ASC' | 'JOIN' | 'SCAN' | 'START' | 'NODE' | 'RELATIONSHIP' | 'REL' | 'WHERE' | 'SHORTESTPATH'
-	| 'ALLSHORTESTPATHS' | 'OR' | 'XOR' | 'AND' | 'NOT' | 'STARTS' | 'ENDS' | 'CONTAINS' | 'NULL' | 'TRUE' | 'FALSE' | 'COUNT' |
-	'FILTER' | 'EXTRACT' | 'ANY' | 'NONE' | 'SINGLE' | 'REDUCE' | 'CASE' | 'ELSE' | 'END' | 'WHEN' | 'THEN';
+	SYMBOLIC_NAME | 'CYPHER' | 'EXPLAIN' | 'PROFILE' | 'USING' | 'PERIODIC' | 'COMMIT' | 'UNION' | 'ALL' | 'CREATE' |
+	'INDEX' | 'ON' | 'DROP' | 'CONSTRAINT' | 'ASSERT' | 'IS' | 'UNIQUE' | 'EXISTS' | 'LOAD' | 'CSV' | 'WITH' | 'HEADERS'
+	| 'FROM' | 'AS' | 'FIELDTERMINATOR' | 'OPTIONAL' | 'MATCH' | 'UNWIND' | 'MERGE' | 'SET' | 'DELETE' | 'DETACH' |
+	'REMOVE' | 'FOREACH' | 'IN' | 'DISTINCT' | 'RETURN' | 'ORDER' | 'BY' | 'SKIP' | 'LIMIT' | 'DESCENDING' | 'DESC' |
+	'ASCENDING' | 'ASC' | 'JOIN' | 'SCAN' | 'START' | 'NODE' | 'RELATIONSHIP' | 'REL' | 'WHERE' | 'SHORTESTPATH' |
+	'ALLSHORTESTPATHS' | 'OR' | 'XOR' | 'AND' | 'NOT' | 'STARTS' | 'ENDS' | 'CONTAINS' | 'NULL' | 'TRUE' | 'FALSE' |
+	'COUNT' | 'FILTER' | 'EXTRACT' | 'ANY' | 'NONE' | 'SINGLE' | 'REDUCE' | 'CASE' | 'ELSE' | 'END' | 'WHEN' | 'THEN';
 
-terminal SYMBOLIC_NAME_STRING:
+terminal SYMBOLIC_NAME:
 // TODO!!
 	'^'? ('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')*;
 
 terminal ESCAPED_SYMBOLIC_NAME_STRING:
-	'`' SYMBOLIC_NAME_STRING '`';
+	'`' SYMBOLIC_NAME '`';
 
 terminal ML_COMMENT:
 	'/*'->'*/';

@@ -5,6 +5,8 @@ xtend-gen/
 
 .antlr*.jar
 
+plugin.xml_gen
+
 # OS generated files
 .DS_Store
 Thumbs.db
