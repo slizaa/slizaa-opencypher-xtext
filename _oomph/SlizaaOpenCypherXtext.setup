@@ -70,8 +70,6 @@
         name="${scope.project.label}"
         activeRepositoryList="${eclipse.target.platform}">
       <requirement
-          name="org.slizaa.neo4j.opencypher.feature"/>
-      <requirement
           name="org.eclipse.sdk.feature.group"/>
       <sourceLocator
           rootFolder="${git.clone.location}"
