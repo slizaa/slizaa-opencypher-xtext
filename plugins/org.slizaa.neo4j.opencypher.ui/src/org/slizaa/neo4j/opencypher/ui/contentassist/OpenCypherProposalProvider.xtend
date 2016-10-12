@@ -24,7 +24,7 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
 	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
-		println("ruleCall " + ruleCall)
+		// println("ruleCall " + ruleCall)
 		super.completeRuleCall(ruleCall, contentAssistContext, acceptor)
 
 	}

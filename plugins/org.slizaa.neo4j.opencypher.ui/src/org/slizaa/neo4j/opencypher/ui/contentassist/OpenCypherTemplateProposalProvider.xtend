@@ -54,13 +54,13 @@ class OpenCypherTemplateProposalProvider extends DefaultTemplateProposalProvider
 //			return #[];
 //		}
 
-		println("------------------------------------------");
-		println("currentModel with expected grammar element" + context.currentModel)
-		println("previousModel " + context.previousModel)
-		for (contextType : check) {
-			println(contextType.name + " - " + contextType.id)
-		}
-		println("----------------------------------")
+//		println("------------------------------------------");
+//		println("currentModel with expected grammar element" + context.currentModel)
+//		println("previousModel " + context.previousModel)
+//		for (contextType : check) {
+//			println(contextType.name + " - " + contextType.id)
+//		}
+//		println("----------------------------------")
 
 		// new TemplateContextType[]{new XtextTemplateContextType() Match - de.gerdwuetherich.opencypher.OpenCypher.Match}
 		// val XtextTemplateContextType c = new XtextTemplateContextType();
