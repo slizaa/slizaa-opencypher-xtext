@@ -102,6 +102,13 @@
     </targlet>
   </setupTask>
   <setupTask
+      xsi:type="launching:LaunchTask"
+      id="GenerateOpenCypher.mwe2"
+      filter=""
+      launcher="GenerateOpenCypher.mwe2">
+    <description>Domain Model DSL Grammar Workflow</description>
+  </setupTask>
+  <setupTask
       xsi:type="setup.workingsets:WorkingSetTask">
     <workingSet
         name="slizaa.openCypher">
@@ -136,15 +143,8 @@
     <description>The dynamic working sets for ${scope.project.label}</description>
   </setupTask>
   <setupTask
-      xsi:type="launching:LaunchTask"
-      id="GenerateOpenCypher.mwe2"
-      filter=""
-      launcher="GenerateOpenCypher.mwe2">
-    <description>Domain Model DSL Grammar Workflow</description>
-  </setupTask>
-  <setupTask
       xsi:type="projects:ProjectsBuildTask"
-      refresh="true"
+      refresh="false"
       clean="true"/>
   <stream name="master"
       label="Master">
