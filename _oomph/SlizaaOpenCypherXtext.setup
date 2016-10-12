@@ -5,12 +5,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:git="http://www.eclipse.org/oomph/setup/git/1.0"
     xmlns:jdt="http://www.eclipse.org/oomph/setup/jdt/1.0"
+    xmlns:launching="http://www.eclipse.org/oomph/setup/launching/1.0"
     xmlns:predicates="http://www.eclipse.org/oomph/predicates/1.0"
+    xmlns:projects="http://www.eclipse.org/oomph/setup/projects/1.0"
     xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
     xmlns:setup.p2="http://www.eclipse.org/oomph/setup/p2/1.0"
     xmlns:setup.targlets="http://www.eclipse.org/oomph/setup/targlets/1.0"
     xmlns:setup.workingsets="http://www.eclipse.org/oomph/setup/workingsets/1.0"
-    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/targlets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupTarglets.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
+    xsi:schemaLocation="http://www.eclipse.org/oomph/setup/git/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Git.ecore http://www.eclipse.org/oomph/setup/jdt/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/JDT.ecore http://www.eclipse.org/oomph/setup/launching/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Launching.ecore http://www.eclipse.org/oomph/predicates/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Predicates.ecore http://www.eclipse.org/oomph/setup/projects/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/Projects.ecore http://www.eclipse.org/oomph/setup/targlets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupTarglets.ecore http://www.eclipse.org/oomph/setup/workingsets/1.0 http://git.eclipse.org/c/oomph/org.eclipse.oomph.git/plain/setups/models/SetupWorkingSets.ecore"
     name="slizaa.opencypher.xtext"
     label="slizaa openCypher Xtext">
   <setupTask
@@ -37,7 +39,7 @@
   <setupTask
       xsi:type="setup:VariableTask"
       name="eclipse.target.platform"
-      defaultValue="Mars"
+      defaultValue="Neon"
       storageURI="scope://Workspace"/>
   <setupTask
       xsi:type="setup.p2:P2Task">
@@ -45,7 +47,7 @@
   </setupTask>
   <setupTask
       xsi:type="git:GitCloneTask"
-      id="git.clone"
+      id="git.clone.slizaaopencypher"
       remoteURI="slizaa/slizaa-opencypher-xtext">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
@@ -65,52 +67,96 @@
     <description>${scope.project.label}</description>
   </setupTask>
   <setupTask
+      xsi:type="projects:ProjectsImportTask">
+    <sourceLocator
+        rootFolder="${git.clone.slizaaopencypher.location}"
+        locateNestedProjects="true"/>
+  </setupTask>
+  <setupTask
       xsi:type="setup.targlets:TargletTask">
     <targlet
         name="${scope.project.label}"
         activeRepositoryList="${eclipse.target.platform}">
       <requirement
           name="org.eclipse.sdk.feature.group"/>
+      <requirement
+          name="org.eclipse.emf.sdk.feature.group"/>
+      <requirement
+          name="org.eclipse.xtext.sdk.feature.group"/>
+      <requirement
+          name="org.eclipse.emf.mwe2.language.sdk.feature.group"/>
+      <requirement
+          name="org.eclipse.emf.mwe2.runtime.sdk.feature.group"/>
       <sourceLocator
-          rootFolder="${git.clone.location}"
+          rootFolder="${git.clone.slizaaopencypher.location}"
           locateNestedProjects="true"/>
       <repositoryList
-          name="Mars">
+          name="Neon">
         <repository
-            url="http://download.eclipse.org/releases/mars"/>
-      </repositoryList>
-      <repositoryList
-          name="Luna">
+            url="http://download.eclipse.org/releases/neon"/>
         <repository
-            url="http://download.eclipse.org/releases/luna"/>
-      </repositoryList>
-      <repositoryList
-          name="Kepler">
+            url="${xtext.site}"/>
         <repository
-            url="http://download.eclipse.org/releases/kepler"/>
-      </repositoryList>
-      <repositoryList
-          name="Juno">
-        <repository
-            url="http://download.eclipse.org/releases/juno"/>
+            url="${mwe2.site}"/>
       </repositoryList>
     </targlet>
   </setupTask>
   <setupTask
       xsi:type="setup.workingsets:WorkingSetTask">
     <workingSet
-        name="${scope.project.name}">
+        name="slizaa.openCypher">
       <predicate
           xsi:type="predicates:AndPredicate">
         <operand
-            xsi:type="predicates:RepositoryPredicate"
-            project="a"/>
+            xsi:type="predicates:LocationPredicate"
+            pattern=".*/plugins/.*"/>
+      </predicate>
+    </workingSet>
+    <workingSet
+        name="slizaa.openCypher.tests">
+      <predicate
+          xsi:type="predicates:AndPredicate">
+        <operand
+            xsi:type="predicates:LocationPredicate"
+            pattern=".*/tests/.*"/>
+      </predicate>
+    </workingSet>
+    <workingSet
+        name="slizaa.openCypher.releng">
+      <predicate
+          xsi:type="predicates:OrPredicate">
+        <operand
+            xsi:type="predicates:LocationPredicate"
+            pattern=".*/releng/.*"/>
+        <operand
+            xsi:type="predicates:NamePredicate"
+            pattern="org.slizaa.neo4j.opencypher.parent"/>
       </predicate>
     </workingSet>
     <description>The dynamic working sets for ${scope.project.label}</description>
   </setupTask>
+  <setupTask
+      xsi:type="launching:LaunchTask"
+      id="GenerateOpenCypher.mwe2"
+      filter=""
+      launcher="GenerateOpenCypher.mwe2">
+    <description>Domain Model DSL Grammar Workflow</description>
+  </setupTask>
+  <setupTask
+      xsi:type="projects:ProjectsBuildTask"
+      refresh="true"
+      clean="true"/>
   <stream name="master"
-      label="Master"/>
+      label="Master">
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="mwe2.site"
+        value="http://download.eclipse.org/modeling/emft/mwe/updates/releases/2.8.3/"/>
+    <setupTask
+        xsi:type="setup:VariableTask"
+        name="xtext.site"
+        value="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.10.0"/>
+  </stream>
   <logicalProjectContainer
       xsi:type="setup:ProjectCatalog"
       href="index:/org.eclipse.setup#//@projectCatalogs[name='com.github']"/>
