@@ -142,10 +142,6 @@
     </workingSet>
     <description>The dynamic working sets for ${scope.project.label}</description>
   </setupTask>
-  <setupTask
-      xsi:type="projects:ProjectsBuildTask"
-      refresh="false"
-      clean="true"/>
   <stream name="master"
       label="Master">
     <setupTask
