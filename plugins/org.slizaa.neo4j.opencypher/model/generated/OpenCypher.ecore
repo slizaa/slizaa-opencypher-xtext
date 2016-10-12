@@ -41,8 +41,8 @@
         eType="#//Clause" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PeriodicCommitHint">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfRowsPerCommit"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="numberOfRowsPerCommit"
+        eType="#//DecimalInteger" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LoadCSVQuery">
     <eStructuralFeatures xsi:type="ecore:EReference" name="loadCSV" eType="#//LoadCSV"
@@ -265,7 +265,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="indexName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="key" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" eType="#//Parameter"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="legacyParameter" eType="#//LegacyParameter"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IndexQuery" eSuperTypes="#//NodeLookup #//RelationshipLookup">
@@ -277,13 +277,13 @@
   <eClassifiers xsi:type="ecore:EClass" name="IdLookup" eSuperTypes="#//NodeLookup #//RelationshipLookup">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ids" eType="#//LiteralIds"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" eType="#//Parameter"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="legacyParameter" eType="#//Parameter"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="wildcard" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="LiteralIds">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ids" unique="false" upperBound="-1"
-        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ids" upperBound="-1" eType="#//DecimalInteger"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Where">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
@@ -449,10 +449,16 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LegacyParameter" eSuperTypes="#//Properties #//Expression">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="parameter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//Properties #//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="parameter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PropertyExpression" eSuperTypes="#//RemoveItem"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DecimalInteger">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AllOptions" eSuperTypes="#//QueryOptions">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="explain" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="profile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
