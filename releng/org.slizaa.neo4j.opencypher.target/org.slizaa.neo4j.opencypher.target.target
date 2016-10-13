@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="de.gerdwuetherich.opencypher.target" sequenceNumber="9">
-<locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.emf.ecore.feature.group" version="2.12.0.v20160420-0247"/>
-<unit id="org.eclipse.draw2d.source.feature.group" version="3.10.100.201606061308"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
-<unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20160525-1303"/>
-<unit id="org.eclipse.equinox.compendium.sdk.feature.group" version="3.12.0.v20160413-1439"/>
-<unit id="org.eclipse.draw2d.feature.group" version="3.10.100.201606061308"/>
-<unit id="org.eclipse.draw2d.sdk.feature.group" version="3.10.100.201606061308"/>
-<unit id="org.eclipse.sdk.ide" version="4.6.0.I20160606-1100"/>
-<repository location="http://download.eclipse.org/releases/neon"/>
-</location>
-</locations>
+<?xml version="1.0" encoding="Cp1252" standalone="no"?>
+<?pde version="3.8"?>
+<target name="Generated from slizaa openCypher Xtext" sequenceNumber="1">
+  <locations>
+    <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+      <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.0.v201605261103"/>
+      <unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
+      <unit id="org.eclipse.equinox.executable.feature.group" version="3.6.300.v20160525-1303"/>
+      <unit id="org.eclipse.sdk.feature.group" version="4.6.1.v20160907-1200"/>
+      <unit id="org.eclipse.xtext.sdk.feature.group" version="2.10.0.v201605250459"/>
+      <repository location="http://download.eclipse.org/releases/neon"/>
+    </location>
+  </locations>
 </target>
