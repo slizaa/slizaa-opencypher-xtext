@@ -9,13 +9,18 @@ import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
 import org.slizaa.neo4j.opencypher.openCypher.Cypher
 import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 import org.slizaa.neo4j.opencypher.openCypher.Statement
+import org.slizaa.neo4j.opencypher.openCypher.Clause
 
 /**
  * Customization of the default outline structure.
- *
- * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#outline
+ * 
+ * See https://www.eclipse.org/Xtext/documentation/310_eclipse_support.html#outline
  */
 class OpenCypherOutlineTreeProvider extends DefaultOutlineTreeProvider {
+
+	def boolean _isLeaf(Clause clause) {
+		return true;
+	}
 
 	def void _createChildren(DocumentRootNode parentNode, Cypher cypher) {
 
@@ -41,20 +46,4 @@ class OpenCypherOutlineTreeProvider extends DefaultOutlineTreeProvider {
 		}
 	}
 
-	def void _createChildren(DocumentRootNode parentNode, SingleQuery singleQuery) {
-
-		//
-		if (singleQuery.clauses.size > 1) {
-// TODO			
-//			createNode(parentNode, singleQuery);
-//			val IOutlineNode singleQueryParent = NodeModelUtils.getNode(singleQuery);
-//			for (clause : singleQuery.clauses) {
-//				createNode(singleQueryParent, clause);
-//			}
-		} else {
-			for (clause : singleQuery.clauses) {
-				createNode(parentNode, clause);
-			}
-		}
-	}
 }
