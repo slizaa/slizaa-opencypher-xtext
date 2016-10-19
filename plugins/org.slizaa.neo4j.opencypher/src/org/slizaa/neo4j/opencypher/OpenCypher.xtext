@@ -795,7 +795,7 @@ PropertyExpression:
 /*
  * propertyExpression : atom ( ws propertyLookup )+ ;
  */
-	Atom (propertyLoopup+=PropertyLookup)+;
+	Atom (propertyLookup+=PropertyLookup)+;
 
 PropertyKeyName:
 /*
