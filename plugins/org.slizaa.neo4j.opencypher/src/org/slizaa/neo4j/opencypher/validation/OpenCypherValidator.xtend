@@ -6,9 +6,13 @@ package org.slizaa.neo4j.opencypher.validation
 import java.util.regex.Pattern
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
+import org.slizaa.neo4j.opencypher.openCypher.DecimalInteger
 import org.slizaa.neo4j.opencypher.openCypher.OpenCypherPackage
 import org.slizaa.neo4j.opencypher.openCypher.Return
 import org.slizaa.neo4j.opencypher.openCypher.VersionNumber
+import org.slizaa.neo4j.opencypher.openCypher.RangeLiteral
+import org.slizaa.neo4j.opencypher.openCypher.LegacyParameter
+import org.slizaa.neo4j.opencypher.openCypher.Parameter
 
 /**
  * This class contains custom validation rules. 
@@ -17,11 +21,48 @@ import org.slizaa.neo4j.opencypher.openCypher.VersionNumber
  */
 class OpenCypherValidator extends AbstractOpenCypherValidator {
 
+	/* - */
 	private static final Pattern VERSION_NUMBER_FORMAT = Pattern.compile("\\d*\\.\\d*");
 
+	/* - */
+	private static final Pattern DECIMAL_INTEGER_FORMAT = Pattern.compile("[1..9]*\\d*");
+
+	/* - */
 	public static val INVALID_VERSION_NUMBER_FORMAT = 'invalidVersionNumber'
 
+	/* - */
+	public static val INVALID_DECIMAL_INTEGER_FORMAT = 'invalidDecimalInteger'
+
+	/* - */
 	public static val RETURN_NOT_AT_THE_END = 'returnNotAtTheEnd'
+
+	@Check
+	def checkLegacyParameterFormat(LegacyParameter legacyParameter) {
+		// TODO check!
+		 // legacyParameter : '{' ws ( symbolicName | DecimalInteger ) ws '}' ;
+	}
+
+	@Check
+	def checkParameterFormat(Parameter parameter) {
+		// TODO check!
+		// parameter : '$' ( symbolicName | DecimalInteger ) ;
+	}
+
+	@Check
+	def checkRangeLiteralFormat(RangeLiteral rangeLiteral) {
+		// TODO check!
+		rangeLiteral.lower
+		// TODO check!
+		rangeLiteral.upper
+	}
+
+	@Check
+	def checkDecimalIntegerFormat(DecimalInteger decimalInteger) {
+		if (!DECIMAL_INTEGER_FORMAT.matcher(decimalInteger.value).matches()) {
+			error('Version number must have the following format: (digit)+\'.\'(digit)+',
+				OpenCypherPackage.Literals.DECIMAL_INTEGER__VALUE, INVALID_DECIMAL_INTEGER_FORMAT)
+		}
+	}
 
 	@Check
 	def checkVersionNumberFormat(VersionNumber versionNumber) {

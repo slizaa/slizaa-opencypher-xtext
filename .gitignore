@@ -6,6 +6,7 @@ xtend-gen/
 .antlr*.jar
 
 plugin.xml_gen
+org.slizaa.neo4j.opencypher.target.target-gen
 
 # OS generated files
 .DS_Store

@@ -36,7 +36,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//SingleQuery/clauses"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//PeriodicCommitHint">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//PeriodicCommitHint/numberOfRowsPerCommit"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//PeriodicCommitHint/numberOfRowsPerCommit"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//LoadCSVQuery">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//LoadCSVQuery/loadCSV"/>
@@ -196,7 +196,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//IdentifiedIndexLookup/indexName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//IdentifiedIndexLookup/key"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//IdentifiedIndexLookup/value"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IdentifiedIndexLookup/parameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IdentifiedIndexLookup/legacyParameter"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//IndexQuery">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//IndexQuery/indexName"/>
@@ -205,11 +205,11 @@
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//IdLookup">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IdLookup/ids"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IdLookup/parameter"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IdLookup/legacyParameter"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//IdLookup/wildcard"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//LiteralIds">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//LiteralIds/ids"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//LiteralIds/ids"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Where">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Where/expression"/>
@@ -329,10 +329,16 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//MapLiteralEntry/key"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//MapLiteralEntry/value"/>
     </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//LegacyParameter">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//LegacyParameter/parameter"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Parameter">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//Parameter/parameter"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//PropertyExpression"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//DecimalInteger">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//DecimalInteger/value"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//AllOptions">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//AllOptions/explain"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//AllOptions/profile"/>
