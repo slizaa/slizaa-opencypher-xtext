@@ -245,28 +245,6 @@
 			class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.eclipse.xtext.builder.IXtextBuilderParticipant"
 			fileExtensions="cypher"/>
 	</extension>
-	<extension point="org.eclipse.ui.preferencePages">
-		<page
-			category="org.slizaa.neo4j.opencypher.OpenCypher"
-			class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="org.slizaa.neo4j.opencypher.OpenCypher.compiler.preferencePage"
-			name="Compiler">
-			<keywordReference id="org.slizaa.neo4j.opencypher.ui.keyword_OpenCypher"/>
-		</page>
-	</extension>
-	<extension point="org.eclipse.ui.propertyPages">
-		<page
-			category="org.slizaa.neo4j.opencypher.OpenCypher"
-			class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.eclipse.xtext.builder.preferences.BuilderPreferencePage"
-			id="org.slizaa.neo4j.opencypher.OpenCypher.compiler.propertyPage"
-			name="Compiler">
-			<keywordReference id="org.slizaa.neo4j.opencypher.ui.keyword_OpenCypher"/>
-			<enabledWhen>
-				<adapt type="org.eclipse.core.resources.IProject"/>
-			</enabledWhen>
-			<filter name="projectNature" value="org.eclipse.xtext.ui.shared.xtextNature"/>
-		</page>
-	</extension>
 	<extension point="org.eclipse.ui.menus">
 		<menuContribution locationURI="popup:#TextEditorContext?after=xtext.ui.openDeclaration">
 			<command
