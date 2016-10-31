@@ -4,7 +4,7 @@
 	<extension
 		point="org.eclipse.ui.editors">
 		<editor
-			class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.eclipse.xtext.ui.editor.XtextEditor"
+			class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor"
 			contributorClass="org.eclipse.ui.editors.text.TextEditorActionContributor"
 			default="true"
 			extensions="cypher"

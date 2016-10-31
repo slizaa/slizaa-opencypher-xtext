@@ -22,4 +22,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.slizaa.neo4j.opencypher.ui.quickfix,
  org.slizaa.neo4j.opencypher.ui.contentassist,
  org.slizaa.neo4j.opencypher.ui.internal
-Bundle-Activator: org.slizaa.neo4j.opencypher.ui.internal.OpencypherActivator
+Bundle-Activator: org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator

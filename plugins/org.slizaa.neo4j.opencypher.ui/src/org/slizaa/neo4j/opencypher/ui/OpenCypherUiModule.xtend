@@ -6,6 +6,8 @@ package org.slizaa.neo4j.opencypher.ui
 import com.google.inject.Binder
 import com.google.inject.name.Names
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider
 import org.eclipse.xtext.ui.editor.contentassist.XtextContentAssistProcessor
 import org.eclipse.xtext.ui.editor.model.ResourceForIEditorInputFactory
@@ -15,7 +17,8 @@ import org.eclipse.xtext.ui.shared.Access
 import org.slizaa.neo4j.opencypher.ui.contentassist.OpenCypherTemplateProposalProvider
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherHighlightingConfiguration
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherSemanticHighlightingCalculator
-import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor
+import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherXtextEditorCallback
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -52,4 +55,13 @@ class OpenCypherUiModule extends AbstractOpenCypherUiModule {
 	public def Class<? extends IHighlightingConfiguration> bindILexicalHighlightingConfiguration() {
 		return OpenCypherHighlightingConfiguration;
 	}
+
+	public def Class<? extends XtextEditor> bindXtextEditor() {
+		return OpenCypherEditor;
+	}
+	
+	override bindIXtextEditorCallback() {
+		return OpenCypherXtextEditorCallback;
+	}
+
 }
