@@ -55,10 +55,9 @@ public class OpenCypherEditor extends XtextEditor {
     Composite composite = new Composite(parent, SWT.NONE);
     GridLayout gridLayout = new GridLayout();
     gridLayout.numColumns = 5;
-    gridLayout.marginWidth = 15;
-    gridLayout.marginHeight = 10;
-    gridLayout.verticalSpacing = 10;
-    gridLayout.horizontalSpacing = 10;
+//    gridLayout.marginWidth = 15;
+////    gridLayout.marginHeight = 3;
+////    gridLayout.horizontalSpacing = 10;
     gridLayout.makeColumnsEqualWidth = false;
     composite.setLayout(gridLayout);
     composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
