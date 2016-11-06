@@ -365,7 +365,7 @@
         eType="#//Expression3Part" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeLabelList" upperBound="-1"
         eType="#//NodeLabel" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyLoopup" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyLookups" upperBound="-1"
         eType="#//PropertyLookup" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Expression3Part"/>
@@ -535,10 +535,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="IsNull" eSuperTypes="#//Expression3Part"/>
   <eClassifiers xsi:type="ecore:EClass" name="IsNotNull" eSuperTypes="#//Expression3Part"/>
   <eClassifiers xsi:type="ecore:EClass" name="ExpressionNodeLabelsAndPropertyLookup"
-      eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyLookups" upperBound="-1"
-        eType="#//PropertyLookup" containment="true"/>
-  </eClassifiers>
+      eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="NumberConstant" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
