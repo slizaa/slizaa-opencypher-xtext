@@ -269,7 +269,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/expression3Parts"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/nodeLabelList"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/propertyLoopup"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/propertyLookups"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Expression3Part"/>
     <genClasses ecoreClass="OpenCypher.ecore#//Reduce">
@@ -396,9 +396,7 @@
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//IsNull"/>
     <genClasses ecoreClass="OpenCypher.ecore#//IsNotNull"/>
-    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup/propertyLookups"/>
-    </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup"/>
     <genClasses ecoreClass="OpenCypher.ecore#//NumberConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//NumberConstant/value"/>
     </genClasses>
