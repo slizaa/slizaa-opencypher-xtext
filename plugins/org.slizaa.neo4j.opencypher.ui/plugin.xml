@@ -385,4 +385,11 @@
 			type="text">
 		</fileTypes>
 	</extension>
+	
+	<!--  -->
+	<extension point="org.eclipse.core.runtime.adapters">
+      <factory adaptableType="java.lang.String" class="org.slizaa.neo4j.opencypher.ui.OpenCypherExecutableExtensionFactory:org.slizaa.neo4j.opencypher.ui.util.ModelLoadingAdapter">
+         <adapter type="org.slizaa.neo4j.opencypher.openCypher.Cypher" />
+      </factory>
+	</extension>	
 </plugin>
