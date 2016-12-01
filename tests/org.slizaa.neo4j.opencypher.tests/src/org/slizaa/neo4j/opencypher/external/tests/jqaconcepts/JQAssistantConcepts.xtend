@@ -237,7 +237,7 @@ RETURN
 MATCH
   (innerType:Inner:Type)
 WHERE
-  innerType.name =~ ".*\\$[0-9]*"
+  innerType.name =~ '.*\\$[0-9]*'
 SET
   innerType:Anonymous
 RETURN
@@ -319,14 +319,14 @@ MATCH
 SET
   type.javaVersion=
   CASE type.byteCodeVersion
-    WHEN 52 THEN "Java 8"
-    WHEN 51 THEN "Java 7"
-    WHEN 50 THEN "Java 6"
-    WHEN 49 THEN "Java 5"
-    WHEN 48 THEN "Java 1.4"
-    WHEN 47 THEN "Java 1.3"
-    WHEN 46 THEN "Java 1.2"
-    WHEN 45 THEN "Java 1.1/1.0"
+    WHEN 52 THEN 'Java 8'
+    WHEN 51 THEN 'Java 7'
+    WHEN 50 THEN 'Java 6'
+    WHEN 49 THEN 'Java 5'
+    WHEN 48 THEN 'Java 1.4'
+    WHEN 47 THEN 'Java 1.3'
+    WHEN 46 THEN 'Java 1.2'
+    WHEN 45 THEN 'Java 1.1/1.0'
   END
 RETURN
   count(type) as Types
@@ -417,7 +417,7 @@ RETURN type AS AssignableType, superType AS AssignableFrom
 MATCH
   (c:Class:Test:Junit3)-[:DECLARES]->(m:Method)
 WHERE
-  m.signature = "void setUp()"
+  m.signature = 'void setUp()'
 SET
   m:SetUp:Junit3
 RETURN
@@ -431,7 +431,7 @@ RETURN
 MATCH
   (c:Class:Test:Junit3)-[:DECLARES]->(m:Method)
 WHERE
-  m.signature = "void tearDown()"
+  m.signature = 'void tearDown()'
 SET
   m:TearDown:Junit3
 RETURN
@@ -445,7 +445,7 @@ RETURN
 MATCH
   (c:Type:Class)-[:EXTENDS*]->(testCaseType:Type)
 WHERE
-  testCaseType.fqn = "junit.framework.TestCase"
+  testCaseType.fqn = 'junit.framework.TestCase'
 SET
   c:Test:Junit3
 RETURN
@@ -459,7 +459,7 @@ RETURN
 MATCH
   (c:Class:Test:Junit3)-[:DECLARES]->(m:Method)
 WHERE
-  m.signature =~ "void test.*\\(.*\\)"
+  m.signature =~ 'void test.*\\(.*\\)'
 SET
   m:Test:Junit3
 RETURN
@@ -474,7 +474,7 @@ MATCH
   (c:Type:Class)-[:DECLARES]->(m:Method),
   (m:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.AfterClass"
+  a.fqn='org.junit.AfterClass'
 SET
   m:Junit4:AfterClass
 RETURN
@@ -489,7 +489,7 @@ MATCH
   (c:Type:Class)-[:DECLARES]->(m:Method),
   (m:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.After"
+  a.fqn='org.junit.After'
 SET
   m:Junit4:After
 RETURN
@@ -519,7 +519,7 @@ MATCH
   (c:Type:Class)-[:DECLARES]->(m:Method),
   (m:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.BeforeClass"
+  a.fqn='org.junit.BeforeClass'
 SET
   m:Junit4:BeforeClass
 RETURN
@@ -534,7 +534,7 @@ MATCH
   (c:Type:Class)-[:DECLARES]->(m:Method),
   (m:Method)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.Before"
+  a.fqn='org.junit.Before'
 SET
   m:Junit4:Before
 RETURN
@@ -548,7 +548,7 @@ RETURN
 MATCH
   (e)-[:ANNOTATED_BY]->()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.Ignore"
+  a.fqn='org.junit.Ignore'
 SET
   e:Junit4:Ignore
 RETURN
@@ -562,7 +562,7 @@ RETURN
 MATCH
   (suite:Type)-[:ANNOTATED_BY]->(suiteClasses)-[:OF_TYPE]->(suiteClassesType:Type)
 WHERE
-  suiteClassesType.fqn = "org.junit.runners.Suite$SuiteClasses"
+  suiteClassesType.fqn = 'org.junit.runners.Suite$SuiteClasses'
 SET
   suite:Junit4:Suite
 WITH
@@ -623,7 +623,7 @@ RETURN
 MATCH
   (m:Method)-[:ANNOTATED_BY]-()-[:OF_TYPE]->(a:Type)
 WHERE
-  a.fqn="org.junit.Test"
+  a.fqn='org.junit.Test'
 SET
   m:Test:Junit4
 RETURN
@@ -760,8 +760,8 @@ RETURN
 MATCH
   (e)-[:ANNOTATED_BY]->(ignore:Annotation)-[:OF_TYPE]->(ignoreType:Type)
 WHERE
-  ignoreType.fqn= "org.junit.Ignore"
-  AND NOT (ignore)-[:HAS]->(:Value{name:"value"})
+  ignoreType.fqn= 'org.junit.Ignore'
+  AND NOT (ignore)-[:HAS]->(:Value{name:'value'})
 RETURN
   e AS IgnoreWithoutMessage
 ''');

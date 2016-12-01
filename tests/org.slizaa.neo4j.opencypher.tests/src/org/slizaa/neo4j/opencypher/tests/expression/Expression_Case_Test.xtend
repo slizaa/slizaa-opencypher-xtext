@@ -12,9 +12,9 @@ class Expression_Case_Test extends AbstractCypherTest {
 			MATCH (n)
 			RETURN
 			CASE n.eyes
-			WHEN "blue"
+			WHEN 'blue'
 			THEN 1
-			WHEN "brown"
+			WHEN 'brown'
 			THEN 2
 			ELSE 3 END AS result
 		''');
@@ -26,9 +26,9 @@ class Expression_Case_Test extends AbstractCypherTest {
 			MATCH (n)
 			RETURN
 			CASE
-			WHEN "blue"
+			WHEN 'blue'
 			THEN 1
-			WHEN "brown"
+			WHEN 'brown'
 			THEN 2
 			ELSE 3 END AS result
 		''');
@@ -37,8 +37,8 @@ class Expression_Case_Test extends AbstractCypherTest {
 	@Test
 	def void caseTest_1() {
 		val Cypher cypher = test('''
-			START team = node:node_auto_index('name:"Chelsea" name:"Manchester United"'), 
-			      startDate = node:node_auto_index(name="2nd") 
+			START team = node:node_auto_index('name:\'Chelsea\' name:\'Manchester United\''), 
+			      startDate = node:node_auto_index(name='2nd') 
 			MATCH (startDate)<-[:NEXT*0..]-(day) 
 			WITH team, startDate, COLLECT(day) AS dates 
 			MATCH (startDate)<-[:NEXT*0..]-(day)<-[hire:HIRED_ON]-(tenure)-[:MANAGER]->(manager), 

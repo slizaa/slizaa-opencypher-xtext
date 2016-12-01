@@ -9,7 +9,7 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_ReturnNodes() {
 		test('''
-			MATCH (n { name: "B" })
+			MATCH (n { name: 'B' })
 			RETURN n
 		''');
 	}
@@ -17,7 +17,7 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_ReturnRelationships() {
 		test('''
-			MATCH (n { name: "A" })-[r:KNOWS]->(c)
+			MATCH (n { name: 'A' })-[r:KNOWS]->(c)
 			RETURN r
 		''');
 	}
@@ -25,7 +25,7 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_ReturnProperty() {
 		test('''
-			MATCH (n { name: "A" })
+			MATCH (n { name: 'A' })
 			RETURN n.name
 		''');
 	}
@@ -33,7 +33,7 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_ReturnAllElements() {
 		test('''
-			MATCH p=(a { name: "A" })-[r]->(b)
+			MATCH p=(a { name: 'A' })-[r]->(b)
 			RETURN *
 		''');
 	}
@@ -51,7 +51,7 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_ColumnAlias() {
 		test('''
-			MATCH (a { name: "A" })
+			MATCH (a { name: 'A' })
 			RETURN a.age AS SomethingTotallyDifferent	
 		''');
 	}
@@ -67,15 +67,15 @@ class General_Clauses_Return extends AbstractCypherTest {
 	@Test
 	def void example_OtherExpressions() {
 		test('''
-			MATCH (a { name: "A" })
-			RETURN a.age > 30, "I'm a literal",(a)-->()
+			MATCH (a { name: 'A' })
+			RETURN a.age > 30, 'I\'m a literal',(a)-->()
 		''');
 	}
 
 	@Test
 	def void example_UniqueResults() {
 		test('''
-			MATCH (a { name: "A" })-->(b)
+			MATCH (a { name: 'A' })-->(b)
 			RETURN DISTINCT b
 		''');
 	}

@@ -98,7 +98,7 @@ class Reading_Clauses_Match extends AbstractCypherTest {
   @Test
   def void example_VariableLengthRelationships() {
 		test('''
-			MATCH (martin { name:"Martin Sheen" })-[:ACTED_IN*1..2]-(x)
+			MATCH (martin { name:'Martin Sheen' })-[:ACTED_IN*1..2]-(x)
 			RETURN x
 		''');
   }
@@ -117,7 +117,7 @@ class Reading_Clauses_Match extends AbstractCypherTest {
 	@Test
 	def void example_SingleShortestPath() {
 		test('''
-			MATCH (martin:Person { name:"Martin Sheen" }),(oliver:Person { name:"Oliver Stone" }), p = shortestPath((martin)-[*..15]-(oliver))
+			MATCH (martin:Person { name:'Martin Sheen' }),(oliver:Person { name:'Oliver Stone' }), p = shortestPath((martin)-[*..15]-(oliver))
 			RETURN p
 		''');
 	}

@@ -15,10 +15,9 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
 import org.eclipse.xtext.ui.resource.SimpleResourceSetProvider
 import org.eclipse.xtext.ui.shared.Access
 import org.slizaa.neo4j.opencypher.ui.contentassist.OpenCypherTemplateProposalProvider
+import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherHighlightingConfiguration
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherSemanticHighlightingCalculator
-import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor
-import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherXtextEditorCallback
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
@@ -59,9 +58,4 @@ class OpenCypherUiModule extends AbstractOpenCypherUiModule {
 	public def Class<? extends XtextEditor> bindXtextEditor() {
 		return OpenCypherEditor;
 	}
-	
-	override bindIXtextEditorCallback() {
-		return OpenCypherXtextEditorCallback;
-	}
-
 }

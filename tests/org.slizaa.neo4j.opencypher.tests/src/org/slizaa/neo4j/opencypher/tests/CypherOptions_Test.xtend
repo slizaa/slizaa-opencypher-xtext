@@ -111,7 +111,7 @@ class CypherOptions_Test extends AbstractCypherTest {
 	@Test
 	def void simple_7() {
 		test('''
-			MATCH (matchedNode:Type:FILE)-[a?:DEPENDS_ON|:LOVES]-(other:FILE) where matchedNode="HONZIPONZIE"
+			MATCH (matchedNode:Type:FILE)-[a?:DEPENDS_ON|:LOVES]-(other:FILE) where matchedNode='HONZIPONZIE'
 		''');
 	}
 }
