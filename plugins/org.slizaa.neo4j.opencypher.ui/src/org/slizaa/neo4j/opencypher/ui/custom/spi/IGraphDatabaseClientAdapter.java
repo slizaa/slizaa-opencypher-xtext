@@ -35,7 +35,7 @@ public interface IGraphDatabaseClientAdapter {
    * @param cypher
    * @return
    */
-  void executeCypherQuery(Cypher cypher);
+  void executeCypherQuery(String cypher);
   
   /**
    * <p>
