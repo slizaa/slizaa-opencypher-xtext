@@ -20,6 +20,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.slizaa.neo4j.opencypher.openCypher.Cypher;
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator;
 import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
+import org.slizaa.neo4j.opencypher.util.WhitespaceUtil;
 
 /**
  * <p>
@@ -30,7 +31,7 @@ import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
 public class OpenCypherEditor extends XtextEditor {
 
   /** - */
-  private Text                       _activeDatabaseLabel;
+  private Text                        _activeDatabaseLabel;
 
   /** - */
   private IGraphDatabaseClientAdapter _adapter;
@@ -76,7 +77,7 @@ public class OpenCypherEditor extends XtextEditor {
     panel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
 
     super.createPartControl(panel);
-    
+
     CustomOpenCypherActivator.getCustomOpenCypherActivator().registerEditor(this);
   }
 
@@ -109,7 +110,7 @@ public class OpenCypherEditor extends XtextEditor {
     _activeDatabaseLabel = new Text(composite, SWT.NONE);
     _activeDatabaseLabel.setEditable(false);
     _activeDatabaseLabel.setBackground(CustomOpenCypherActivator.getCustomOpenCypherActivator().getLightGray());
-    GridData gridData = new GridData(40 * 10, SWT.DEFAULT);
+    GridData gridData = new GridData(30 * 10, SWT.DEFAULT);
     _activeDatabaseLabel.setLayoutData(gridData);
 
     //
@@ -152,7 +153,9 @@ public class OpenCypherEditor extends XtextEditor {
           public java.lang.Void exec(XtextResource state) throws Exception {
             Cypher cypher = (Cypher) state.getContents().get(0);
             if (_adapter != null) {
-              _adapter.executeCypherQuery(state.getSerializer().serialize(cypher));
+              String cypherString = state.getSerializer().serialize(cypher);
+              cypherString = WhitespaceUtil.normalize(cypherString);
+              _adapter.executeCypherQuery(cypherString);
             }
             return null;
           }

@@ -2,8 +2,6 @@ package org.slizaa.neo4j.opencypher.ui.custom.spi;
 
 import java.util.List;
 
-import org.slizaa.neo4j.opencypher.openCypher.Cypher;
-
 /**
  * <p>
  * </p>
