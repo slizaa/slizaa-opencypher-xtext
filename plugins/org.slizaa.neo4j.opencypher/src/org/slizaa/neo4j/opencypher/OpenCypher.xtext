@@ -623,24 +623,20 @@ ExpressionUnaryPlusMinus returns Expression:
  * Comment: Clause is modeled on the former antlr clause 'expression4 : expression3 | ( ws '+' ws expression3 ) | ( ws '-' ws expression3 );'
  * We should eventually adjust this...
  */
-	Expression3 | operator='+' left=Expression3 | => operator='-' left=Expression3;
+	Expression3 | operator=('+' | '-') left=Expression3;
 
 Expression3 returns Expression:
 /*
  * expression3 : expression2 ( ( ws '[' expression ']' ) | ( ws '[' expression? '..' expression? ']' ) | ( ( ( ws '=~' ) | ( sp IN ) | ( sp STARTS sp WITH ) | ( sp ENDS sp WITH ) | ( sp CONTAINS ) ) ws expression2 ) | ( sp IS sp NULL ) | ( sp IS sp NOT sp NULL ) )* ;
- * 
- * Comment: Clause is modeled on the former antlr clause 'expression3 : expression2 ( ( ws '[' expression ']' ) | ( ws '[' expression? '..' expression? ']' ) | ( ws '=~' expression2 ) | ( sp IN expression2 ) | ( sp STARTS sp WITH expression2 ) | ( sp ENDS sp WITH expression2 ) | ( sp CONTAINS expression2 ) | ( sp IS sp NULL ) | ( sp IS sp NOT sp NULL ) )* ;'
- * We should eventually adjust this... 
  */
-	ExpressionNodeLabelsAndPropertyLookup (expression3Parts+=Expression3Part)*;
-
-Expression3Part:
-	{Index} '[' expression=Expression ('..' upper=Expression)? ']' | {RegExpMatching} ('=~'
-	expression=ExpressionNodeLabelsAndPropertyLookup) | {InCollection} ('IN'
-	expression=ExpressionNodeLabelsAndPropertyLookup) | {StartsWith} ('STARTS' 'WITH'
-	expression=ExpressionNodeLabelsAndPropertyLookup) | {EndsWith} ('ENDS' 'WITH'
-	expression=ExpressionNodeLabelsAndPropertyLookup) | {Contains} ('CONTAINS'
-	expression=ExpressionNodeLabelsAndPropertyLookup) | {IsNull} ('IS' 'NULL') | {IsNotNull} ('IS' 'NOT' 'NULL');
+	ExpressionNodeLabelsAndPropertyLookup (({IndexExpression.left=current} '[' expression=Expression ('..'
+	upper=Expression)? ']') | ({RegExpMatchingExpression.left=current} '=~'
+	right=ExpressionNodeLabelsAndPropertyLookup) | ({InCollectionExpression.left=current} 'IN'
+	right=ExpressionNodeLabelsAndPropertyLookup) | ({StartsWithExpression.left=current} 'STARTS' 'WITH'
+	right=ExpressionNodeLabelsAndPropertyLookup) | ({EndsWithExpression.left=current} 'ENDS' 'WITH'
+	right=ExpressionNodeLabelsAndPropertyLookup) | ({ContainsExpression.left=current} 'CONTAINS'
+	right=ExpressionNodeLabelsAndPropertyLookup) | ({IsNullExpression.left=current} 'IS' 'NULL') |
+	({IsNotNullExpression.left=current} 'IS' 'NOT' 'NULL'))*;
 
 ExpressionNodeLabelsAndPropertyLookup returns Expression:
 /*
@@ -937,8 +933,8 @@ terminal WS:
 	(' ' | '\t' | '\r' | '\n')+;
 
 terminal STRING_LITERAL:
-	'"' ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | '"'))* '"' | 
-	"'" ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | "'"))* "'";
+	'"' ('\\' . /* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | '"'))* '"' | "'" ('\\' .
+	/* 'b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\' */ | !('\\' | "'"))* "'";
 
 terminal HEX:
 	('0x' | '0X') ('0'..'9' | 'A'..'F')+;

@@ -84,14 +84,10 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="index" eType="#//Index"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Index" eSuperTypes="#//Expression3Part">
+  <eClassifiers xsi:type="ecore:EClass" name="Index">
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeLabel" eType="#//NodeLabel"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyKeyName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="upper" eType="#//Expression"
-        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="UniqueConstraint" eSuperTypes="#//CreateUniqueConstraint">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Variable"
@@ -361,14 +357,11 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="operator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="left" eType="#//Expression"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression3Parts" upperBound="-1"
-        eType="#//Expression3Part" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nodeLabelList" upperBound="-1"
         eType="#//NodeLabel" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyLookups" upperBound="-1"
         eType="#//PropertyLookup" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Expression3Part"/>
   <eClassifiers xsi:type="ecore:EClass" name="Reduce" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="accumulator" eType="#//Variable"
         containment="true"/>
@@ -512,28 +505,34 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="RegExpMatching" eSuperTypes="#//Expression3Part">
+  <eClassifiers xsi:type="ecore:EClass" name="IndexExpression" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
         containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InCollection" eSuperTypes="#//Expression3Part">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="upper" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="StartsWith" eSuperTypes="#//Expression3Part">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+  <eClassifiers xsi:type="ecore:EClass" name="RegExpMatchingExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EndsWith" eSuperTypes="#//Expression3Part">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+  <eClassifiers xsi:type="ecore:EClass" name="InCollectionExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Contains" eSuperTypes="#//Expression3Part">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+  <eClassifiers xsi:type="ecore:EClass" name="StartsWithExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="IsNull" eSuperTypes="#//Expression3Part"/>
-  <eClassifiers xsi:type="ecore:EClass" name="IsNotNull" eSuperTypes="#//Expression3Part"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EndsWithExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ContainsExpression" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="IsNullExpression" eSuperTypes="#//Expression"/>
+  <eClassifiers xsi:type="ecore:EClass" name="IsNotNullExpression" eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="ExpressionNodeLabelsAndPropertyLookup"
       eSuperTypes="#//Expression"/>
   <eClassifiers xsi:type="ecore:EClass" name="NumberConstant" eSuperTypes="#//Expression">
