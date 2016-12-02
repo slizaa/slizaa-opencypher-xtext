@@ -2,6 +2,9 @@ package org.slizaa.neo4j.opencypher.ui.custom.spi;
 
 import java.util.List;
 
+import org.eclipse.xtext.serializer.ISerializer;
+import org.slizaa.neo4j.opencypher.openCypher.Cypher;
+
 /**
  * <p>
  * </p>
@@ -33,7 +36,7 @@ public interface IGraphDatabaseClientAdapter {
    * @param cypher
    * @return
    */
-  void executeCypherQuery(String cypher);
+  void executeCypherQuery(Cypher cypher, ISerializer serializer);
   
   /**
    * <p>

@@ -153,9 +153,7 @@ public class OpenCypherEditor extends XtextEditor {
           public java.lang.Void exec(XtextResource state) throws Exception {
             Cypher cypher = (Cypher) state.getContents().get(0);
             if (_adapter != null) {
-              String cypherString = state.getSerializer().serialize(cypher);
-              cypherString = WhitespaceUtil.normalize(cypherString);
-              _adapter.executeCypherQuery(cypherString);
+              _adapter.executeCypherQuery(cypher , state.getSerializer());
             }
             return null;
           }

@@ -30,6 +30,16 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
    * <p>
    * </p>
    *
+   * @return
+   */
+  public IGraphDatabaseClientAdapter getGraphDatabaseClientAdapter() {
+    return _serviceTracker.getService();
+  }
+
+  /**
+   * <p>
+   * </p>
+   *
    * @param openCypherEditor
    */
   public void registerEditor(OpenCypherEditor openCypherEditor) {
