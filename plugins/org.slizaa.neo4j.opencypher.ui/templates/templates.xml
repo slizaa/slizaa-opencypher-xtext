@@ -53,12 +53,12 @@
 
 	<!-- Match -->
 	<template id="opencypher.build-in.match" autoinsert="true"
-		context="org.slizaa.neo4j.opencypher.OpenCypher.Match" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_MATCH" deleted="false"
 		description="Match" enabled="true" name="match"><![CDATA[MATCH (${cursor})]]></template>
 
 	<!-- Optional Match -->
 	<template id="opencypher.build-in.optionalMatch" autoinsert="true"
-		context="org.slizaa.neo4j.opencypher.OpenCypher.Match" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_OPTIONAL" deleted="false"
 		description="Optional Match" enabled="true" name="optionalMatch"><![CDATA[OPTIONAL MATCH (${cursor})]]></template>
 
 	<!-- Node -->
@@ -72,29 +72,29 @@
 		autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Outgoing Relation" enabled="true"
-		name="outgoingRelation"><![CDATA[-[${cursor}]->()]]></template>
+		name="-[]-&gt;()"><![CDATA[-[${cursor}]->()]]></template>
 
 	<!-- Incoming Relation -->
 	<template id="opencypher.build-in.incomingRelation"
 		autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternElementChain"
 		deleted="false" description="Incoming Relation" enabled="true"
-		name="incomingRelation"><![CDATA[<-[${cursor}]-()]]></template>
+		name="&lt;-[]"><![CDATA[<-[${cursor}]-()]]></template>
 
 	<!-- Where -->
 	<template id="opencypher.build-in.where" autoinsert="true"
-		context="org.slizaa.neo4j.opencypher.OpenCypher.Where" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_WHERE" deleted="false"
 		description="where" enabled="true" name="where"><![CDATA[WHERE ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
 
 	<!-- Return -->
 	<template id="opencypher.build-in.return" autoinsert="true"
-		context="org.slizaa.neo4j.opencypher.OpenCypher.Return" deleted="false"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_RETURN" deleted="false"
 		description="return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]>
 	</template>
 
 	<!-- Order by properties -->
 	<template id="opencypher.build-in.orderByProperties"
-		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.Order"
+		autoinsert="true" context="org.slizaa.neo4j.opencypher.OpenCypher.kw_ORDER"
 		deleted="false" description="Order nodes by multiple properties"
 		enabled="true" name="orderByProperties"><![CDATA[ORDER BY ${node1}.${property1}, ${node2}.${property2}${cursor}]]></template>
 
@@ -108,5 +108,17 @@
 		context="org.slizaa.neo4j.opencypher.OpenCypher.FunctionInvocation"
 		deleted="false" description="Returns the id of the relationship or node."
 		enabled="true" name="id()"><![CDATA[id(${nodeOrRelationship})${cursor}]]></template>
+
+	<!-- starts with -->
+	<template id="opencypher.build-in.startsWith" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_STARTS" deleted="false"
+		description="starts with" enabled="true" name="starts with">STARTS WITH '${string}'
+	</template>
+	
+	<!-- ends with -->
+	<template id="opencypher.build-in.endsWith" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_ENDS" deleted="false"
+		description="ends with" enabled="true" name="ends with">ENDS WITH '${string}'
+	</template>
 
 </templates>

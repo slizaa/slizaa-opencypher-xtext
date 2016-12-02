@@ -10,7 +10,8 @@ import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.slizaa.neo4j.opencypher.ui.contentassist.service.MetaGraphProviderImpl
+import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator
+import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -18,42 +19,26 @@ import org.slizaa.neo4j.opencypher.ui.contentassist.service.MetaGraphProviderImp
  */
 class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
-	private static final Set<String> BLACKLIST_KEYWORDS = Sets.newHashSet("CYPHER", "DROP", "EXPLAIN", "PROFILE",
-		"USING", "[", "IN", "STARTS", "ENDS", "CONTAINS", "IS", "(", "CREATE", "DELETE", "DETACH", "FOREACH", "LOAD",
-		"MATCH", "MERGE", "OPTIONAL", "REMOVE", "RETURN", "SET", "START", "UNION", "UNWIND", "WITH");
-
-	override completeRuleCall(RuleCall ruleCall, ContentAssistContext contentAssistContext,
-		ICompletionProposalAcceptor acceptor) {
-		// println("ruleCall " + ruleCall)
-		super.completeRuleCall(ruleCall, contentAssistContext, acceptor)
-
-	}
+	private static final Set<String> WHITELIST_KEYWORDS = Sets.newHashSet("DISTINCT", "=", "<>", "!=", "<", ">", "<=",
+		">=", "NOT", "OR", "XOR", "AND");
 
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
 
-//		println("completeKeyword" + keyword)
-//
-//		// https://kthoms.wordpress.com/2012/05/22/xtext-content-assist-filtering-keyword-proposals/
-//		if (BLACKLIST_KEYWORDS.contains(keyword.getValue())) {
-//			// don't propose keyword
-//			return;
-//		}
-//		super.completeKeyword(keyword, contentAssistContext, acceptor);
+		if (WHITELIST_KEYWORDS.contains(keyword.getValue())) {
+			super.completeKeyword(keyword, contentAssistContext, acceptor);
+		}
 	}
 
-//	override protected doCreateProposal(String proposal, StyledString displayString, Image image, int priority,
-//		ContentAssistContext context) {
-//		println(proposal + priority)
-//		super.doCreateProposal(proposal, displayString, image, 0, context)
-//	}
-// LabelName
 	override complete_LabelName(EObject model, RuleCall ruleCall, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_LabelName(model, ruleCall, context, acceptor);
 
-		for (label : new MetaGraphProviderImpl().labels) {
-			acceptor.accept(createCompletionProposal(label, context));
+		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			graphDatabaseClientAdapter;
+
+		if (adaptor != null) {
+			adaptor.nodeLabels.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
 		}
 	}
 
@@ -61,62 +46,23 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_PropertyKeyName(model, ruleCall, context, acceptor)
 
-		// TODO
-		acceptor.accept(createCompletionProposal("fqn", context));
-		acceptor.accept(createCompletionProposal("name", context));
-		acceptor.accept(createCompletionProposal("sourceFileName", context));
-		acceptor.accept(createCompletionProposal("visibility", context));
-		acceptor.accept(createCompletionProposal("abstract", context));
-		acceptor.accept(createCompletionProposal("static", context));
-		acceptor.accept(createCompletionProposal("final", context));
-		acceptor.accept(createCompletionProposal("synthetic", context));
-		acceptor.accept(createCompletionProposal("byteCodeVersion", context));
-		acceptor.accept(createCompletionProposal("md5", context));
-		acceptor.accept(createCompletionProposal("valid", context));
+		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			graphDatabaseClientAdapter;
+
+		if (adaptor != null) {
+			adaptor.propertyKeys.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
+		}
 	}
 
 	override complete_RelTypeName(EObject model, RuleCall ruleCall, ContentAssistContext context,
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_RelTypeName(model, ruleCall, context, acceptor);
 
-// TODO
-		for (label : new MetaGraphProviderImpl().labels) {
-			acceptor.accept(createCompletionProposal(label, context));
+		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			graphDatabaseClientAdapter;
+
+		if (adaptor != null) {
+			adaptor.relationhipTypes.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
 		}
 	}
-
-//	override complete_Match(EObject model, RuleCall ruleCall, ContentAssistContext context,
-//		ICompletionProposalAcceptor acceptor) {
-//			
-//		super.complete_Match(model, ruleCall, context, acceptor);
-//
-//		// Create and register the completion proposal:
-//		// The proposal may be null as the createCompletionProposal(..) 
-//		// methods check for valid prefixes and terminal token conflicts.
-//		// The acceptor handles null-values gracefully.
-//		acceptor.accept(createCompletionProposal("()-[]->()", context));
-//	}
-//	override complete_Pattern(EObject model, RuleCall ruleCall, ContentAssistContext context,
-//		ICompletionProposalAcceptor acceptor) {
-//		super.complete_Pattern(model, ruleCall, context, acceptor)
-//
-//		acceptor.accept(createCompletionProposal("()", context));
-//	}
-//	override complete_NodePattern(EObject model, RuleCall ruleCall, ContentAssistContext context,
-//		ICompletionProposalAcceptor acceptor) {
-//		super.complete_NodePattern(model, ruleCall, context, acceptor);
-//
-//		// Create and register the completion proposal:
-//		// The proposal may be null as the createCompletionProposal(..) 
-//		// methods check for valid prefixes and terminal token conflicts.
-//		// The acceptor handles null-values gracefully.
-//		var proposal = (createCompletionProposal("(var)", "Node", null,
-//			context) as ConfigurableCompletionProposal)
-//
-//		proposal.setSelectionStart(proposal.replacementOffset + 1);
-//		proposal.setSelectionLength(3);
-//		proposal.setSimpleLinkedMode(context.viewer, '\t')
-//		proposal.setCursorPosition(4);
-//		acceptor.accept(proposal)
-//	}
 }
