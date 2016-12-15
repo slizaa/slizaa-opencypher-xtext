@@ -112,13 +112,13 @@
 	<!-- starts with -->
 	<template id="opencypher.build-in.startsWith" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_STARTS" deleted="false"
-		description="starts with" enabled="true" name="starts with">STARTS WITH '${string}'
+		description="starts with" enabled="true" name="starts with"><![CDATA[STARTS WITH '${string}']]>
 	</template>
 	
 	<!-- ends with -->
 	<template id="opencypher.build-in.endsWith" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_ENDS" deleted="false"
-		description="ends with" enabled="true" name="ends with">ENDS WITH '${string}'
+		description="ends with" enabled="true" name="ends with"><![CDATA[ENDS WITH '${string}']]>
 	</template>
 
 </templates>

@@ -20,7 +20,6 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.slizaa.neo4j.opencypher.openCypher.Cypher;
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator;
 import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
-import org.slizaa.neo4j.opencypher.util.WhitespaceUtil;
 
 /**
  * <p>
