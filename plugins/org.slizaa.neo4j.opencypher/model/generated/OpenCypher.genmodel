@@ -153,11 +153,13 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//Return/distinct"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Return/body"/>
     </genClasses>
-    <genClasses ecoreClass="OpenCypher.ecore#//ReturnBody"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//ReturnBody">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnBody/returnItems"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnBody/order"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnBody/skip"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnBody/limit"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ReturnItems">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnItems/order"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnItems/skip"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnItems/limit"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ReturnItems/all"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ReturnItems/items"/>
     </genClasses>

@@ -207,13 +207,16 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="body" eType="#//ReturnBody"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ReturnBody"/>
-  <eClassifiers xsi:type="ecore:EClass" name="ReturnItems" eSuperTypes="#//ReturnBody">
+  <eClassifiers xsi:type="ecore:EClass" name="ReturnBody">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnItems" upperBound="-1"
+        eType="#//ReturnItems" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="order" eType="#//Order"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="skip" eType="#//Skip" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="limit" eType="#//Limit"
         containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReturnItems">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="all" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="items" upperBound="-1"
         eType="#//ReturnItem" containment="true"/>
