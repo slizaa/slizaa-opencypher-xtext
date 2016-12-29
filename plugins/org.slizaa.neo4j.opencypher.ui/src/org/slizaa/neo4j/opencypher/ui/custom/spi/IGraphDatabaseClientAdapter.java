@@ -36,7 +36,7 @@ public interface IGraphDatabaseClientAdapter {
    * @param cypher
    * @return
    */
-  void executeCypherQuery(Cypher cypher, ISerializer serializer);
+  void executeCypherQuery(Cypher cypher, ISerializer serializer, int defaultLimit);
   
   /**
    * <p>

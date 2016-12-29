@@ -35,6 +35,9 @@ public class OpenCypherEditor extends XtextEditor {
   /** - */
   private IGraphDatabaseClientAdapter _adapter;
 
+  /** - */
+  private Text                        _limit;
+
   /**
    * <p>
    * </p>
@@ -114,16 +117,15 @@ public class OpenCypherEditor extends XtextEditor {
 
     //
     label = new Label(composite, SWT.NO_BACKGROUND);
-    label.setText("Limit:");
+    label.setText("Default Limit:");
     label.setAlignment(SWT.RIGHT);
     label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true));
 
-    //
-    Text text = new Text(composite, SWT.NONE);
-    text.setBackground(CustomOpenCypherActivator.getCustomOpenCypherActivator().getLightGray());
-    text.setTextLimit(5);
-    text.setText("25");
-    text.addListener(SWT.Verify, e -> {
+    _limit = new Text(composite, SWT.NONE);
+    _limit.setBackground(CustomOpenCypherActivator.getCustomOpenCypherActivator().getLightGray());
+    _limit.setTextLimit(5);
+    _limit.setText("25");
+    _limit.addListener(SWT.Verify, e -> {
       String string = e.text;
       char[] chars = new char[string.length()];
       string.getChars(0, chars.length, chars, 0);
@@ -135,7 +137,7 @@ public class OpenCypherEditor extends XtextEditor {
       }
     });
     gridData = new GridData(5 * 10, SWT.DEFAULT);
-    text.setLayoutData(gridData);
+    _limit.setLayoutData(gridData);
 
     //
     ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
@@ -150,10 +152,15 @@ public class OpenCypherEditor extends XtextEditor {
 
           @Override
           public java.lang.Void exec(XtextResource state) throws Exception {
-            Cypher cypher = (Cypher) state.getContents().get(0);
+
+            //
+            Cypher query = (Cypher) state.getContents().get(0);
+
             if (_adapter != null) {
-              _adapter.executeCypherQuery(cypher , state.getSerializer());
+              int limit = _limit.getText() != null && !_limit.getText().trim().isEmpty() ? Integer.parseInt(_limit.getText()) : -1;
+              _adapter.executeCypherQuery(query, state.getSerializer(), limit);
             }
+
             return null;
           }
 
