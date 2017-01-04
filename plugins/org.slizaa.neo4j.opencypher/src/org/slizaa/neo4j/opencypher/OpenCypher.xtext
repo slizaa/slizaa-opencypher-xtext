@@ -37,7 +37,7 @@ ConfigurationOption:
 /*
  * configurationOption : symbolicName ws '=' ws symbolicName ;
  */
-	key=SYMBOLIC_NAME '=' value=SYMBOLIC_NAME;
+	key=SYMBOLIC_NAME_X '=' value=SYMBOLIC_NAME_X;
 
 Statement:
 /*
@@ -404,13 +404,13 @@ IdentifiedIndexLookup:
 /*
  * identifiedIndexLookup : ':' symbolicName '(' symbolicName '=' ( StringLiteral | legacyParameter ) ')' ;
  */
-	':' indexName=SYMBOLIC_NAME '(' key=SYMBOLIC_NAME '=' (value=STRING_LITERAL | legacyParameter=LegacyParameter) ')';
+	':' indexName=SYMBOLIC_NAME_X '(' key=SYMBOLIC_NAME_X '=' (value=STRING_LITERAL | legacyParameter=LegacyParameter) ')';
 
 IndexQuery:
 /*
  * indexQuery : ':' symbolicName '(' ( StringLiteral | legacyParameter ) ')' ;
  */
-	':' indexName=SYMBOLIC_NAME '(' (query=STRING_LITERAL | parameter=Parameter) ')';
+	':' indexName=SYMBOLIC_NAME_X '(' (query=STRING_LITERAL | parameter=Parameter) ')';
 
 IdLookup:
 /*
@@ -776,7 +776,7 @@ LegacyParameter:
  * Comment: Format of DecimalInteger is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkLegacyParameterFormat(LegacyParameter)
  */
-	'{' parameter=(SYMBOLIC_NAME | Number) '}';
+	'{' parameter=(SYMBOLIC_NAME_X | Number) '}';
 
 Parameter:
 /*
@@ -785,7 +785,7 @@ Parameter:
  * Comment: Format of DecimalInteger is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkParameterFormat(Parameter)
  */
-	'$' parameter=(SYMBOLIC_NAME | Number);
+	'$' parameter=(SYMBOLIC_NAME_X | Number);
 
 PropertyExpression:
 /*
@@ -797,7 +797,7 @@ PropertyKeyName:
 /*
  * propertyKeyName : symbolicName ;
  */
-	SYMBOLIC_NAME;
+	SYMBOLIC_NAME_X;
 
 LeftArrowHead:
 /*
