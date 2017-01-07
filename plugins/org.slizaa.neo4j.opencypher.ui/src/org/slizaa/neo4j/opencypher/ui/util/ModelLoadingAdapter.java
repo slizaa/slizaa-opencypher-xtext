@@ -41,36 +41,38 @@ public class ModelLoadingAdapter implements IAdapterFactory {
     if (adapterType == Cypher.class) {
 
       if (adaptableObject instanceof String) {
-        try {
 
-          synchronized (_lock) {
-            //
-            String query = (String) adaptableObject;
-            if (query.startsWith("\"")) {
-              query = query.substring(1);
-            }
-            if (query.endsWith("\"")) {
-              query = query.substring(0, query.length() - 1);
-            }
-            if (_resource == null) {
-              _xtextResourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-              _resource = _xtextResourceSet.createResource(URI.createURI("dummy:/example.cypher"));
-            }
-            _resource.unload();
-            InputStream in = new ByteArrayInputStream(query.getBytes());
-            _resource.load(in, _xtextResourceSet.getLoadOptions());
-            for (Diagnostic diagnostic : _resource.getErrors()) {
-              System.out.println(diagnostic);
-            }
-            if (_resource.getErrors().size() > 0) {
-              return null;
-            }
-            //
-            Cypher model = (Cypher) _resource.getContents().get(0);
-            return model;
+        synchronized (_lock) {
+          //
+          String query = (String) adaptableObject;
+          if (query.startsWith("\"")) {
+            query = query.substring(1);
           }
-        } catch (IOException e) {
-          e.printStackTrace();
+          if (query.endsWith("\"")) {
+            query = query.substring(0, query.length() - 1);
+          }
+          if (_resource == null) {
+            _xtextResourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+            _resource = _xtextResourceSet.createResource(URI.createURI("dummy:/example.cypher"));
+          }
+          _resource.unload();
+
+          try (InputStream in = new ByteArrayInputStream(query.getBytes())) {
+            _resource.load(in, _xtextResourceSet.getLoadOptions());
+          } catch (IOException exception) {
+            exception.printStackTrace();
+            return null;
+          }
+
+          for (Diagnostic diagnostic : _resource.getErrors()) {
+            System.out.println(diagnostic);
+          }
+          if (_resource.getErrors().size() > 0) {
+            return null;
+          }
+          //
+          Cypher model = (Cypher) _resource.getContents().get(0);
+          return model;
         }
       }
     }
