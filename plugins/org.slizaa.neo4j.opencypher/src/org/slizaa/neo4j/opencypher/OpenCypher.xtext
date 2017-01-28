@@ -455,7 +455,7 @@ ShortestPathPattern:
  * shortestPathPattern : ( SHORTESTPATH '(' patternElement ')' )
  *                     | ( ALLSHORTESTPATHS '(' patternElement ')' );
  */
-	{ShortestPath} 'SHORTESTPATH' '(' patternElement=PatternElement ')' | {AllShortestPath} 'ALLSHORTESTPATHS' '('
+	{ShortestPath} 'SHORTESTPATH' '(' patternElement=PatternElement ')' | {AllShortestPaths} 'ALLSHORTESTPATHS' '('
 	patternElement=PatternElement ')';
 
 PatternElement:
