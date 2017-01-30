@@ -479,7 +479,7 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ShortestPath" eSuperTypes="#//ShortestPathPattern"/>
-  <eClassifiers xsi:type="ecore:EClass" name="AllShortestPath" eSuperTypes="#//ShortestPathPattern"/>
+  <eClassifiers xsi:type="ecore:EClass" name="AllShortestPaths" eSuperTypes="#//ShortestPathPattern"/>
   <eClassifiers xsi:type="ecore:EClass" name="ExpressionOr" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="right" eType="#//Expression"
         containment="true"/>

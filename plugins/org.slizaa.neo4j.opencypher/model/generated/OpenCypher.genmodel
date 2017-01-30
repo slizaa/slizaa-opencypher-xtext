@@ -355,7 +355,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ScanHint/nodeLabel"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ShortestPath"/>
-    <genClasses ecoreClass="OpenCypher.ecore#//AllShortestPath"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//AllShortestPaths"/>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionOr">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionOr/right"/>
     </genClasses>
