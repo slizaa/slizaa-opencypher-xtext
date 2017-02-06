@@ -1,5 +1,10 @@
 package org.slizaa.neo4j.opencypher.ui.custom.editor;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -7,6 +12,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -37,6 +43,8 @@ public class OpenCypherEditor extends XtextEditor {
 
   /** - */
   private Text                        _limit;
+
+  private ToolItem                    _executeAction;
 
   /**
    * <p>
@@ -142,9 +150,9 @@ public class OpenCypherEditor extends XtextEditor {
     //
     ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
     toolBar.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
-    ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-    item.setImage(OpenCypherUiImages.EXECUTE_QUERY.getImage());
-    item.addSelectionListener(new SelectionListener() {
+    _executeAction = new ToolItem(toolBar, SWT.PUSH);
+    _executeAction.setImage(OpenCypherUiImages.EXECUTE_QUERY.getImage());
+    _executeAction.addSelectionListener(new SelectionListener() {
 
       @Override
       public void widgetSelected(SelectionEvent e) {
@@ -157,8 +165,22 @@ public class OpenCypherEditor extends XtextEditor {
             Cypher query = (Cypher) state.getContents().get(0);
 
             if (_adapter != null) {
-              int limit = _limit.getText() != null && !_limit.getText().trim().isEmpty() ? Integer.parseInt(_limit.getText()) : -1;
-              _adapter.executeCypherQuery(query, state.getSerializer(), limit);
+              int limit = _limit.getText() != null && !_limit.getText().trim().isEmpty()
+                  ? Integer.parseInt(_limit.getText()) : -1;
+
+              _executeAction.setEnabled(false);
+              final Future<?> future = _adapter.executeCypherQuery(query, state.getSerializer(), limit);
+              new Thread(() -> {
+                try {
+                  while (!(future.isDone() || future.isCancelled())) {
+                    Thread.sleep(500);
+                  }
+                } catch (Exception e) {
+                  e.printStackTrace();
+                } finally {
+                  Display.getDefault().syncExec(() -> _executeAction.setEnabled(true));
+                }
+              }).start();
             }
 
             return null;

@@ -1,6 +1,7 @@
 package org.slizaa.neo4j.opencypher.ui.custom.spi;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import org.eclipse.xtext.serializer.ISerializer;
 import org.slizaa.neo4j.opencypher.openCypher.Cypher;
@@ -36,7 +37,7 @@ public interface IGraphDatabaseClientAdapter {
    * @param cypher
    * @return
    */
-  void executeCypherQuery(Cypher cypher, ISerializer serializer, int defaultLimit);
+  Future<?> executeCypherQuery(Cypher cypher, ISerializer serializer, int defaultLimit);
   
   /**
    * <p>
