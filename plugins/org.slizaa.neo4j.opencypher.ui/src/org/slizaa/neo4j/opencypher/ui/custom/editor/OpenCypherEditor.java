@@ -56,8 +56,10 @@ public class OpenCypherEditor extends XtextEditor {
     _adapter = adapter;
     if (_adapter != null) {
       _activeDatabaseLabel.setText(_adapter.getName());
+      _executeAction.setEnabled(true);
     } else {
       _activeDatabaseLabel.setText("");
+      _executeAction.setEnabled(false);
     }
   }
 
@@ -151,6 +153,7 @@ public class OpenCypherEditor extends XtextEditor {
     ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
     toolBar.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, true));
     _executeAction = new ToolItem(toolBar, SWT.PUSH);
+    _executeAction.setEnabled(false);
     _executeAction.setImage(OpenCypherUiImages.EXECUTE_QUERY.getImage());
     _executeAction.addSelectionListener(new SelectionListener() {
 
