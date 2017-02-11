@@ -108,6 +108,18 @@
 		context="org.slizaa.neo4j.opencypher.OpenCypher.FunctionInvocation"
 		deleted="false" description="Returns the id of the relationship or node."
 		enabled="true" name="id()"><![CDATA[id(${nodeOrRelationship})${cursor}]]></template>
+		
+	<!-- labels() -->
+	<template id="opencypher.build-in.labels" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.FunctionInvocation"
+		deleted="false" description="Returns a list of string representations for the labels attached to a node."
+		enabled="true" name="labels()"><![CDATA[labels(${node})${cursor}]]></template>	
+		
+	<!-- type() -->
+	<template id="opencypher.build-in.type" autoinsert="true"
+		context="org.slizaa.neo4j.opencypher.OpenCypher.FunctionInvocation"
+		deleted="false" description="Returns a string representation of the relationship type."
+		enabled="true" name="type()"><![CDATA[type(${relationship})${cursor}]]></template>				
 
 	<!-- starts with -->
 	<template id="opencypher.build-in.startsWith" autoinsert="true"
