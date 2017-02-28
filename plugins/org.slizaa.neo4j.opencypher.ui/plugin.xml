@@ -9,7 +9,8 @@
 			default="true"
 			extensions="cypher"
 			id="org.slizaa.neo4j.opencypher.OpenCypher"
-			name="OpenCypher Editor">
+			name="OpenCypher Editor"
+			icon="icons/openCypherFile.png">
 		</editor>
 	</extension>
 	<extension
