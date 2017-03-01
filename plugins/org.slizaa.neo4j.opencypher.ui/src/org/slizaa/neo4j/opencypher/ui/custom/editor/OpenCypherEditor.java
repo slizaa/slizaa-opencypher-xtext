@@ -1,9 +1,6 @@
 package org.slizaa.neo4j.opencypher.ui.custom.editor;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -172,18 +169,25 @@ public class OpenCypherEditor extends XtextEditor {
                   ? Integer.parseInt(_limit.getText()) : -1;
 
               _executeAction.setEnabled(false);
-              final Future<?> future = _adapter.executeCypherQuery(query, state.getSerializer(), limit);
-              new Thread(() -> {
-                try {
-                  while (!(future.isDone() || future.isCancelled())) {
-                    Thread.sleep(500);
+              try {
+                
+                //
+                final Future<?> future = _adapter.executeCypherQuery(query, state.getSerializer(), limit);
+                new Thread(() -> {
+                  try {
+                    while (!(future.isDone() || future.isCancelled())) {
+                      Thread.sleep(500);
+                    }
+                  } catch (Exception e) {
+                    e.printStackTrace();
+                  } finally {
+                    Display.getDefault().syncExec(() -> _executeAction.setEnabled(true));
                   }
-                } catch (Exception e) {
-                  e.printStackTrace();
-                } finally {
-                  Display.getDefault().syncExec(() -> _executeAction.setEnabled(true));
-                }
-              }).start();
+                }).start();
+              
+              } catch (Exception e) {
+                _executeAction.setEnabled(true);
+              }
             }
 
             return null;
