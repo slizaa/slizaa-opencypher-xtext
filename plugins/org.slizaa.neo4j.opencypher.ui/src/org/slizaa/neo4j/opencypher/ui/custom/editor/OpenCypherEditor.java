@@ -39,8 +39,6 @@ public class OpenCypherEditor extends XtextEditor {
   private IGraphDatabaseClientAdapter _adapter;
 
   /** - */
-  private Text                        _limit;
-
   private ToolItem                    _executeAction;
 
   /**
@@ -102,9 +100,6 @@ public class OpenCypherEditor extends XtextEditor {
     Composite composite = new Composite(parent, SWT.NONE);
     GridLayout gridLayout = new GridLayout();
     gridLayout.numColumns = 5;
-    // gridLayout.marginWidth = 15;
-    //// gridLayout.marginHeight = 3;
-    //// gridLayout.horizontalSpacing = 10;
     gridLayout.makeColumnsEqualWidth = false;
     composite.setLayout(gridLayout);
     composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
@@ -121,30 +116,6 @@ public class OpenCypherEditor extends XtextEditor {
     _activeDatabaseLabel.setBackground(CustomOpenCypherActivator.getCustomOpenCypherActivator().getLightGray());
     GridData gridData = new GridData(30 * 10, SWT.DEFAULT);
     _activeDatabaseLabel.setLayoutData(gridData);
-
-    //
-    label = new Label(composite, SWT.NO_BACKGROUND);
-    label.setText("Default Limit:");
-    label.setAlignment(SWT.RIGHT);
-    label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true));
-
-    _limit = new Text(composite, SWT.NONE);
-    _limit.setBackground(CustomOpenCypherActivator.getCustomOpenCypherActivator().getLightGray());
-    _limit.setTextLimit(5);
-    _limit.setText("25");
-    _limit.addListener(SWT.Verify, e -> {
-      String string = e.text;
-      char[] chars = new char[string.length()];
-      string.getChars(0, chars.length, chars, 0);
-      for (int i = 0; i < chars.length; i++) {
-        if (!('0' <= chars[i] && chars[i] <= '9')) {
-          e.doit = false;
-          return;
-        }
-      }
-    });
-    gridData = new GridData(5 * 10, SWT.DEFAULT);
-    _limit.setLayoutData(gridData);
 
     //
     ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
@@ -165,14 +136,11 @@ public class OpenCypherEditor extends XtextEditor {
             Cypher query = (Cypher) state.getContents().get(0);
 
             if (_adapter != null) {
-              int limit = _limit.getText() != null && !_limit.getText().trim().isEmpty()
-                  ? Integer.parseInt(_limit.getText()) : -1;
-
               _executeAction.setEnabled(false);
               try {
                 
                 //
-                final Future<?> future = _adapter.executeCypherQuery(query, state.getSerializer(), limit);
+                final Future<?> future = _adapter.executeCypherQuery(query, state.getSerializer());
                 new Thread(() -> {
                   try {
                     while (!(future.isDone() || future.isCancelled())) {
