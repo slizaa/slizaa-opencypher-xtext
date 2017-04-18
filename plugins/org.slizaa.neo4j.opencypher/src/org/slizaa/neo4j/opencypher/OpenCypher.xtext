@@ -587,7 +587,6 @@ ExpressionComparison returns Expression:
  * 
  * partialComparisonExpression : ( '=' ws expression7 )
  *                             | ( '<>' ws expression7 )
- *                             | ( '!=' ws expression7 )
  *                             | ( '<' ws expression7 )
  *                             | ( '>' ws expression7 )
  *                             | ( '<=' ws expression7 )
@@ -595,7 +594,7 @@ ExpressionComparison returns Expression:
  * 
  * Comment: combined clause for 'expression8' and 'partialComparisonExpression'
  */
-	ExpressionPlusMinus ({ExpressionComparison.left=current} operator=('=' | '<>' | '!=' | '<' | '>' | '<=' | '>=')
+	ExpressionPlusMinus ({ExpressionComparison.left=current} operator=('=' | '<>' | '<' | '>' | '<=' | '>=')
 	right=ExpressionPlusMinus)*;
 
 ExpressionPlusMinus returns Expression:

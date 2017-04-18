@@ -19,7 +19,7 @@ import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter
  */
 class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
-	private static final Set<String> WHITELIST_KEYWORDS = Sets.newHashSet("DISTINCT", "=", "<>", "!=", "<", ">", "<=",
+	private static final Set<String> WHITELIST_KEYWORDS = Sets.newHashSet("DISTINCT", "=", "<>", "<", ">", "<=",
 		">=", "NOT", "OR", "XOR", "AND");
 
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
