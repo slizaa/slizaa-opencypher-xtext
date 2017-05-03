@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor;
 import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
+import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapterConsumer;
 import org.slizaa.neo4j.opencypher.ui.internal.OpencypherActivator;
 
 public class CustomOpenCypherActivator extends OpencypherActivator {
@@ -24,7 +25,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
   private ServiceTracker<IGraphDatabaseClientAdapter, IGraphDatabaseClientAdapter> _serviceTracker;
 
   /** - */
-  private List<OpenCypherEditor>                                                   _cypherEditors;
+  private List<IGraphDatabaseClientAdapterConsumer>                                _graphDatabaseClientAdapterConsumers;
 
   /**
    * <p>
@@ -47,7 +48,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
     if (adapter != null) {
       openCypherEditor.setGraphDatabaseClientAdapter(adapter);
     }
-    _cypherEditors.add(openCypherEditor);
+    _graphDatabaseClientAdapterConsumers.add(openCypherEditor);
   }
 
   /**
@@ -57,7 +58,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
    * @param openCypherEditor
    */
   public void unregisterEditor(OpenCypherEditor openCypherEditor) {
-    _cypherEditors.remove(openCypherEditor);
+    _graphDatabaseClientAdapterConsumers.remove(openCypherEditor);
   }
 
   @Override
@@ -67,7 +68,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
     _lightGray = new Color(Display.getCurrent(), 240, 240, 240);
 
     //
-    _cypherEditors = new CopyOnWriteArrayList<>();
+    _graphDatabaseClientAdapterConsumers = new CopyOnWriteArrayList<>();
 
     //
     _serviceTracker = new ServiceTracker<IGraphDatabaseClientAdapter, IGraphDatabaseClientAdapter>(
@@ -76,7 +77,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
       @Override
       public IGraphDatabaseClientAdapter addingService(ServiceReference<IGraphDatabaseClientAdapter> reference) {
         IGraphDatabaseClientAdapter adapter = super.addingService(reference);
-        for (OpenCypherEditor openCypherEditor : _cypherEditors) {
+        for (IGraphDatabaseClientAdapterConsumer openCypherEditor : _graphDatabaseClientAdapterConsumers) {
           openCypherEditor.setGraphDatabaseClientAdapter(adapter);
         }
         return adapter;
@@ -86,7 +87,7 @@ public class CustomOpenCypherActivator extends OpencypherActivator {
       public void removedService(ServiceReference<IGraphDatabaseClientAdapter> reference,
           IGraphDatabaseClientAdapter service) {
         super.removedService(reference, service);
-        for (OpenCypherEditor openCypherEditor : _cypherEditors) {
+        for (IGraphDatabaseClientAdapterConsumer openCypherEditor : _graphDatabaseClientAdapterConsumers) {
           openCypherEditor.setGraphDatabaseClientAdapter(null);
         }
       }

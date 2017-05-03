@@ -23,6 +23,7 @@ import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.slizaa.neo4j.opencypher.openCypher.Cypher;
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator;
 import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
+import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapterConsumer;
 
 /**
  * <p>
@@ -30,7 +31,7 @@ import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
  *
  * @author Gerd W&uuml;therich (gerd@gerd-wuetherich.de)
  */
-public class OpenCypherEditor extends XtextEditor {
+public class OpenCypherEditor extends XtextEditor implements IGraphDatabaseClientAdapterConsumer {
 
   /** - */
   private Text                        _activeDatabaseLabel;
@@ -47,6 +48,7 @@ public class OpenCypherEditor extends XtextEditor {
    *
    * @param adapter
    */
+  @Override
   public void setGraphDatabaseClientAdapter(IGraphDatabaseClientAdapter adapter) {
     _adapter = adapter;
     if (_adapter != null) {
