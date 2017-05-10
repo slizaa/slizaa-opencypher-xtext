@@ -1,4 +1,4 @@
-package org.slizaa.neo4j.opencypher.ui.custom.spi;
+package org.slizaa.neo4j.opencypher.spi;
 
 import java.util.List;
 import java.util.concurrent.Future;

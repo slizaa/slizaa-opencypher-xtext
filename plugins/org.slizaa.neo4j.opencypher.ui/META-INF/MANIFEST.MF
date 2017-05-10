@@ -20,7 +20,6 @@ Require-Bundle: org.slizaa.neo4j.opencypher,
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.slizaa.neo4j.opencypher.ui.contentassist,
- org.slizaa.neo4j.opencypher.ui.custom.spi,
  org.slizaa.neo4j.opencypher.ui.internal,
  org.slizaa.neo4j.opencypher.ui.quickfix
 Bundle-Activator: org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator

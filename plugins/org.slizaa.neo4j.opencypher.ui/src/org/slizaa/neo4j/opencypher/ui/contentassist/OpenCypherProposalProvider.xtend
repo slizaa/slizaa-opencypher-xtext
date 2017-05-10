@@ -10,8 +10,8 @@ import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
+import org.slizaa.neo4j.opencypher.spi.IGraphDatabaseClientAdapter
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator
-import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist

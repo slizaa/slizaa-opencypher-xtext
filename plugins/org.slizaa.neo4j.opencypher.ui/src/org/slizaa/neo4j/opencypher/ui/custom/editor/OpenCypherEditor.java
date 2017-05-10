@@ -21,9 +21,9 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.ui.editor.XtextEditor;
 import org.eclipse.xtext.util.concurrent.IUnitOfWork;
 import org.slizaa.neo4j.opencypher.openCypher.Cypher;
+import org.slizaa.neo4j.opencypher.spi.IGraphDatabaseClientAdapter;
+import org.slizaa.neo4j.opencypher.spi.IGraphDatabaseClientAdapterConsumer;
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator;
-import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapter;
-import org.slizaa.neo4j.opencypher.ui.custom.spi.IGraphDatabaseClientAdapterConsumer;
 
 /**
  * <p>

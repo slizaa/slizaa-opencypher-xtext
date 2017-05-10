@@ -27,6 +27,7 @@ Export-Package: org.slizaa.neo4j.opencypher,
  org.slizaa.neo4j.opencypher.scoping,
  org.slizaa.neo4j.opencypher.serializer,
  org.slizaa.neo4j.opencypher.services,
+ org.slizaa.neo4j.opencypher.spi,
  org.slizaa.neo4j.opencypher.util,
  org.slizaa.neo4j.opencypher.validation
 Import-Package: org.apache.log4j
