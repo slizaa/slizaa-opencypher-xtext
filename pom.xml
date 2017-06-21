@@ -22,8 +22,8 @@
 	</properties>
 
 	<modules>
-		
 		<module>plugins/org.slizaa.neo4j.opencypher</module>
+		<module>plugins/org.slizaa.neo4j.opencypher.dbadapter</module>
 		<module>plugins/org.slizaa.neo4j.opencypher.ui</module>
 		<module>plugins/org.slizaa.neo4j.opencypher.ide</module>
 		<module>tests/org.slizaa.neo4j.opencypher.tests</module>

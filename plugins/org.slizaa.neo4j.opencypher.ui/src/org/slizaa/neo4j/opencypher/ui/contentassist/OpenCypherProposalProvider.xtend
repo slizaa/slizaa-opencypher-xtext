@@ -10,7 +10,7 @@ import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.slizaa.neo4j.opencypher.spi.IGraphDatabaseClientAdapter
+import org.slizaa.neo4j.opencypher.dbadapter.IGraphDatabaseClientAdapter
 import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator
 
 /**
@@ -35,7 +35,7 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		super.complete_LabelName(model, ruleCall, context, acceptor);
 
 		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			graphDatabaseClientAdapter;
+			currentGraphDatabaseClientAdapter;
 
 		if (adaptor != null) {
 			adaptor.nodeLabels.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
@@ -47,7 +47,7 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		super.complete_PropertyKeyName(model, ruleCall, context, acceptor)
 
 		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			graphDatabaseClientAdapter;
+			currentGraphDatabaseClientAdapter;
 
 		if (adaptor != null) {
 			adaptor.propertyKeys.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
@@ -59,7 +59,7 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		super.complete_RelTypeName(model, ruleCall, context, acceptor);
 
 		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			graphDatabaseClientAdapter;
+			currentGraphDatabaseClientAdapter;
 
 		if (adaptor != null) {
 			adaptor.relationhipTypes.forEach[label|acceptor.accept(createCompletionProposal(label, context));]

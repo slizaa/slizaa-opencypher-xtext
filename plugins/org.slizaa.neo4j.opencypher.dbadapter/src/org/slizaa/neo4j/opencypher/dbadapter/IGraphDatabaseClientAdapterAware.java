@@ -1,4 +1,4 @@
-package org.slizaa.neo4j.opencypher.spi;
+package org.slizaa.neo4j.opencypher.dbadapter;
 
 /**
  * <p>
@@ -6,7 +6,7 @@ package org.slizaa.neo4j.opencypher.spi;
  *
  * @author Gerd W&uuml;therich (gerd@gerd-wuetherich.de)
  */
-public interface IGraphDatabaseClientAdapterConsumer {
+public interface IGraphDatabaseClientAdapterAware {
 
   /**
    * <p>

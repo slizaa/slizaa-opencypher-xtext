@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" name="org.slizaa.neo4j.opencypher.dbadapter.osgi.DbAdapterConnectorComponent">
+   <reference bind="setGraphDatabaseClientAdapter" cardinality="0..1" interface="org.slizaa.neo4j.opencypher.dbadapter.IGraphDatabaseClientAdapter" name="GraphDatabaseClientAdapter" policy="dynamic" policy-option="greedy" unbind="unsetGraphDatabaseClientAdapter"/>
+   <reference bind="addGraphDatabaseClientAdapterConsumer" cardinality="0..n" interface="org.slizaa.neo4j.opencypher.dbadapter.IGraphDatabaseClientAdapterAware" name="GraphDatabaseClientAdapterConsumer" policy="dynamic" unbind="removeGraphDatabaseClientAdapterConsumer"/>
+   <reference bind="addQueryResultConsumer" cardinality="0..n" interface="org.slizaa.neo4j.opencypher.dbadapter.IQueryResultConsumer" name="QueryResultConsumer" policy="dynamic" unbind="removeQueryResultConsumer"/>
+   <reference bind="addQueryResultConsumerAware" cardinality="0..n" interface="org.slizaa.neo4j.opencypher.dbadapter.IQueryResultConsumerAware" name="QueryResultConsumerAware" policy="dynamic" unbind="removeQueryResultConsumerAware"/>
+   <implementation class="org.slizaa.neo4j.opencypher.dbadapter.osgi.DbAdapterConnectorComponent"/>
+</scr:component>

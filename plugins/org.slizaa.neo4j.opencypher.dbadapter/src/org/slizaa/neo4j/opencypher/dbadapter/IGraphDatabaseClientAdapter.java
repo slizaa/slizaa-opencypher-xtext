@@ -1,10 +1,7 @@
-package org.slizaa.neo4j.opencypher.spi;
+package org.slizaa.neo4j.opencypher.dbadapter;
 
 import java.util.List;
 import java.util.concurrent.Future;
-
-import org.eclipse.xtext.serializer.ISerializer;
-import org.slizaa.neo4j.opencypher.openCypher.Cypher;
 
 /**
  * <p>
@@ -21,7 +18,7 @@ public interface IGraphDatabaseClientAdapter {
    * @return
    */
   String getName();
- 
+
   /**
    * <p>
    * </p>
@@ -29,7 +26,7 @@ public interface IGraphDatabaseClientAdapter {
    * @return
    */
   boolean isAvailable();
-  
+
   /**
    * <p>
    * </p>
@@ -37,8 +34,8 @@ public interface IGraphDatabaseClientAdapter {
    * @param cypher
    * @return
    */
-  Future<?> executeCypherQuery(Cypher cypher, ISerializer serializer);
-  
+  Future<?> executeCypherQuery(String cypherquery, IQueryResultConsumer queryResultConsumer);
+
   /**
    * <p>
    * </p>
@@ -46,7 +43,7 @@ public interface IGraphDatabaseClientAdapter {
    * @return
    */
   List<String> getNodeLabels();
-  
+
   /**
    * <p>
    * </p>
@@ -54,7 +51,7 @@ public interface IGraphDatabaseClientAdapter {
    * @return
    */
   List<String> getRelationhipTypes();
-  
+
   /**
    * <p>
    * </p>
