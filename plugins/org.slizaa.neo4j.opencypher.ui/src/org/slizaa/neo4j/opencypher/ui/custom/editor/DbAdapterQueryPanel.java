@@ -105,24 +105,25 @@ public class DbAdapterQueryPanel extends Composite
     }
 
     _adapter = adapter;
-    if (_adapter != null) {
-      _activeDatabaseLabel.setText(_adapter.getName());
-      _executeAction.setEnabled(true);
-    } else {
-      _activeDatabaseLabel.setText("");
-      _executeAction.setEnabled(false);
-    }
+
+    Display.getDefault().syncExec(() -> {
+      if (_adapter != null) {
+        _activeDatabaseLabel.setText(_adapter.getName());
+        _executeAction.setEnabled(true);
+      } else {
+        _activeDatabaseLabel.setText("");
+        _executeAction.setEnabled(false);
+      }
+    });
   }
 
   @Override
   public void addQueryResultConsumer(IQueryResultConsumer consumer) {
-    System.out.println("ADDED " + consumer);
     _queryResultConsumers.add(consumer);
   }
 
   @Override
   public void removeQueryResultConsumer(IQueryResultConsumer consumer) {
-    System.out.println("REMOVED " + consumer);
     _queryResultConsumers.remove(consumer);
   }
 
