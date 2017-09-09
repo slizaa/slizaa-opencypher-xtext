@@ -14,10 +14,10 @@
 	<packaging>pom</packaging>
 
 	<properties>
-		<tycho-version>0.24.0</tycho-version>
+		<tycho-version>1.0.0</tycho-version>
 		<junit-version>4.8.1</junit-version>
-		<xtend-version>2.9.0</xtend-version>
-		<xtext.version>2.10.0</xtext.version>
+		<xtend-version>2.12.0</xtend-version>
+		<xtext.version>2.12.0</xtext.version>
 		<project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
 	</properties>
 
