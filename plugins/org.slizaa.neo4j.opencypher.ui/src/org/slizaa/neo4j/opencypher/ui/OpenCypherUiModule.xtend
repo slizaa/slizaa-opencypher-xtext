@@ -7,7 +7,6 @@ import com.google.inject.Binder
 import com.google.inject.name.Names
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
-import org.eclipse.xtext.ui.editor.XtextEditor
 import org.eclipse.xtext.ui.editor.contentassist.ITemplateProposalProvider
 import org.eclipse.xtext.ui.editor.contentassist.XtextContentAssistProcessor
 import org.eclipse.xtext.ui.editor.model.ResourceForIEditorInputFactory
@@ -15,7 +14,6 @@ import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration
 import org.eclipse.xtext.ui.resource.SimpleResourceSetProvider
 import org.eclipse.xtext.ui.shared.Access
 import org.slizaa.neo4j.opencypher.ui.contentassist.OpenCypherTemplateProposalProvider
-import org.slizaa.neo4j.opencypher.ui.custom.editor.OpenCypherEditor
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherHighlightingConfiguration
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherSemanticHighlightingCalculator
 
@@ -53,9 +51,5 @@ class OpenCypherUiModule extends AbstractOpenCypherUiModule {
 
 	public def Class<? extends IHighlightingConfiguration> bindILexicalHighlightingConfiguration() {
 		return OpenCypherHighlightingConfiguration;
-	}
-
-	public def Class<? extends XtextEditor> bindXtextEditor() {
-		return OpenCypherEditor;
 	}
 }

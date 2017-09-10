@@ -10,8 +10,8 @@ import org.eclipse.xtext.Keyword
 import org.eclipse.xtext.RuleCall
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor
-import org.slizaa.neo4j.opencypher.dbadapter.IGraphDatabaseClientAdapter
-import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator
+import org.slizaa.neo4j.opencypher.spi.IGraphMetaDataProvider
+import org.slizaa.neo4j.opencypher.ui.internal.CustomOpenCypherActivator
 
 /**
  * See https://www.eclipse.org/Xtext/documentation/304_ide_concepts.html#content-assist
@@ -19,8 +19,8 @@ import org.slizaa.neo4j.opencypher.ui.custom.internal.CustomOpenCypherActivator
  */
 class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 
-	private static final Set<String> WHITELIST_KEYWORDS = Sets.newHashSet("DISTINCT", "=", "<>", "<", ">", "<=",
-		">=", "NOT", "OR", "XOR", "AND");
+	private static final Set<String> WHITELIST_KEYWORDS = Sets.newHashSet("DISTINCT", "=", "<>", "<", ">", "<=", ">=",
+		"NOT", "OR", "XOR", "AND");
 
 	override completeKeyword(Keyword keyword, ContentAssistContext contentAssistContext,
 		ICompletionProposalAcceptor acceptor) {
@@ -34,10 +34,10 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_LabelName(model, ruleCall, context, acceptor);
 
-		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			currentGraphDatabaseClientAdapter;
+		val IGraphMetaDataProvider adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			currentGraphMetaDataProvider;
 
-		if (adaptor != null) {
+		if (adaptor !== null) {
 			adaptor.nodeLabels.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
 		}
 	}
@@ -46,10 +46,10 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_PropertyKeyName(model, ruleCall, context, acceptor)
 
-		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			currentGraphDatabaseClientAdapter;
+		val IGraphMetaDataProvider adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			currentGraphMetaDataProvider;
 
-		if (adaptor != null) {
+		if (adaptor !== null) {
 			adaptor.propertyKeys.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
 		}
 	}
@@ -58,11 +58,11 @@ class OpenCypherProposalProvider extends AbstractOpenCypherProposalProvider {
 		ICompletionProposalAcceptor acceptor) {
 		super.complete_RelTypeName(model, ruleCall, context, acceptor);
 
-		val IGraphDatabaseClientAdapter adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
-			currentGraphDatabaseClientAdapter;
+		val IGraphMetaDataProvider adaptor = CustomOpenCypherActivator.customOpenCypherActivator.
+			currentGraphMetaDataProvider;
 
-		if (adaptor != null) {
-			adaptor.relationhipTypes.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
+		if (adaptor !== null) {
+			adaptor.relationshipTypes.forEach[label|acceptor.accept(createCompletionProposal(label, context));]
 		}
 	}
 }
