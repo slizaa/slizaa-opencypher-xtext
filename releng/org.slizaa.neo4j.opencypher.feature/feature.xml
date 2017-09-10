@@ -17,13 +17,6 @@
    </license>
 
    <plugin
-         id="org.slizaa.neo4j.opencypher.dbadapter"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.slizaa.neo4j.opencypher"
          download-size="0"
          install-size="0"
