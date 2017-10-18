@@ -16,12 +16,17 @@ import org.eclipse.xtext.ui.shared.Access
 import org.slizaa.neo4j.opencypher.ui.contentassist.OpenCypherTemplateProposalProvider
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherHighlightingConfiguration
 import org.slizaa.neo4j.opencypher.ui.highlighting.OpenCypherSemanticHighlightingCalculator
+import org.slizaa.neo4j.opencypher.ui.internal.CustomNatureAddingEditorCallback
 
 /**
  * Use this class to register components to be used within the Eclipse IDE.
  */
 @FinalFieldsConstructor
 class OpenCypherUiModule extends AbstractOpenCypherUiModule {
+
+	override bindIXtextEditorCallback() {
+		CustomNatureAddingEditorCallback
+	}
 
 	override bindIResourceForEditorInputFactory() {
 		ResourceForIEditorInputFactory
