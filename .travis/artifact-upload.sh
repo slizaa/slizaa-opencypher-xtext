@@ -5,7 +5,7 @@ target_dir=slizaa-opencypher-xtext
 
 echo TRAVIS_BUILD_DIR: $TRAVIS_BUILD_DIR
 
-PRODUCTS_DIR=$TRAVIS_BUILD_DIR/releng/org.slizaa.core.p2/target/repository
+PRODUCTS_DIR=$TRAVIS_BUILD_DIR/releng/org.slizaa.neo4j.opencypher.p2/target/repository
 echo PRODUCTS_DIR: $PRODUCTS_DIR
 
 filesToUpload=$(find $PRODUCTS_DIR -name "*.jar" -printf '%P\n')
