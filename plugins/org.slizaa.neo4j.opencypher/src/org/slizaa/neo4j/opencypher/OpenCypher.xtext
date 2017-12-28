@@ -579,7 +579,7 @@ ExpressionNot returns Expression:
  * Comment: Clause is modeled on the former antlr clause 'expression9 : ( sp NOT sp expression9 ) | expression8;'
  * We should eventually adjust this...
  */
-	(operator='NOT' left=ExpressionNot) | ExpressionComparison;
+	({ExpressionNot} operator='NOT' left=ExpressionNot) | ExpressionComparison;
 
 ExpressionComparison returns Expression:
 /*

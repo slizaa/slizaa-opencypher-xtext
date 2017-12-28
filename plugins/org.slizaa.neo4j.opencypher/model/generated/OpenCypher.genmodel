@@ -265,8 +265,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//RangeLiteral/upper"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Expression">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//Expression/operator"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/nodeLabelList"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Expression/propertyLookups"/>
     </genClasses>
@@ -357,49 +355,82 @@
     <genClasses ecoreClass="OpenCypher.ecore#//ShortestPath"/>
     <genClasses ecoreClass="OpenCypher.ecore#//AllShortestPaths"/>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionOr">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionOr/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionOr/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionOr/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionXor">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionXor/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionXor/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionXor/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionAnd">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionAnd/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionAnd/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionAnd/right"/>
     </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionNot">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionNot/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionNot/left"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionComparison">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionComparison/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionComparison/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionComparison/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionPlusMinus">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionPlusMinus/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionPlusMinus/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionPlusMinus/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionMulDiv">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionMulDiv/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionMulDiv/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionMulDiv/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionPower">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionPower/left"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionPower/operator"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionPower/right"/>
     </genClasses>
-    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionUnaryPlusMinus"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionUnaryPlusMinus">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//ExpressionUnaryPlusMinus/operator"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionUnaryPlusMinus/left"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//IndexExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexExpression/expression"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexExpression/upper"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//RegExpMatchingExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//RegExpMatchingExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//RegExpMatchingExpression/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//InCollectionExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//InCollectionExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//InCollectionExpression/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//StartsWithExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//StartsWithExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//StartsWithExpression/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//EndsWithExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//EndsWithExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//EndsWithExpression/right"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//ContainsExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ContainsExpression/left"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ContainsExpression/right"/>
     </genClasses>
-    <genClasses ecoreClass="OpenCypher.ecore#//IsNullExpression"/>
-    <genClasses ecoreClass="OpenCypher.ecore#//IsNotNullExpression"/>
-    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//IsNullExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IsNullExpression/left"/>
+    </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//IsNotNullExpression">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IsNotNullExpression/left"/>
+    </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionNodeLabelsAndPropertyLookup/left"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//NumberConstant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//NumberConstant/value"/>
     </genClasses>
