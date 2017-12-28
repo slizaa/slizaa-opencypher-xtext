@@ -377,6 +377,7 @@
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionPower">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionPower/right"/>
     </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//ExpressionUnaryPlusMinus"/>
     <genClasses ecoreClass="OpenCypher.ecore#//IndexExpression">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexExpression/expression"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexExpression/upper"/>
