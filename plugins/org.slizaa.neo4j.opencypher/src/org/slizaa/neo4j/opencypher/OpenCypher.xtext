@@ -579,7 +579,7 @@ ExpressionNot returns Expression:
  * Comment: Clause is modeled on the former antlr clause 'expression9 : ( sp NOT sp expression9 ) | expression8;'
  * We should eventually adjust this...
  */
-	(operator='NOT' left=ExpressionNot) | ExpressionComparison;
+	({ExpressionNot} operator='NOT' left=ExpressionNot) | ExpressionComparison;
 
 ExpressionComparison returns Expression:
 /*
@@ -619,10 +619,9 @@ ExpressionUnaryPlusMinus returns Expression:
 /*
  * expression4 : ( ( '+' | '-' ) ws )* expression3 ;
  * 
- * Comment: Clause is modeled on the former antlr clause 'expression4 : expression3 | ( ws '+' ws expression3 ) | ( ws '-' ws expression3 );'
- * We should eventually adjust this...
+ * Comment: In order to restrict our model for a single operator at a time, clause is modeled after a rewritetten form of the antlr clause 'expression4 : expression3 | ( ( '+' | '-' ) ws ) expression4;'
  */
-	Expression3 | operator=('+' | '-') left=Expression3;
+	Expression3 | {ExpressionUnaryPlusMinus} operator=('+' | '-') left=ExpressionUnaryPlusMinus;
 
 Expression3 returns Expression:
 /*
