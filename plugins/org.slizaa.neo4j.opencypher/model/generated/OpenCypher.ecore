@@ -415,8 +415,6 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="propertyOperator" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="CaseExpression" eSuperTypes="#//Expression">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//CaseExpression"
-        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="caseAlternatives" upperBound="-1"
         eType="#//CaseAlternatives" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="caseExpression" eType="#//Expression"

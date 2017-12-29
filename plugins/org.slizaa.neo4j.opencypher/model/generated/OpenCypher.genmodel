@@ -306,7 +306,6 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//PropertyLookup/propertyOperator"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//CaseExpression">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseExpression/expression"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseExpression/caseAlternatives"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseExpression/caseExpression"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseExpression/elseExpression"/>
