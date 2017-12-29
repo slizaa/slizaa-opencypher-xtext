@@ -24,12 +24,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Statement"/>
   <eClassifiers xsi:type="ecore:EClass" name="Query" eSuperTypes="#//Statement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="RegularQuery" eSuperTypes="#//Query">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="singleQuery" eType="#//RegularQuery"
-        containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="union" upperBound="-1"
-        eType="#//Union" containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RegularQuery" eSuperTypes="#//Query"/>
   <eClassifiers xsi:type="ecore:EClass" name="BulkImportQuery" eSuperTypes="#//Query">
     <eStructuralFeatures xsi:type="ecore:EReference" name="periodicCommitHint" eType="#//PeriodicCommitHint"
         containment="true"/>
@@ -455,6 +450,12 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="profile" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="cypherOption" upperBound="-1"
         eType="#//CypherOption" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CombinedQuery" eSuperTypes="#//RegularQuery">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="singleQuery" eType="#//SingleQuery"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="union" upperBound="-1"
+        eType="#//Union" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="IndexHint" eSuperTypes="#//Hint">
     <eStructuralFeatures xsi:type="ecore:EReference" name="variable" eType="#//Variable"

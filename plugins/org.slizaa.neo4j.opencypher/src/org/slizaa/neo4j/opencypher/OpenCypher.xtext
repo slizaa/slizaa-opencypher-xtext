@@ -57,7 +57,7 @@ RegularQuery:
 /*
  * regularQuery : singleQuery ( ws union )* ;
  */
-	SingleQuery ({RegularQuery.singleQuery=current} union+=Union)*;
+	SingleQuery ({CombinedQuery.singleQuery=current} ( union+=Union )+ )? ;
 
 BulkImportQuery:
 /*

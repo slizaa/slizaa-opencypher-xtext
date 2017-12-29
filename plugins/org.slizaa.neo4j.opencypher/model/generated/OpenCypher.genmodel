@@ -24,10 +24,7 @@
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Statement"/>
     <genClasses ecoreClass="OpenCypher.ecore#//Query"/>
-    <genClasses ecoreClass="OpenCypher.ecore#//RegularQuery">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//RegularQuery/singleQuery"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//RegularQuery/union"/>
-    </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//RegularQuery"/>
     <genClasses ecoreClass="OpenCypher.ecore#//BulkImportQuery">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//BulkImportQuery/periodicCommitHint"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//BulkImportQuery/loadCSVQuery"/>
@@ -338,6 +335,10 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//AllOptions/explain"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//AllOptions/profile"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//AllOptions/cypherOption"/>
+    </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//CombinedQuery">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CombinedQuery/singleQuery"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CombinedQuery/union"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//IndexHint">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//IndexHint/variable"/>
