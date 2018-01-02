@@ -445,9 +445,12 @@
     <genClasses ecoreClass="OpenCypher.ecore#//ExpressionList">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ExpressionList/expressions"/>
     </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//Extract">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Extract/filterExpression"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Extract/expression"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//Filter">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Filter/filterExpression"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Filter/expression"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//All">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//All/filterExpression"/>
