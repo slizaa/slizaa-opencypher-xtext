@@ -57,7 +57,7 @@ RegularQuery:
 /*
  * regularQuery : singleQuery ( ws union )* ;
  */
-	SingleQuery ({RegularQuery.singleQuery=current} union+=Union)*;
+	SingleQuery ({CombinedQuery.singleQuery=current} ( union+=Union )+ )? ;
 
 BulkImportQuery:
 /*
@@ -674,7 +674,7 @@ Atom returns Expression:
  */
 	{NumberConstant} value=Number | {StringConstant} value=STRING_LITERAL | Parameter | LegacyParameter | {BoolConstant}
 	value=('TRUE' |
-	'FALSE') | {NullConstant} 'NULL' | {CaseExpression} expression=CaseExpression | {Count} 'COUNT' '(' '*' ')' |
+	'FALSE') | {NullConstant} 'NULL' | CaseExpression | {Count} 'COUNT' '(' '*' ')' |
 	MapLiteral | ListComprehension | {ExpressionList} ('[' expressions+=Expression (',' expressions+=Expression)* ']') |
 	{Filter} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' | Reduce | {Filter}
 	'FILTER' '(' filterExpression=FilterExpression ')' | {All} 'ALL' '(' filterExpression=FilterExpression ')' | {Any}

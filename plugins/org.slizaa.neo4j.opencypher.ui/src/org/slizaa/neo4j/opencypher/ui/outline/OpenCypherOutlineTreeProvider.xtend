@@ -4,9 +4,12 @@
 package org.slizaa.neo4j.opencypher.ui.outline
 
 import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.nodemodel.util.NodeModelUtils
+import org.eclipse.xtext.ui.editor.outline.IOutlineNode
 import org.eclipse.xtext.ui.editor.outline.impl.DefaultOutlineTreeProvider
 import org.eclipse.xtext.ui.editor.outline.impl.DocumentRootNode
 import org.slizaa.neo4j.opencypher.openCypher.Cypher
+import org.slizaa.neo4j.opencypher.openCypher.CombinedQuery
 import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 import org.slizaa.neo4j.opencypher.openCypher.Statement
 import org.slizaa.neo4j.opencypher.openCypher.Clause
@@ -26,24 +29,32 @@ class OpenCypherOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
 		for (element : EcoreUtil2.getAllContentsOfType(cypher, Statement)) {
 
-			if (element instanceof SingleQuery) {
-				val SingleQuery singleQuery = element as SingleQuery;
-				if (singleQuery.union.size > 0) {
+			if (element instanceof CombinedQuery) {
+				val CombinedQuery combinedQuery = element as CombinedQuery;
+				val SingleQuery singleQuery = combinedQuery.singleQuery;
 // TODO			
-//			createNode(parentNode, singleQuery);
-//			val IOutlineNode singleQueryParent = NodeModelUtils.getNode(singleQuery);
-//			for (clause : singleQuery.clauses) {
-//				createNode(singleQueryParent, clause);
-//			}
-				} else {
-					for (clause : singleQuery.clauses) {
-						createNode(parentNode, clause);
-					}
-				}
+//				createNode(parentNode, combinedQuery);
+//				val IOutlineNode combinedQueryParent = NodeModelUtils.getNode(combinedQuery); //FIXME: getNode does not return IOutlineNode
+//				createNode(combinedQueryParent, singleQuery);
+//				val IOutlineNode singleQueryParent = NodeModelUtils.getNode(singleQuery); //FIXME: getNode does not return IOutlineNode
+//				_addSingleQueryClauses(singleQueryParent, singleQuery);
+//				for (_union : combinedQuery.union) {
+//					createNode(combinedQueryParent, _union.singleQuery);
+//					val IOutlineNode _unionParent = NodeModelUtils.getNode(_union.singleQuery); //FIXME: getNode does not return IOutlineNode
+//					_addSingleQueryClauses(_unionParent, _union.singleQuery);
+//				}
+			} else if (element instanceof SingleQuery) {
+				val SingleQuery singleQuery = element as SingleQuery;
+				_addSingleQueryClauses(parentNode, singleQuery);
 			} else {
 				createNode(parentNode, element);
 			}
 		}
 	}
 
+	def void _addSingleQueryClauses(IOutlineNode parentNode, SingleQuery singleQuery) {
+		for (clause : singleQuery.clauses) {
+			createNode(parentNode, clause);
+		}
+	}
 }
