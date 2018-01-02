@@ -17,5 +17,5 @@ class OpenCypherRuntimeModule extends AbstractOpenCypherRuntimeModule {
 	override bindIGlobalScopeProvider() {
 		NullGlobalScopeProvider;
 	}
-	
+
 }

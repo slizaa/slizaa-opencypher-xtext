@@ -3,13 +3,94 @@
  */
 package org.slizaa.neo4j.opencypher.scoping
 
+import java.util.ArrayList
+import java.util.List
+import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.scoping.Scopes
+import org.slizaa.neo4j.opencypher.openCypher.Clause
+import org.slizaa.neo4j.opencypher.openCypher.OpenCypherPackage
+import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
+import org.slizaa.neo4j.opencypher.openCypher.VariableDeclaration
+import org.slizaa.neo4j.opencypher.openCypher.VariableRef
+import org.slizaa.neo4j.opencypher.openCypher.With
+import org.slizaa.neo4j.opencypher.openCypher.Return
+import org.slizaa.neo4j.opencypher.openCypher.Unwind
 
 /**
- * This class contains custom scoping description.
+ * Scope provider for the openCypher grammar.
  * 
- * See https://www.eclipse.org/Xtext/documentation/303_runtime_concepts.html#scoping
- * on how and when to use it.
+ * In openCypher, the following clauses declare a new variable:
+ * <ul>
+ * <li>{@code MATCH}: this clause can introduce new variables for nodes/relationships, e.g.
+ * {@code MATCH (p:Person)-[l:LIVES_IN]->(c:City), (p)-[:VISITED]->(:Monument)}.
+ * Note that only the first occurrence counts as declaration, the rest are references.</li>
+ * <li>{@code UNWIND}: this clause specifies an (obligatory) alias for the unwound collection elements, e.g. {@code UNWIND xs AS x}</li>
+ * <li>{@code WITH}: this clause passes through some variables and (optionally) assigns aliases, 
+ * e.g. {@code WITH p AS p2, p.name AS name, p.age*2 AS a2}</li>
+ * <li>{@code RETURN}: for introducing variables, this clause behaves as WITH clause, 
+ * e.g. {@code RETURN p AS p2, p.name AS name, p.age*2 AS a2}</li>
+ * </ul>
+ *  
+ * The basic approach for scoping is relatively straightforward: for a {@link VariableRef},
+ * the corresponding {@link VariableDeclaration} is the one first found when traversing
+ * the clauses of the {@link SingleQuery} (i.e. a {@code [MATCH [WHERE]|WITH [WHERE]|UNWIND]* RETURN}) 
+ * that contains the clause that contains the reference. For example, the following query has 
+ * two single queries in lines 1-4 and 6-9.
+ * 
+ * <pre>
+ * 1 MATCH (p1:Person)-[:LIVES_IN]->(c:City)
+ * 2 WHERE p1.name = 'Alice'
+ * 3 WITH p1 AS p, c.language AS lang, c.name AS name
+ * 4 RETURN p, lang, name
+ * 5 UNION
+ * 6 MATCH (p)-[:VISITED]->(c:Country)
+ * 7 WHERE p.age > 25
+ * 8 UNWIND p.languages AS lang
+ * 9 RETURN p, lang, c.name AS name
+ * </pre>
+ * 
+ * Note that the {@code ORDER BY} clause needs special treatment. This clause always follows either a {@code WITH} or a {@code RETURN} clause and
+ * its scope includes both:
+ * 
+ * <ul>
+ * <li>variables of the scope before {@code WITH}/{@code RETURN} clause and</li>
+ * <li>the variables introduced in the {@code WITH}/{@code RETURN} clause.</li>
+ * </ul>
+ * 
+ * Example:
+ * 
+ * <pre>
+ * 1 MATCH (p:Person)-[l:LIVES_IN]->(c:City)
+ * 2 RETURN p, c.name AS cityName
+ * 3 ORDER BY l.since, cityName
+ * </pre>
  */
 class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
+
+	override getScope(EObject context, EReference reference) {
+		if (context instanceof VariableRef && reference === OpenCypherPackage.Literals.VARIABLE_REF__VARIABLE_REF) {
+			val contextClause = EcoreUtil2.getContainerOfType(context, Clause)
+			val clauses = EcoreUtil2.getContainerOfType(contextClause, SingleQuery).clauses		
+
+			val List<VariableDeclaration> elements = new ArrayList
+			val contextClauseIndex = clauses.indexOf(contextClause)
+			val startClauseIndex = if (contextClause instanceof With || contextClause instanceof Return || contextClause instanceof Unwind) {
+				contextClauseIndex - 1
+			} else {
+				contextClauseIndex
+			}
+
+			for (i : startClauseIndex..0) {
+				val currentClause = clauses.get(i)
+				val declarations = EcoreUtil2.getAllContentsOfType(currentClause, VariableDeclaration)
+				elements += declarations.filter[!elements.map[name].contains(name)] 
+			}
+			return Scopes.scopeFor(elements);
+		}
+
+		return super.getScope(context, reference)
+	}
 
 }
