@@ -601,10 +601,14 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="expressions" upperBound="-1"
         eType="#//Expression" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Filter" eSuperTypes="#//Expression">
+  <eClassifiers xsi:type="ecore:EClass" name="Extract" eSuperTypes="#//Expression">
     <eStructuralFeatures xsi:type="ecore:EReference" name="filterExpression" eType="#//FilterExpression"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="expression" eType="#//Expression"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Filter" eSuperTypes="#//Expression">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="filterExpression" eType="#//FilterExpression"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="All" eSuperTypes="#//Expression">

@@ -683,15 +683,15 @@ Atom returns Expression:
 	MapLiteral |
 	ListComprehension |
 	{ExpressionList} ('[' expressions+=Expression (',' expressions+=Expression)* ']') |
-	{Filter} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' |
+	{Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' |
 	Reduce |
-	 {Filter} 'FILTER' '(' filterExpression=FilterExpression ')' |
-	 {All} 'ALL' '(' filterExpression=FilterExpression ')' |
-	 {Any} 'ANY' '(' filterExpression=FilterExpression ')' |
-	 {None} 'NONE' '(' filterExpression=FilterExpression ')' |
-	 {Single} 'SINGLE' '(' filterExpression=FilterExpression ')' |
-	 ShortestPathPattern |
-	 RelationshipsPattern |
+	{Filter} 'FILTER' '(' filterExpression=FilterExpression ')' |
+	{All} 'ALL' '(' filterExpression=FilterExpression ')' |
+	{Any} 'ANY' '(' filterExpression=FilterExpression ')' |
+	{None} 'NONE' '(' filterExpression=FilterExpression ')' |
+	{Single} 'SINGLE' '(' filterExpression=FilterExpression ')' |
+	ShortestPathPattern |
+	RelationshipsPattern |
 	ParenthesizedExpression |
 	FunctionInvocation |
 	{VariableRef} variableRef=[VariableDeclaration|SYMBOLIC_NAME_X];
