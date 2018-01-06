@@ -318,7 +318,7 @@ ReturnBody:
 /*
  * returnBody : returnItems ( sp order )? ( sp skip )? ( sp limit )? ;
  */
-	returnItems+=ReturnItems (order=Order)? (skip=Skip)? (limit=Limit)?;
+	returnItems=ReturnItems (order=Order)? (skip=Skip)? (limit=Limit)?;
 
 ReturnItems:
 /*
