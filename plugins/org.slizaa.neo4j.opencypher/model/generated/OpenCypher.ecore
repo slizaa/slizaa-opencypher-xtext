@@ -203,8 +203,8 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReturnBody">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="returnItems" upperBound="-1"
-        eType="#//ReturnItems" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnItems" eType="#//ReturnItems"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="order" eType="#//Order"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="skip" eType="#//Skip" containment="true"/>
