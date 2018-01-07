@@ -17,6 +17,12 @@ import org.slizaa.neo4j.opencypher.openCypher.VariableRef
 import org.slizaa.neo4j.opencypher.openCypher.With
 import org.slizaa.neo4j.opencypher.openCypher.Return
 import org.slizaa.neo4j.opencypher.openCypher.Unwind
+import org.slizaa.neo4j.opencypher.openCypher.Statement
+import org.slizaa.neo4j.opencypher.openCypher.RegularQuery
+import org.slizaa.neo4j.opencypher.openCypher.BulkImportQuery
+import org.slizaa.neo4j.opencypher.openCypher.Command
+import org.eclipse.emf.common.util.EList
+import org.slizaa.neo4j.opencypher.openCypher.Order
 
 /**
  * Scope provider for the openCypher grammar.
@@ -71,26 +77,55 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 
 	override getScope(EObject context, EReference reference) {
 		if (context instanceof VariableRef && reference === OpenCypherPackage.Literals.VARIABLE_REF__VARIABLE_REF) {
-			val contextClause = EcoreUtil2.getContainerOfType(context, Clause)
-			val clauses = EcoreUtil2.getContainerOfType(contextClause, SingleQuery).clauses		
-
-			val List<VariableDeclaration> elements = new ArrayList
-			val contextClauseIndex = clauses.indexOf(contextClause)
-			val startClauseIndex = if (contextClause instanceof With || contextClause instanceof Return || contextClause instanceof Unwind) {
-				contextClauseIndex - 1
-			} else {
-				contextClauseIndex
-			}
-
-			for (i : startClauseIndex..0) {
-				val currentClause = clauses.get(i)
-				val declarations = EcoreUtil2.getAllContentsOfType(currentClause, VariableDeclaration)
-				elements += declarations.filter[!elements.map[name].contains(name)] 
-			}
+			val statement = EcoreUtil2.getContainerOfType(context, Statement)
+			val elements = getCypherScopeElements(statement, context)
 			return Scopes.scopeFor(elements);
 		}
 
 		return super.getScope(context, reference)
+	}
+
+	def dispatch getCypherScopeElements(RegularQuery regularQuery, EObject context) {
+		val contextClause = EcoreUtil2.getContainerOfType(context, Clause)
+		val clauses = EcoreUtil2.getContainerOfType(contextClause, SingleQuery).clauses
+		return getElementsFromClauses(clauses, contextClause, context)
+	}
+
+	def dispatch getCypherScopeElements(BulkImportQuery bulkImportQuery, EObject context) {
+		val contextClause = EcoreUtil2.getContainerOfType(context, Clause)
+		return getElementsFromClauses(bulkImportQuery.loadCSVQuery.clauses, contextClause, context)
+	}
+
+	def dispatch getCypherScopeElements(Command command, EObject context) {
+		val elements = EcoreUtil2.getAllContentsOfType(command, VariableDeclaration)
+		return elements
+	}
+
+	def getElementsFromClauses(EList<Clause> clauses, Clause contextClause, EObject context) {
+		val List<VariableDeclaration> elements = new ArrayList
+		val contextClauseIndex = clauses.indexOf(contextClause)
+		val startClauseIndex = if (contextClause instanceof Unwind) {
+				contextClauseIndex - 1
+			} else if (contextClause instanceof With || contextClause instanceof Return) {
+				val order = EcoreUtil2.getContainerOfType(context, Order)
+				if (order !== null) {
+					contextClauseIndex
+				} else {
+					// for return items 'x AS y, y AS z', do not return VariableReference `y` for VariableDeclaration `y` 
+					contextClauseIndex - 1
+				}
+			} else {
+				contextClauseIndex
+			}
+
+		if (startClauseIndex >= 0) {
+			for (i : startClauseIndex .. 0) {
+				val currentClause = clauses.get(i)
+				val declarations = EcoreUtil2.getAllContentsOfType(currentClause, VariableDeclaration)
+				elements += declarations.filter[!elements.map[name].contains(name)]
+			}
+		}
+		return elements
 	}
 
 }
