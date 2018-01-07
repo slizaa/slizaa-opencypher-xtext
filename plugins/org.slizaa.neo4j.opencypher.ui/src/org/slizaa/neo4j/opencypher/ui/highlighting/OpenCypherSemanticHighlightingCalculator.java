@@ -11,7 +11,7 @@ import org.eclipse.xtext.util.CancelIndicator;
 import org.slizaa.neo4j.opencypher.openCypher.OpenCypherPackage;
 import org.slizaa.neo4j.opencypher.openCypher.RelationshipTypes;
 import org.slizaa.neo4j.opencypher.openCypher.StringConstant;
-import org.slizaa.neo4j.opencypher.openCypher.Variable;
+import org.slizaa.neo4j.opencypher.openCypher.VariableDeclaration;
 import org.slizaa.neo4j.opencypher.openCypher.VariableRef;
 import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess;
 import org.slizaa.neo4j.opencypher.services.OpenCypherGrammarAccess.RelTypeElements;
@@ -30,8 +30,8 @@ public class OpenCypherSemanticHighlightingCalculator extends DefaultSemanticHig
     EObject rootObject = resource.getParseResult().getRootASTElement();
 
     //
-    for (Variable variable : EcoreUtil2.getAllContentsOfType(rootObject, Variable.class)) {
-      for (INode node : NodeModelUtils.findNodesForFeature(variable, OpenCypherPackage.Literals.VARIABLE__NAME)) {
+    for (VariableDeclaration variable : EcoreUtil2.getAllContentsOfType(rootObject, VariableDeclaration.class)) {
+      for (INode node : NodeModelUtils.findNodesForFeature(variable, OpenCypherPackage.Literals.VARIABLE_DECLARATION__NAME)) {
         acceptor.addPosition(node.getOffset(), node.getLength(), OpenCypherHighlightingConfiguration.VARIABLE_ID);
       }
     }

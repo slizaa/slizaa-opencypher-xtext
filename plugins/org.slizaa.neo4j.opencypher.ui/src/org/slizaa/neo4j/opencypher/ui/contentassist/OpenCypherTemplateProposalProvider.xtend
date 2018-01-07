@@ -9,7 +9,6 @@ import org.eclipse.jface.text.templates.persistence.TemplateStore
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext
 import org.eclipse.xtext.ui.editor.templates.ContextTypeIdHelper
 import org.eclipse.xtext.ui.editor.templates.DefaultTemplateProposalProvider
-import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 
 class OpenCypherTemplateProposalProvider extends DefaultTemplateProposalProvider {
 
