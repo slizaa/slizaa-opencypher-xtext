@@ -919,7 +919,7 @@ terminal SYMBOLIC_NAME:
 /*
  * Comment: reduced character set
  */
-	'^'? ('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')*;
+	('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')* | ('`' -> '`');
 
 terminal ML_COMMENT:
 	'/*'->'*/';
