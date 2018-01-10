@@ -311,8 +311,8 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseAlternatives/when"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//CaseAlternatives/then"/>
     </genClasses>
-    <genClasses ecoreClass="OpenCypher.ecore#//Variable">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//Variable/name"/>
+    <genClasses ecoreClass="OpenCypher.ecore#//VariableDeclaration">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//VariableDeclaration/name"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//MapLiteral">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//MapLiteral/entries"/>

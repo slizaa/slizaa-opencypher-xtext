@@ -23,5 +23,5 @@ class OpenCypherRuntimeModule extends AbstractOpenCypherRuntimeModule {
 	override bindIValueConverterService() {
 		OpenCypherValueConverterService
 	}
-	
+
 }
