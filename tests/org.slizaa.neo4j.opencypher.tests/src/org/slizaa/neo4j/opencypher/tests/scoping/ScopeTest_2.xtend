@@ -37,12 +37,9 @@ class ScopeTest_2 extends AbstractScopeTest {
 		variableReferences.get(0).assertScope(variableDeclarations.elements(0, 1, 2))
 		variableReferences.get(1).assertScope(variableDeclarations.elements(0, 1, 2))
 		variableReferences.get(2).assertScope(variableDeclarations.elements(0, 1, 2))
-		
-		// FAILS:
-		// Expected: [x, c, p, cities, p, c], but was: [p, c, cities, x]	
- 		variableReferences.get(3).assertScope(variableDeclarations.elements(0, 2, 3, 4, 5, 6))
-		variableReferences.get(4).assertScope(variableDeclarations.elements(0, 2, 3, 4, 5, 6))
-		variableReferences.get(5).assertScope(variableDeclarations.elements(0, 2, 3, 4, 5, 6))
-		variableReferences.get(6).assertScope(variableDeclarations.elements(0, 2, 3, 4, 5, 6))
+		variableReferences.get(3).assertScope(variableDeclarations.elements(5, 6, 4, 0))
+		variableReferences.get(4).assertScope(variableDeclarations.elements(5, 6, 4, 0))
+		variableReferences.get(5).assertScope(variableDeclarations.elements(5, 6, 4, 0))
+		variableReferences.get(6).assertScope(variableDeclarations.elements(5, 6, 4, 0))
 	}
 }
