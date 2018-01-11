@@ -40,5 +40,22 @@ class Backtick_Test extends AbstractCypherTest {
 			RETURN `person a`, `person c`
 		''');
 	}
-
+	
+	@Test
+	def void backtick_4() {
+		test('''
+			MATCH (`with space`:Person {test:'Jim'})-[:KNOWS]->(`person_b`)-[:KNOWS]->(`person_c`),
+			(`with space`)-[:KNOWS]->(`person_c`)
+			RETURN `with space`, `person_c`
+		''');
+	}
+	
+	@Test
+	def void backtick_5() {
+		test('''
+			MATCH (`with german umlaut ä`:Person {test:'Jim'})-[:KNOWS]->(`person_b`)-[:KNOWS]->(`person_c`),
+			(`with german umlaut ä`)-[:KNOWS]->(`person_c`)
+			RETURN `with german umlaut ä`, `person_c`
+		''');
+	}
 }
