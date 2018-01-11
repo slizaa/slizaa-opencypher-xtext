@@ -657,6 +657,7 @@ Atom returns Expression:
  *      | ( COUNT '(' '*' ')' )
  *      | mapLiteral
  *      | listComprehension
+ *      | patternComprehension
  *      | ( '[' ws expression ws ( ',' ws expression ws )* ']' )
  *      | ( FILTER ws '(' ws filterExpression ws ')' )
  *      | ( EXTRACT ws '(' ws filterExpression ws ( ws '|' expression )? ')' )
@@ -682,6 +683,7 @@ Atom returns Expression:
 	{Count} 'COUNT' '(' '*' ')' |
 	MapLiteral |
 	ListComprehension |
+	PatternComprehension |
 	{ExpressionList} ('[' expressions+=Expression (',' expressions+=Expression)* ']') |
 	{Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' |
 	Reduce |
@@ -744,6 +746,12 @@ ListComprehension:
  * listComprehension : '[' filterExpression ( ws '|' expression )? ']' ;
  */
 	'[' filterExpression=FilterExpression ('|' expression=Expression)? ']';
+
+PatternComprehension:
+/*
+ * patternComprehension : '['  ( variable '=' )? relationshipsPattern ( WHERE expression )? '|' expression ']' ;
+ */
+ 	'[' ( pathVariable=VariableDeclaration '=' )? pattern=RelationshipsPattern ( where=Where )? '|' expression=Expression ']';
 
 PropertyLookup:
 /*
