@@ -35,6 +35,7 @@ import org.slizaa.neo4j.opencypher.openCypher.VariableDeclaration
 import org.slizaa.neo4j.opencypher.openCypher.VariableRef
 import org.slizaa.neo4j.opencypher.openCypher.Where
 import org.slizaa.neo4j.opencypher.openCypher.With
+import org.slizaa.neo4j.opencypher.openCypher.PatternComprehension
 
 /**
  * Scope provider for the openCypher grammar. There are multiple ways to declare a variable in openCypher.
@@ -175,7 +176,9 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 	 * (2) {@link Expression} operating on lists introduce new {@link VariableDeclaration}s.
 	 * 
 	 * <ul>
-	 * <li>{@link ListComprehension}: {@code [variable IN list WHERE predicate | expression]}</li>
+	 * <li>{@link ListComprehension}: {@code [variable IN list (WHERE predicate)? | expression]}</li>
+	 * <li>{@link PatternComprehension}: {@code [(pathVariable = )? pattern (WHERE predicate)? | expression]}
+	 * (variables can be declared in the pattern)</li>
 	 * <li>{@link Extract} function: {@code extract(variable IN list | expression)}</li>
 	 * <li>{@link Filter} function: {@code filter(variable IN list WHERE predicate)}</li>
 	 * <li>{@link All} function: {@code all(variable IN list WHERE predicate)}</li>
@@ -207,6 +210,10 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 			#[filterExpression.idInColl.variable]
 		} else if (expression instanceof Reduce) {
 			#[expression.accumulator, expression.idInColl.variable]
+		} else if (expression instanceof PatternComprehension) {
+			val pathVariable = if (expression.pathVariable === null) #[] else #[expression.pathVariable]
+			val patternVariables = EcoreUtil2.getAllContentsOfType(expression.pattern, VariableDeclaration)
+			pathVariable + patternVariables
 		} else {
 			#[]
 		}

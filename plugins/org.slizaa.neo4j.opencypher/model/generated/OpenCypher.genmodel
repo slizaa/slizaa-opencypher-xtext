@@ -298,6 +298,12 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ListComprehension/filterExpression"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//ListComprehension/expression"/>
     </genClasses>
+    <genClasses ecoreClass="OpenCypher.ecore#//PatternComprehension">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//PatternComprehension/pathVariable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//PatternComprehension/pattern"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//PatternComprehension/where"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//PatternComprehension/expression"/>
+    </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//PropertyLookup">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//PropertyLookup/propertyKeyName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//PropertyLookup/propertyOperator"/>
