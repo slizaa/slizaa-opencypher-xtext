@@ -2,6 +2,7 @@ target/
 bin/
 src-gen/
 xtend-gen/
+**/model/generated/
 
 .antlr*.jar
 
