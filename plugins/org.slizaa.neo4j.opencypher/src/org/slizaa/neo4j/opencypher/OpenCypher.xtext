@@ -293,7 +293,7 @@ RemoveItem:
  * removeItem : ( variable nodeLabels )
  *              | propertyExpression;
  */
-	(variable=VariableDeclaration nodeLabels=NodeLabels) | PropertyExpression;
+	({RemoveItemLabel} variable=VariableDeclaration nodeLabels=NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
 
 Foreach:
 /*
