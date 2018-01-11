@@ -534,7 +534,7 @@ RangeLiteral:
  * Comment: Format of IntegerLiteral is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkRangeLiteralFormat(RangeLiteral)
  */
-	{RangeLiteral} '*' (lower=Number? '..' upper=Number?)?;
+	{RangeLiteral} '*' (lower=Number? ('..' upper=Number? )? )?;
 
 LabelName:
 /*
@@ -684,7 +684,7 @@ Atom returns Expression:
 	MapLiteral |
 	ListComprehension |
 	PatternComprehension |
-	{ExpressionList} ('[' expressions+=Expression (',' expressions+=Expression)* ']') |
+	{ExpressionList} ('[' ( expressions+=Expression (',' expressions+=Expression)* )? ']') |
 	{Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' |
 	Reduce |
 	{Filter} 'FILTER' '(' filterExpression=FilterExpression ')' |
