@@ -298,7 +298,7 @@ Foreach:
 /*
  * foreach : FOREACH ws '(' ws variable sp IN sp expression ws '|' ( sp clause )+ ws ')' ;
  */
-	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (clause+=Clause)+ ')';
+	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (clauses+=Clause)+ ')';
 
 With:
 /*

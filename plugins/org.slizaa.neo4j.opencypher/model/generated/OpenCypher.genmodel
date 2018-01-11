@@ -138,7 +138,7 @@
     <genClasses ecoreClass="OpenCypher.ecore#//Foreach">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Foreach/variable"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Foreach/expression"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Foreach/clause"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OpenCypher.ecore#//Foreach/clauses"/>
     </genClasses>
     <genClasses ecoreClass="OpenCypher.ecore#//With">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OpenCypher.ecore#//With/distint"/>
