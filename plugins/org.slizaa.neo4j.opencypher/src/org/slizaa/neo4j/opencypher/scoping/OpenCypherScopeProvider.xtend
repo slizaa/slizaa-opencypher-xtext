@@ -33,6 +33,7 @@ import org.slizaa.neo4j.opencypher.openCypher.Statement
 import org.slizaa.neo4j.opencypher.openCypher.Unwind
 import org.slizaa.neo4j.opencypher.openCypher.VariableDeclaration
 import org.slizaa.neo4j.opencypher.openCypher.VariableRef
+import org.slizaa.neo4j.opencypher.openCypher.Where
 import org.slizaa.neo4j.opencypher.openCypher.With
 
 /**
@@ -140,16 +141,21 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 				contextClauseIndex - 1
 			} else if (contextClause instanceof With || contextClause instanceof Return) {
 				val order = EcoreUtil2.getContainerOfType(context, Order)
-				if (order === null) {
-					// if the context is not an ORDER BY clause, start from the previous clause:
-					// for return items like in 'WITH x AS y, y AS z',
-					// do not return VariableReference `y` for VariableDeclaration `y` 
-					contextClauseIndex - 1
-				} else {
-					// if the context is an ORDER BY clause, start from the current clause,
-					// as ORDER BY can use VariableDeclarations introduced by the current
-					// WITH/RETURN clause 
+				val where = EcoreUtil2.getContainerOfType(context, Where)
+				if (order !== null || where !== null) {
+					// (1) if the context is an ORDER BY clause, start from the current clause,
+					// as ORDER BY is tied to a WITH/RETURN clause and it can use VariableDeclarations 
+					// introduced by the current WITH/RETURN clause
+					// (2) if the context is a WHERE clause, start from the current clause,
+					// as WHERE is tied to a MATCH/WITH clause
 					contextClauseIndex
+				} else {
+					// If the context is not an ORDER BY clause and not a WHERE clause,
+					// start from the previous clause. This guarantees that for return items
+					// like the ones in 'WITH x AS y, y AS z', the scope provider does not return
+					// VariableDeclaration `y` (in `x AS y`) when looking for a resolution of
+					// VariableReference `y` (in `y AS z`)
+					contextClauseIndex - 1
 				}
 			} else {
 				contextClauseIndex
