@@ -36,6 +36,7 @@ import org.slizaa.neo4j.opencypher.openCypher.VariableRef
 import org.slizaa.neo4j.opencypher.openCypher.Where
 import org.slizaa.neo4j.opencypher.openCypher.With
 import org.slizaa.neo4j.opencypher.openCypher.PatternComprehension
+import org.slizaa.neo4j.opencypher.openCypher.MergeAction
 
 /**
  * Scope provider for the openCypher grammar. There are multiple ways to declare a variable in openCypher.
@@ -137,10 +138,15 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 	protected def Iterable<VariableDeclaration> extractDeclarationsFromClauseList(EList<Clause> clauses,
 		Clause contextClause, EObject context) {
 		val List<VariableDeclaration> elements = new ArrayList
-		val contextClauseIndex = clauses.indexOf(contextClause)
-		val startClauseIndex = if (contextClause instanceof Unwind) {
-				contextClauseIndex - 1
-			} else if (contextClause instanceof With || contextClause instanceof Return) {
+		val mergeAction = EcoreUtil2.getContainerOfType(context, MergeAction)
+		val currentClause = if (mergeAction !== null) {
+			EcoreUtil2.getContainerOfType(mergeAction, Clause)
+		} else {
+			contextClause
+		}
+		val offset = if (contextClause instanceof Unwind) {
+				-1
+			} else if (currentClause instanceof With || currentClause instanceof Return) {
 				val order = EcoreUtil2.getContainerOfType(context, Order)
 				val where = EcoreUtil2.getContainerOfType(context, Where)
 				if (order !== null || where !== null) {
@@ -149,25 +155,24 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 					// introduced by the current WITH/RETURN clause
 					// (2) if the context is a WHERE clause, start from the current clause,
 					// as WHERE is tied to a MATCH/WITH clause
-					contextClauseIndex
+					0
 				} else {
 					// If the context is not an ORDER BY clause and not a WHERE clause,
 					// start from the previous clause. This guarantees that for return items
 					// like the ones in 'WITH x AS y, y AS z', the scope provider does not return
 					// VariableDeclaration `y` (in `x AS y`) when looking for a resolution of
 					// VariableReference `y` (in `y AS z`)
-					contextClauseIndex - 1
+					-1
 				}
 			} else {
-				contextClauseIndex
+				0
 			}
+		val startClauseIndex = clauses.indexOf(currentClause) + offset
 
-		if (startClauseIndex >= 0) {
-			for (i : startClauseIndex .. 0) {
-				val currentClause = clauses.get(i)
-				val declarations = EcoreUtil2.getAllContentsOfType(currentClause, VariableDeclaration)
-				elements += declarations.filter[!elements.map[name].contains(name)]
-			}
+		for (var i = startClauseIndex; i >= 0; i--) {
+			val clause = clauses.get(i)
+			val declarations = EcoreUtil2.getAllContentsOfType(clause, VariableDeclaration)
+			elements += declarations.filter[!elements.map[name].contains(name)]
 		}
 		return elements
 	}
@@ -248,9 +253,9 @@ class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 			return #[]
 		}
 		val clauses = EcoreUtil2.getContainerOfType(context, SingleQuery).clauses
-		val x = extractDeclarationsFromClauseList(clauses, foreach, context)
+		val declarationsFromClauses = extractDeclarationsFromClauseList(clauses, foreach, context)
 
-		return #[foreach.variable] + extractDeclarationsFromForeach(context.eContainer) + x
+		return #[foreach.variable] + extractDeclarationsFromForeach(context.eContainer) + declarationsFromClauses
 	}
 
 }
