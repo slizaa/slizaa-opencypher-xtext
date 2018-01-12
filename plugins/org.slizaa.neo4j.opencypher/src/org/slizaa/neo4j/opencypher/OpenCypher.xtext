@@ -49,9 +49,10 @@ Statement:
 Query:
 /*
  * query : regularQuery
+ *       | standaloneCall
  *       | bulkImportQuery;
  */
-	RegularQuery | BulkImportQuery;
+	RegularQuery | StandaloneCall | BulkImportQuery;
 
 RegularQuery:
 /*
@@ -109,7 +110,7 @@ Clause:
  * 
  * Comment: We handle 'createUnique' within the 'create' clause
  */
-	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return;
+	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return | InQueryCall;
 
 Command:
 /*
@@ -299,6 +300,33 @@ Foreach:
  * foreach : FOREACH ws '(' ws variable sp IN sp expression ws '|' ( sp clause )+ ws ')' ;
  */
 	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (clauses+=Clause)+ ')';
+
+InQueryCall:
+/*
+ * inQueryCall : CALL sp explicitProcedureInvocation ( YIELD sp yieldItems )? ;
+ */
+	'CALL' invocation=ExplicitProcedureInvocation ('YIELD' yieldItems=YieldItems)?;
+
+StandaloneCall:
+/*
+ * standaloneCall: 'CALL' sp ( ExplicitProcedureInvocation | ImplicitProcedureInvocation ) ( sp YIELD sp YieldItems )? ;
+ */
+	'CALL' invocation=(ExplicitProcedureInvocation | ImplicitProcedureInvocation) ('YIELD' yieldItems=YieldItems)?;
+
+YieldItems:
+/*
+ * YieldItems : ( YieldItem ( ',' YieldItem )* )
+ *            | '-'
+ *            ;
+ */
+	{YieldItems} ((items+=YieldItem (',' items+=YieldItem)*) | '-');
+
+YieldItem:
+/*
+ * YieldItem : ( ProcedureResultField sp AS sp )? Variable ;
+ */
+	 (field=ProcedureResultField 'AS')? variable=VariableDeclaration;
+
 
 With:
 /*
@@ -739,7 +767,39 @@ FunctionName:
 /*
  * functionName : symbolicName ;
  */
-	name=SYMBOLIC_NAME_X;
+	SYMBOLIC_NAME_X;
+
+ExplicitProcedureInvocation:
+/*
+ * ExplicitProcedureInvocation : ProcedureName '(' ( Expression ( ',' Expression )* )? ')' ;
+ */
+	procedureName=ProcedureName '(' (parameter+=Expression (',' parameter+=Expression)*)? ')';
+
+ProcedureResultField:
+/*
+ * ProcedureResultField : SymbolicName ;
+ */
+	SYMBOLIC_NAME_X;
+
+ImplicitProcedureInvocation:
+/*
+ * ImplicitProcedureInvocation : ProcedureName ;
+ */
+	ProcedureName;
+
+
+ProcedureName:
+/*
+ * ProcedureName : Namespace SymbolicName ;
+ */
+	 namespace=Namespace name=SYMBOLIC_NAME_X;
+
+Namespace:
+/**
+ * Namespace : ( SymbolicName '.' )* ;
+ */
+	(SYMBOLIC_NAME_X '.')*;
+
 
 ListComprehension:
 /*
