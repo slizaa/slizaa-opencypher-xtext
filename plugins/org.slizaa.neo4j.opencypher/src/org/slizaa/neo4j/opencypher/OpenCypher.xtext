@@ -751,9 +751,13 @@ StringListNullOperatorExpression returns Expression:
 PropertyOrLabelsExpression returns Expression:
 /*
  * oC_PropertyOrLabelsExpression : oC_Atom ( SP? oC_PropertyLookup )* ( SP? oC_NodeLabels )? ;
+ *
+ * Note: we want PropertyLookupExpression and NodeLabelsExpression to
+ * appear in the AST iff property lookups and node label constraints were given, respectively
  */
-	Atom ({PropertyOrLabelsExpression.left=current} propertyLookups+=PropertyLookup |
-	nodeLabelList+=NodeLabel)*;
+	Atom ({PropertyLookupExpression.left=current} propertyLookups+=PropertyLookup+)?
+	     ({NodeLabelsExpression.left=current} nodeLabels+=NodeLabel+)?
+	;
 
 Atom returns Expression:
 /*
