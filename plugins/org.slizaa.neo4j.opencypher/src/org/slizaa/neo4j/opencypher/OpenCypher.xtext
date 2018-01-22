@@ -293,7 +293,7 @@ RemoveItem:
  * removeItem : ( variable nodeLabels )
  *              | propertyExpression;
  */
-	(variable=VariableDeclaration nodeLabels=NodeLabels) | PropertyExpression;
+	({RemoveItemLabel} variable=VariableDeclaration nodeLabels=NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
 
 Foreach:
 /*
@@ -666,10 +666,15 @@ Expression3 returns Expression:
 
 ExpressionNodeLabelsAndPropertyLookup returns Expression:
 /*
- * expression2 : atom ( propertyLookup | nodeLabels )* ;
+ * this is a clarified and corrected form of openCypher spec M08 version which had ambiguity
+ * oC_PropertyOrLabelsExpression : oC_Atom ( SP? oC_PropertyLookup )* ( SP? oC_NodeLabels )?
+ *
+ * Note: we want ExpressionPropertyLookup and ExpressionNodeLabelsConstraint to
+ * appear in the AST iff property lookups and node label constraints were given, respectively
  */
-	Atom ({ExpressionNodeLabelsAndPropertyLookup.left=current} propertyLookups+=PropertyLookup |
-	nodeLabelList+=NodeLabel)*;
+	Atom ({ExpressionPropertyLookup.left=current} propertyLookups+=PropertyLookup+)?
+	     ({ExpressionNodeLabels.left=current} nodeLabels+=NodeLabel+)?
+	;
 
 /* Expression1 */
 Atom returns Expression:
@@ -871,7 +876,7 @@ PropertyExpression:
 /*
  * propertyExpression : atom ( ws propertyLookup )+ ;
  */
-	Atom (propertyLookups+=PropertyLookup)+;
+	left=Atom propertyLookups+=PropertyLookup+;
 
 PropertyKeyName:
 /*
