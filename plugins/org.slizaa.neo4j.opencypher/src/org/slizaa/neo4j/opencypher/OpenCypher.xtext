@@ -5,124 +5,197 @@ generate openCypher "http://www.slizaa.org/neo4j/opencypher/OpenCypher"
 
 Cypher:
 /*
- * cypher : ws queryOptions statement ( ws ';' )? ws ;
+ * oC_Cypher : SP? oC_QueryOptions oC_Statement ( SP? ';' )? SP? EOF ;
  */
 	{Cypher} queryOptions=QueryOptions statement=Statement ';'?;
 
 QueryOptions:
 /*
- * queryOptions : ( anyCypherOption ws )* ;
- * anyCypherOption : cypherOption
- *                 | explain
- *                 | profile
- *                 ;
- * explain : EXPLAIN ;
- * profile : PROFILE ;
+ * oC_QueryOptions : ( oC_AnyCypherOption SP? )* ;
+ * oC_AnyCypherOption : oC_CypherOption
+ *                    | oC_Explain
+ *                    | oC_Profile
+ *                    ;
+ * oC_Explain : EXPLAIN ;
+ * oC_Profile : PROFILE ;
  */
 	{AllOptions} (explain?='EXPLAIN'? & profile?='PROFILE'? & cypherOption+=CypherOption*);
 
 CypherOption:
 /*
- * cypherOption : CYPHER ( sp versionNumber )? ( sp configurationOption )* ;
+ * oC_CypherOption : CYPHER ( SP oC_VersionNumber )? ( SP oC_ConfigurationOption )* ;
  */
 	{CypherOption} 'CYPHER' (versionNumber=VersionNumber)? (configurationOption+=ConfigurationOption)*;
 
 VersionNumber:
 /*
- * versionNumber : DecimalInteger '.' DecimalInteger ;
+ * oC_VersionNumber : RegularDecimalReal ;
  */
 	versionNumber=Number;
 
 ConfigurationOption:
 /*
- * configurationOption : symbolicName ws '=' ws symbolicName ;
+ * oC_ConfigurationOption : oC_SymbolicName SP? '=' SP? oC_SymbolicName ;
  */
 	key=SYMBOLIC_NAME_X '=' value=SYMBOLIC_NAME_X;
 
 Statement:
 /*
- * statement : command
- *           | query;
+ * oC_Statement : oC_Command
+ *              | oC_Query
+ *              ;
  */
 	Command | Query;
 
 Query:
 /*
- * query : regularQuery
- *       | standaloneCall
- *       | bulkImportQuery;
+ * oC_Query : oC_RegularQuery
+ *          | oC_StandaloneCall
+ *          | oC_BulkImportQuery
+ *          ;
  */
 	RegularQuery | StandaloneCall | BulkImportQuery;
 
 RegularQuery:
 /*
- * regularQuery : singleQuery ( ws union )* ;
+ * oC_RegularQuery : oC_SingleQuery ( SP? oC_Union )* ;
  */
-	SingleQuery ({CombinedQuery.singleQuery=current} ( union+=Union )+ )? ;
+	SingleQuery ({CombinedQuery.singleQuery=current} (union+=Union)+)?;
 
 BulkImportQuery:
 /*
- * bulkImportQuery : periodicCommitHint ws loadCSVQuery ;
+ * oC_BulkImportQuery : oC_PeriodicCommitHint SP? oC_LoadCSVQuery ;
  */
 	periodicCommitHint=PeriodicCommitHint loadCSVQuery=LoadCSVQuery;
 
-SingleQuery:
-/*
- * singleQuery : clause ( ws clause )* ;
- */
-	clauses+=Clause (clauses+=Clause)*;
-
 PeriodicCommitHint:
 /*
- * periodicCommitHint : USING sp PERIODIC sp COMMIT ( sp signedIntegerLiteral )? ;
+ * oC_PeriodicCommitHint : USING SP PERIODIC SP COMMIT ( SP oC_IntegerLiteral )? ;
  */
 	{PeriodicCommitHint} 'USING' 'PERIODIC' 'COMMIT' numberOfRowsPerCommit=DecimalInteger?;
 
 LoadCSVQuery:
 /*
- * loadCSVQuery : loadCSV ( ws clause )* ;
+ * oC_LoadCSVQuery : oC_LoadCSV oC_SingleQuery ;
  */
-	loadCSV=LoadCSV (clauses+=Clause)*;
+	loadCSV=LoadCSV singleQuery=SingleQuery;
 
 Union:
 /*
- * union : ( UNION sp ALL singleQuery )
- *  | ( UNION singleQuery );
+ * oC_Union : ( UNION SP ALL SP? oC_SingleQuery )
+ *          | ( UNION SP? oC_SingleQuery )
+ *          ;
  */
 	('UNION' all?='ALL'? singleQuery=SingleQuery);
 
-Clause:
+SingleQuery:
 /*
- * clause : loadCSV
- *        | start
- *        | match
- *        | unwind
- *        | merge
- *        | create
- *        | createUnique
- *        | set
- *        | delete
- *        | remove
- *        | foreach
- *        | with
- *        | return
- *        ;
- * 
- * Comment: We handle 'createUnique' within the 'create' clause
+ * oC_SingleQuery : oC_SinglePartQuery
+ *                | oC_MultiPartQuery
+ *                ;
  */
-	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return | InQueryCall;
+	SinglePartQuery | MultiPartQuery;
+
+SinglePartQuery:
+/*
+ * oC_SinglePartQuery : oC_ReadOnlyEnd
+ *                    | oC_ReadUpdateEnd
+ *                    | oC_UpdatingEnd
+ *                    ;
+ */
+	ReadOnlyEnd | ReadUpdateEnd | UpdatingEnd;
+
+ReadOnlyEnd:
+/*
+ * oC_ReadOnlyEnd : oC_ReadPart oC_Return ;
+ */
+	readPart=ReadPart return=Return;
+
+ReadUpdateEnd:
+/*
+ * oC_ReadUpdateEnd : oC_ReadingClause ( SP? oC_ReadingClause )* ( SP? oC_UpdatingClause )+ ( SP? oC_Return )? ;
+ */
+	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return?=Return;
+
+UpdatingEnd:
+/*
+ * oC_UpdatingEnd : oC_UpdatingStartClause ( SP? oC_UpdatingClause )* ( SP? oC_Return )? ;
+ */
+	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return?=Return;
+
+MultiPartQuery:
+/*
+ * oC_MultiPartQuery : ( oC_ReadPart | ( oC_UpdatingStartClause SP? oC_UpdatingPart ) ) oC_With SP? ( oC_ReadPart oC_UpdatingPart oC_With SP? )* oC_SinglePartQuery ;
+ * 
+ * Comment: withPart instead of with as 'with' is a key word of xtext
+ * Comment: introduced MultiPartSubQuery to encapsulate the repeating group
+ */
+	(readPart=ReadPart | updatingStartClause=UpdatingStartClause updatingPart=UpdatingPart) withPart=With
+	(subQueries+=MultiPartSubQuery)* singlePartQuery=SinglePartQuery;
+
+MultiPartSubQuery:
+/*
+ * readPart updatingPart with
+ */
+	readPart=ReadPart updatingPart=UpdatingPart withPart=With;
+
+ReadPart:
+/*
+ * oC_ReadPart : ( oC_ReadingClause SP? )* 
+ */
+	{ReadPart} readingClause+=ReadingClause*;
+
+UpdatingPart:
+/*
+ * oC_UpdatingPart : ( oC_UpdatingClause SP? )* ;
+ */
+	{UpdatingPart} updatingClauses+=UpdatingClause*;
+
+UpdatingStartClause:
+/*
+ * oC_UpdatingStartClause : oC_Create
+ *                        | oC_Merge
+ *                        | oC_CreateUnique
+ *                        | oC_Foreach
+ *                        ;
+ */
+	Create | Merge | CreateUnique | Foreach;
+
+UpdatingClause:
+/*
+ * oC_UpdatingClause : oC_Create
+ *                   | oC_Merge
+ *                   | oC_CreateUnique
+ *                   | oC_Foreach
+ *                   | oC_Delete
+ *                   | oC_Set
+ *                   | oC_Remove
+ *                   ;
+ */
+	Create | Merge | CreateUnique | Foreach | Delete | Set | Remove;
+
+ReadingClause:
+/*
+ * oC_ReadingClause : oC_LoadCSV
+ *                  | oC_Start
+ *                  | oC_Match
+ *                  | oC_Unwind
+ *                  | oC_InQueryCall
+ *                  ;
+ */
+	LoadCSV | Start | Match | Unwind | InQueryCall;
 
 Command:
 /*
- * command : createIndex
- *         | dropIndex
- *         | createUniqueConstraint
- *         | dropUniqueConstraint
- *         | createNodePropertyExistenceConstraint
- *         | dropNodePropertyExistenceConstraint
- *         | createRelationshipPropertyExistenceConstraint
- *         | dropRelationshipPropertyExistenceConstraint
- *         ;
+ * oC_Command : oC_CreateIndex
+ *            | oC_DropIndex
+ *            | oC_CreateUniqueConstraint
+ *            | oC_DropUniqueConstraint
+ *            | oC_CreateNodePropertyExistenceConstraint
+ *            | oC_DropNodePropertyExistenceConstraint
+ *            | oC_CreateRelationshipPropertyExistenceConstraint
+ *            | oC_DropRelationshipPropertyExistenceConstraint
+ *            ;
  */
 	CreateIndex | DropIndex | CreateUniqueConstraint | DropUniqueConstraint | CreateNodePropertyExistenceConstraint |
 	DropNodePropertyExistenceConstraint | CreateRelationshipPropertyExistenceConstraint |
@@ -130,87 +203,89 @@ Command:
 
 CreateUniqueConstraint:
 /*
- * createUniqueConstraint : CREATE sp uniqueConstraint ;
+ * oC_CreateUniqueConstraint : CREATE SP oC_UniqueConstraint ;
  */
 	'CREATE' UniqueConstraint;
 
 CreateNodePropertyExistenceConstraint:
 /*
- * createNodePropertyExistenceConstraint : CREATE sp nodePropertyExistenceConstraint ;
+ * oC_CreateNodePropertyExistenceConstraint : CREATE SP oC_NodePropertyExistenceConstraint ;
  */
 	'CREATE' NodePropertyExistenceConstraint;
 
 CreateRelationshipPropertyExistenceConstraint:
 /*
- * createRelationshipPropertyExistenceConstraint : CREATE sp relationshipPropertyExistenceConstraint ;
+ * oC_CreateRelationshipPropertyExistenceConstraint : CREATE SP oC_RelationshipPropertyExistenceConstraint ;
  */
 	'CREATE' RelationshipPropertyExistenceConstraint;
 
 CreateIndex:
 /*
- * createIndex : CREATE sp index ;
+ * oC_CreateIndex : CREATE SP oC_Index ;
  */
 	'CREATE' index=Index;
 
 DropUniqueConstraint:
 /*
- * dropUniqueConstraint : DROP sp uniqueConstraint ;
+ * oC_DropUniqueConstraint : DROP SP oC_UniqueConstraint ;
  */
 	'DROP' uniqueConstraint=UniqueConstraint;
-
+	
 DropNodePropertyExistenceConstraint:
 /*
- * dropNodePropertyExistenceConstraint : DROP sp nodePropertyExistenceConstraint ;
+ * oC_DropNodePropertyExistenceConstraint : DROP SP oC_NodePropertyExistenceConstraint ;
  */
 	'DROP' nodePropertyExistenceConstraint=NodePropertyExistenceConstraint;
 
 DropRelationshipPropertyExistenceConstraint:
 /*
- * dropRelationshipPropertyExistenceConstraint : DROP sp relationshipPropertyExistenceConstraint ;
+ * oC_DropRelationshipPropertyExistenceConstraint : DROP SP oC_RelationshipPropertyExistenceConstraint ;
  */
 	'DROP' relationshipPropertyExistenceConstraint=RelationshipPropertyExistenceConstraint;
 
 DropIndex:
 /*
- * dropIndex : DROP sp index ;
+ * oC_DropIndex : DROP SP oC_Index ;
  */
 	'DROP' index=Index;
 
 Index:
 /*
- * index : INDEX sp ON ws nodeLabel '(' propertyKeyName ')' ;
+ * oC_Index : INDEX SP ON SP? oC_NodeLabel '(' oC_PropertyKeyName ')' ;
  */
 	'INDEX' 'ON' nodeLabel=NodeLabel '(' propertyKeyName=PropertyKeyName ')';
-
+	
 UniqueConstraint:
 /*
- * uniqueConstraint : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ws ASSERT sp propertyExpression sp IS sp UNIQUE ;
+ * oC_UniqueConstraint : CONSTRAINT SP ON SP? '(' oC_Variable oC_NodeLabel ')' SP? ASSERT SP oC_PropertyExpression SP IS SP UNIQUE ;
  */
-	'CONSTRAINT' 'ON' '(' variable=VariableDeclaration nodeLabel=NodeLabel ')' 'ASSERT' propertyExpression=PropertyExpression 'IS'
+	'CONSTRAINT' 'ON' '(' variable=VariableDeclaration nodeLabel=NodeLabel ')' 'ASSERT'
+	propertyExpression=PropertyExpression 'IS'
 	'UNIQUE';
 
 NodePropertyExistenceConstraint:
 /*
- * nodePropertyExistenceConstraint : CONSTRAINT sp ON ws '(' variable nodeLabel ')' ws ASSERT sp EXISTS ws '(' propertyExpression ')' ;
+ * oC_NodePropertyExistenceConstraint : CONSTRAINT SP ON SP? '(' oC_Variable oC_NodeLabel ')' SP? ASSERT SP EXISTS SP? '(' oC_PropertyExpression ')' ;
  */
 	'CONSTRAINT' 'ON' '(' variable=VariableDeclaration nodeLabel=NodeLabel ')' 'ASSERT' 'EXISTS' '('
-	propertyExpression=PropertyExpression ')';
+	propertyExpression=PropertyExpression ')';		
 
 RelationshipPropertyExistenceConstraint:
 /*
- * relationshipPropertyExistenceConstraint : CONSTRAINT sp ON ws relationshipPatternSyntax ws ASSERT sp EXISTS ws '(' propertyExpression ')' ;
+ * oC_RelationshipPropertyExistenceConstraint : CONSTRAINT SP ON SP? oC_RelationshipPatternSyntax SP? ASSERT SP EXISTS SP? '(' oC_PropertyExpression ')' ;
  */
 	'CONSTRAINT' 'ON' relationshipPattern=RelationshipPatternSyntax 'ASSERT' 'EXISTS' '('
 	propertyExpression=PropertyExpression ')';
 
 RelationshipPatternSyntax:
 /*
- * relationshipPatternSyntax : ( '(' ws ')' dash '[' variable relType ']' dash '(' ws ')' )
- *                           | ( '(' ws ')' dash '[' variable relType ']' rightArrowHead dash '(' ws ')' )
- *                           | ( '(' ws ')' leftArrowHead dash '[' variable relType ']' dash '(' ws ')' );
+ * oC_RelationshipPatternSyntax : ( '(' SP? ')' oC_Dash '[' oC_Variable oC_RelType ']' oC_Dash '(' SP? ')' )
+ *                              | ( '(' SP? ')' oC_Dash '[' oC_Variable oC_RelType ']' oC_Dash oC_RightArrowHead '(' SP? ')' )
+ *                              | ( '(' SP? ')' oC_LeftArrowHead oC_Dash '[' oC_Variable oC_RelType ']' oC_Dash '(' SP? ')' )
+ *                              ;
  */
-	('(' ')' incoming?=LeftArrowHead? Dash '[' variable=VariableDeclaration relType=RelType ']' Dash outgoing?=RightArrowHead? '('
-	')');
+	('(' ')' incoming?=LeftArrowHead? Dash '[' variable=VariableDeclaration relType=RelType ']' Dash
+	outgoing?=RightArrowHead? '(' ')');
 
 LoadCSV:
 /*
@@ -218,7 +293,8 @@ LoadCSV:
  * 
  * Comment: For simplicity we split up the antlr clause in xtext clauses 'LoadCSV' and 'LoadCSVWithHeaders'
  */
-	{LoadCSV} 'LOAD' 'CSV' withHeaders?=LoadCSVWithHeaders? 'FROM' expression=Expression 'AS' variable=VariableDeclaration
+	{LoadCSV} 'LOAD' 'CSV' withHeaders?=LoadCSVWithHeaders? 'FROM' expression=Expression 'AS'
+	variable=VariableDeclaration
 	('FIELDTERMINATOR' fieldterminator=STRING_LITERAL)?;
 
 LoadCSVWithHeaders:
@@ -226,455 +302,465 @@ LoadCSVWithHeaders:
 
 Match:
 /*
- * match : ( OPTIONAL sp )? MATCH ws pattern ( hint )* ( ws where )? ;
+ * oC_Match : ( OPTIONAL SP )? MATCH SP? oC_Pattern ( oC_Hint )* ( SP? oC_Where )? ;
  */
 	optional?='OPTIONAL'? 'MATCH' pattern=Pattern (hints+=Hint)* where=Where?;
 
 Unwind:
 /*
- * unwind : UNWIND ws expression sp AS sp variable ;
+ * oC_Unwind : UNWIND SP? oC_Expression SP AS SP oC_Variable ;
  */
 	'UNWIND' expression=Expression 'AS' variable=VariableDeclaration;
 
 Merge:
 /*
- * merge : MERGE ws patternPart ( sp mergeAction )* ;
+ * oC_Merge : MERGE SP? oC_PatternPart ( SP oC_MergeAction )* ;
  */
 	'MERGE' patternPart=PatternPart (mergeActions+=MergeAction)*;
 
 MergeAction:
 /*
- * mergeAction : ( ON sp MATCH sp set )
- *             | ( ON sp CREATE sp set )
- *             ;
+ * oC_MergeAction : ( ON SP MATCH SP oC_Set )
+ *                | ( ON SP CREATE SP oC_Set )
+ *                ;
  */
 	'ON' action=('MATCH' | 'CREATE') set=Set;
-
+	
 Create:
 /*
- * create : CREATE ws pattern ;
- * createUnique : CREATE sp UNIQUE ws pattern ;
- * 
- * Comment: We handle 'create' and 'createUnqiue' in the same clause
+ * oC_Create : CREATE SP? oC_Pattern ;
  */
-	'CREATE' unique?='UNIQUE'? pattern=Pattern;
+	'CREATE' pattern=Pattern;
 
+CreateUnique:
+/*
+ * oC_CreateUnique : CREATE SP UNIQUE SP? oC_Pattern ;
+ */	
+	'CREATE' uniqueContraint=UniqueConstraint;
+	
 Set:
 /*
- * set : SET setItem ( ',' setItem )* ;
+ * oC_Set : SET SP? oC_SetItem ( ',' oC_SetItem )* ;
  */
 	'SET' setItems+=SetItem (',' setItems+=SetItem)*;
 
 SetItem:
 /*
- * setItem : ( propertyExpression '=' expression )
- *         | ( variable '=' expression )
- *         | ( variable '+=' expression )
- *         | ( variable nodeLabels );
+ * oC_SetItem : ( oC_PropertyExpression SP? '=' SP? oC_Expression )
+ *            | ( oC_Variable SP? '=' SP? oC_Expression )
+ *            | ( oC_Variable SP? '+=' SP? oC_Expression )
+ *            | ( oC_Variable SP? oC_NodeLabels )
+ *            ;
  */
-	(propertyExpression=PropertyExpression '=' expression=Expression) | (variable=VariableDeclaration '=' expression=Expression) |
-	(variable=VariableDeclaration '+=' expression=Expression) | (variable=VariableDeclaration nodeLabels=NodeLabels);
+	(propertyExpression=PropertyExpression '=' expression=Expression) | (variable=VariableDeclaration '='
+	expression=Expression) | (variable=VariableDeclaration '+=' expression=Expression) | (variable=VariableDeclaration
+	nodeLabels=NodeLabels);	
 
 Delete:
 /*
- * delete : ( DELETE expression ( ',' expression )* )
- *        | ( DETACH sp DELETE expression ( ',' expression )* );
+ * oC_Delete : ( DETACH SP )? DELETE SP? oC_Expression ( SP? ',' SP? oC_Expression )* ;
  */
 	(detach?='DETACH')? 'DELETE' expressions+=Expression (',' expressions+=Expression)*;
 
 Remove:
 /*
- * remove : REMOVE sp removeItem ( ws ',' ws removeItem )* ;
+ * oC_Remove : REMOVE SP oC_RemoveItem ( SP? ',' SP? oC_RemoveItem )* ;
  */
 	'REMOVE' removeItems+=RemoveItem (',' removeItems+=RemoveItem)*;
 
 RemoveItem:
 /*
- * removeItem : ( variable nodeLabels )
- *              | propertyExpression;
+ * oC_RemoveItem : ( oC_Variable oC_NodeLabels )
+ *               | oC_PropertyExpression
+ *               ;
  */
-	({RemoveItemLabel} variable=VariableDeclaration nodeLabels=NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
+	(variable=VariableDeclaration nodeLabels=NodeLabels) | PropertyExpression;
 
 Foreach:
 /*
- * foreach : FOREACH ws '(' ws variable sp IN sp expression ws '|' ( sp clause )+ ws ')' ;
+ * oC_Foreach : FOREACH SP? '(' SP? oC_Variable SP IN SP oC_Expression SP? '|' ( SP oC_UpdatingClause )+ SP? ')' ;
  */
 	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (clauses+=Clause)+ ')';
 
 InQueryCall:
 /*
- * inQueryCall : CALL sp explicitProcedureInvocation ( YIELD sp yieldItems )? ;
+ * oC_InQueryCall : CALL SP oC_ExplicitProcedureInvocation ( SP? YIELD SP oC_YieldItems )? ;
  */
 	'CALL' invocation=ExplicitProcedureInvocation ('YIELD' yieldItems=YieldItems)?;
 
 StandaloneCall:
 /*
- * standaloneCall: 'CALL' sp ( ExplicitProcedureInvocation | ImplicitProcedureInvocation ) ( sp YIELD sp YieldItems )? ;
+ * oC_StandaloneCall : CALL SP ( oC_ExplicitProcedureInvocation | oC_ImplicitProcedureInvocation ) ( SP YIELD SP oC_YieldItems )? ;
  */
 	'CALL' invocation=(ExplicitProcedureInvocation | ImplicitProcedureInvocation) ('YIELD' yieldItems=YieldItems)?;
 
 YieldItems:
 /*
- * YieldItems : ( YieldItem ( ',' YieldItem )* )
- *            | '-'
- *            ;
+ * oC_YieldItems : ( oC_YieldItem ( SP? ',' SP? oC_YieldItem )* )
+ *               | '-'
+ *               ;
  */
 	{YieldItems} ((items+=YieldItem (',' items+=YieldItem)*) | '-');
 
 YieldItem:
 /*
- * YieldItem : ( ProcedureResultField sp AS sp )? Variable ;
+ * oC_YieldItem : ( oC_ProcedureResultField SP AS SP )? oC_Variable ;
  */
-	 (field=ProcedureResultField 'AS')? variable=VariableDeclaration;
-
+	(field=ProcedureResultField 'AS')? variable=VariableDeclaration;
 
 With:
 /*
- * with : ( WITH DISTINCT sp returnBody where? )
- *      | ( WITH sp returnBody where? );
+ * oC_With : WITH ( SP? DISTINCT )? SP oC_ReturnBody ( SP? oC_Where )? ;
  */
 	'WITH' distint?='DISTINCT'? returnBody=ReturnBody where=Where?;
 
 Return:
 /*
- * return : ( RETURN sp DISTINCT sp returnBody )
- *        | ( RETURN sp returnBody );
+ * oC_Return : RETURN ( SP? DISTINCT )? SP oC_ReturnBody ;
  */
 	(return='RETURN' distinct?='DISTINCT'? body=ReturnBody);
 
 ReturnBody:
 /*
- * returnBody : returnItems ( sp order )? ( sp skip )? ( sp limit )? ;
+ * oC_ReturnBody : oC_ReturnItems ( SP oC_Order )? ( SP oC_Skip )? ( SP oC_Limit )? ;
  */
 	returnItems=ReturnItems (order=Order)? (skip=Skip)? (limit=Limit)?;
 
 ReturnItems:
 /*
- * returnItems : ( '*' ( ws ',' ws returnItem )* )
- *             | ( returnItem ( ws ',' ws returnItem )* );
+ * oC_ReturnItems : ( '*' ( SP? ',' SP? oC_ReturnItem )* )
+ *                | ( oC_ReturnItem ( SP? ',' SP? oC_ReturnItem )* )
+ *                ;
  */
 	{ReturnItems} (all='*' (',' items+=ReturnItem)*) | (items+=ReturnItem (',' items+=ReturnItem)*);
 
 ReturnItem:
 /*
- * returnItem : ( expression sp AS sp variable )
- *              | expression;
+ * oC_ReturnItem : ( oC_Expression SP AS SP oC_Variable )
+ *               | oC_Expression
+ *               ;
  */
 	expression=Expression ('AS' alias=VariableDeclaration)?;
 
 Order:
 /*
- * order : ORDER sp BY sp sortItem ( ',' ws sortItem )* ;
+ * oC_Order : ORDER SP BY SP oC_SortItem ( ',' SP? oC_SortItem )* ;
  */
 	'ORDER' 'BY' orderBy+=SortItem (',' orderBy+=SortItem)*;
 
 Skip:
 /*
- * skip: L_SKIP sp expression;
+ * oC_Skip : L_SKIP SP oC_Expression ;
  */
 	'SKIP' skip=Expression;
 
 Limit:
 /*
- * limit: LIMIT sp expression;
+ * oC_Limit : LIMIT SP oC_Expression ;
  */
 	'LIMIT' limit=Expression;
 
 SortItem:
 /*
- * sortItem : ( expression ( DESCENDING | DESC ) )
- *          | ( expression ( ASCENDING | ASC )? );
+ * oC_SortItem : oC_Expression ( SP? ( ASCENDING | ASC | DESCENDING | DESC ) )? ;
  */
 	(expression=Expression sort=('DESCENDING' | 'DESC' | 'ASCENDING' | 'ASC')?);
 
 Hint hidden():
 /*
- * hint : ws ( ( USING sp INDEX sp variable nodeLabel '(' propertyKeyName ')' ) 
- *      | ( USING sp JOIN sp ON sp variable ( ws ',' ws variable )* ) 
- *      | ( USING sp SCAN sp variable nodeLabel ) ) ;
+ * oC_Hint : SP? ( ( USING SP INDEX SP oC_Variable oC_NodeLabel '(' oC_PropertyKeyName ')' ) | ( USING SP JOIN SP ON SP oC_Variable ( SP? ',' SP? oC_Variable )* ) | ( USING SP SCAN SP oC_Variable oC_NodeLabel ) ) ;
  */
-	{IndexHint} 'USING' WS 'INDEX' WS variable=VariableDeclaration nodeLabel=NodeLabel WS '(' propertyKeyName=PropertyKeyName ')' |
-	{JoinHint} ('USING' WS 'JOIN' WS 'ON' variables+=VariableDeclaration (',' variables+=VariableDeclaration)*) | {ScanHint} ('USING' WS 'SCAN'
-	WS variable=VariableDeclaration nodeLabel=NodeLabel);
+	{IndexHint} 'USING' WS 'INDEX' WS variable=VariableDeclaration nodeLabel=NodeLabel WS '('
+	propertyKeyName=PropertyKeyName ')' | {JoinHint} ('USING' WS 'JOIN' WS 'ON' variables+=VariableDeclaration (','
+	variables+=VariableDeclaration)*) | {ScanHint} ('USING' WS 'SCAN' WS variable=VariableDeclaration
+	nodeLabel=NodeLabel);
 
 Start:
 /*
- * start : START sp startPoint ( ws ',' ws startPoint )* where? ;
+ * oC_Start : START SP oC_StartPoint ( SP? ',' SP? oC_StartPoint )* oC_Where? ;
  */
 	'START' startPoint+=StartPoint (',' startPoint+=StartPoint)* where=Where?;
 
 StartPoint:
 /*
- * startPoint : variable ws '=' ws lookup ;
+ * oC_StartPoint : oC_Variable SP? '=' SP? oC_Lookup ;
  */
 	variable=VariableDeclaration '=' lookup=Lookup;
 
 Lookup:
 /*
- * lookup : nodeLookup
- *        | relationshipLookup;
+ * oC_Lookup : oC_NodeLookup
+ *           | oC_RelationshipLookup
+ *           ;
  */
 	NodeLookup | RelationshipLookup;
 
 NodeLookup:
 /*
- * nodeLookup : NODE ( identifiedIndexLookup | indexQuery | idLookup ) ;
+ * oC_NodeLookup : NODE SP? ( oC_IdentifiedIndexLookup | oC_IndexQuery | oC_IdLookup ) ;
  */
 	'NODE' (IdentifiedIndexLookup | IndexQuery | IdLookup);
 
 RelationshipLookup:
 /*
- * relationshipLookup : ( RELATIONSHIP | REL ) ( identifiedIndexLookup | indexQuery | idLookup ) ;
+ * oC_RelationshipLookup : ( RELATIONSHIP | REL ) ( oC_IdentifiedIndexLookup | oC_IndexQuery | oC_IdLookup ) ;
  */
 	('RELATIONSHIP' | 'REL') (IdentifiedIndexLookup | IndexQuery | IdLookup);
 
 IdentifiedIndexLookup:
 /*
- * identifiedIndexLookup : ':' symbolicName '(' symbolicName '=' ( StringLiteral | legacyParameter ) ')' ;
+ * oC_IdentifiedIndexLookup : ':' oC_SymbolicName '(' oC_SymbolicName '=' ( StringLiteral | oC_LegacyParameter ) ')' ;
  */
-	':' indexName=SYMBOLIC_NAME_X '(' key=SYMBOLIC_NAME_X '=' (value=STRING_LITERAL | legacyParameter=LegacyParameter) ')';
+	':' indexName=SYMBOLIC_NAME_X '(' key=SYMBOLIC_NAME_X '=' (value=STRING_LITERAL | legacyParameter=LegacyParameter)
+	')';
 
 IndexQuery:
 /*
- * indexQuery : ':' symbolicName '(' ( StringLiteral | legacyParameter ) ')' ;
+ * oC_IndexQuery : ':' oC_SymbolicName '(' ( StringLiteral | oC_LegacyParameter ) ')' ;
  */
 	':' indexName=SYMBOLIC_NAME_X '(' (query=STRING_LITERAL | parameter=Parameter) ')';
 
 IdLookup:
 /*
- * idLookup : '(' ( literalIds | legacyParameter | '*' ) ')' ;
+ * oC_IdLookup : '(' ( oC_LiteralIds | oC_LegacyParameter | '*' ) ')' ;
  */
 	'(' (ids=LiteralIds | legacyParameter=Parameter | wildcard='*') ')';
 
 LiteralIds:
 /*
- * literalIds : unsignedIntegerLiteral ( ws ',' ws unsignedIntegerLiteral )*;
+ * oC_LiteralIds : oC_IntegerLiteral ( SP? ',' SP? oC_IntegerLiteral )* ;
  */
 	ids+=DecimalInteger (',' ids+=DecimalInteger)*;
 
 Where:
 /*
- * where : WHERE sp expression;
+ * oC_Where : WHERE SP oC_Expression ;
  */
 	'WHERE' expression=Expression;
 
 Pattern:
 /*
- * pattern : patternPart ( ',' patternPart )*;
+ * oC_Pattern : oC_PatternPart ( SP? ',' SP? oC_PatternPart )* ;
  */
 	patterns+=PatternPart (',' patterns+=PatternPart)*;
 
 PatternPart:
 /*
- * patternPart : ( variable ws '=' ws anonymousPatternPart )
- *               | anonymousPatternPart;
+ * oC_PatternPart : ( oC_Variable SP? '=' SP? oC_AnonymousPatternPart )
+ *                | oC_AnonymousPatternPart
+ *                ;
  */
 	(var=VariableDeclaration '=' part=AnonymousPatternPart) | AnonymousPatternPart;
 
 AnonymousPatternPart:
 /*
- * anonymousPatternPart : shortestPathPattern
- *                      | patternElement;
+ * oC_AnonymousPatternPart : oC_ShortestPathPattern
+ *                         | oC_PatternElement
+ *                         ;
  */
 	ShortestPathPattern | PatternElement;
 
 ShortestPathPattern:
 /*
- * shortestPathPattern : ( SHORTESTPATH '(' patternElement ')' )
- *                     | ( ALLSHORTESTPATHS '(' patternElement ')' );
+ * oC_ShortestPathPattern : ( SHORTESTPATH '(' oC_PatternElement ')' )
+ *                        | ( ALLSHORTESTPATHS '(' oC_PatternElement ')' )
+ *                        ;
  */
 	{ShortestPath} 'SHORTESTPATH' '(' patternElement=PatternElement ')' | {AllShortestPaths} 'ALLSHORTESTPATHS' '('
 	patternElement=PatternElement ')';
 
 PatternElement:
 /*
- * patternElement : ( nodePattern ( ws patternElementChain )* )
- *                | ( '(' patternElement ')' );
+ * oC_PatternElement : ( oC_NodePattern ( SP? oC_PatternElementChain )* )
+ *                   | ( '(' oC_PatternElement ')' )
+ *                   ;
  */
 	(nodepattern=NodePattern (chain+=PatternElementChain)*) | '(' PatternElement ')';
 
 NodePattern:
 /*
- * nodePattern : '(' ws ( variable ws )? ( nodeLabels ws )? ( properties ws )? ')' ;
+ * oC_NodePattern : '(' SP? ( oC_Variable SP? )? ( oC_NodeLabels SP? )? ( oC_Properties SP? )? ')' ;
  */
 	{NodePattern} '(' variable=VariableDeclaration? nodeLabels=NodeLabels? properties=Properties? ')';
 
 PatternElementChain:
 /*
- * patternElementChain : relationshipPattern ws nodePattern ;
+ * oC_PatternElementChain : oC_RelationshipPattern SP? oC_NodePattern ;
  */
 	relationshipPattern=RelationshipPattern nodePattern=NodePattern;
 
 RelationshipPattern:
 /*
- * relationshipPattern : ( leftArrowHead ws dash ws relationshipDetail? ws dash ws rightArrowHead )
- *                     | ( leftArrowHead ws dash ws relationshipDetail? ws dash )
- *                     | ( dash ws relationshipDetail? ws dash ws rightArrowHead )
- *                     | ( dash ws relationshipDetail? ws dash )
- *                     ;
+ * oC_RelationshipPattern : ( oC_LeftArrowHead SP? oC_Dash SP? oC_RelationshipDetail? SP? oC_Dash SP? oC_RightArrowHead )
+ *                        | ( oC_LeftArrowHead SP? oC_Dash SP? oC_RelationshipDetail? SP? oC_Dash )
+ *                        | ( oC_Dash SP? oC_RelationshipDetail? SP? oC_Dash SP? oC_RightArrowHead )
+ *                        | ( oC_Dash SP? oC_RelationshipDetail? SP? oC_Dash )
+ *                        ;
  */
 	{RelationshipPattern} (incoming?=LeftArrowHead? Dash detail=RelationshipDetail? Dash outgoing?=RightArrowHead?);
 
 RelationshipDetail:
 /*
- * relationshipDetail : '[' variable? '?'? relationshipTypes? ( '*' rangeLiteral )? properties? ']' ;
+ * oC_RelationshipDetail : '[' SP? ( oC_Variable SP? )? ( oC_RelationshipTypes SP? )? oC_RangeLiteral? ( oC_Properties SP? )? ']' ;
  */
 	{RelationshipDetail} '[' variable=VariableDeclaration? optional?='?'? types=RelationshipTypes? (range=RangeLiteral)?
 	properties=Properties? ']';
 
 Properties:
 /*
- * properties : mapLiteral
- *            | parameter
- *            | legacyParameter
- *            ;
+ * oC_Properties : oC_MapLiteral
+ *               | oC_Parameter
+ *               | oC_LegacyParameter
+ *               ;
  */
 	MapLiteral | Parameter | LegacyParameter;
 
 RelType:
 /*
- * relType : ':' relTypeName ;
+ * oC_RelType : ':' SP? oC_RelTypeName ;
  */
 	':' RelTypeName;
 
 RelationshipTypes:
 /*
- * relationshipTypes : ':' relTypeName ( ws '|' ':'? ws relTypeName )* ;
+ * oC_RelationshipTypes : ':' SP? oC_RelTypeName ( SP? '|' ':'? SP? oC_RelTypeName )* ;
  */
 	':' relTypeName+=RelTypeName ('|' ':'? relTypeName+=RelTypeName)*;
 
 NodeLabels:
 /*
- * nodeLabels : nodeLabel ( ws nodeLabel )* ;
+ * oC_NodeLabels : oC_NodeLabel ( SP? oC_NodeLabel )* ;
  */
 	nodeLabels+=NodeLabel (nodeLabels+=NodeLabel)*;
 
 NodeLabel:
 /*
- * nodeLabel : ':' labelName ;
+ * oC_NodeLabel : ':' SP? oC_LabelName ;
  */
 	':' labelName=LabelName;
 
 RangeLiteral:
 /*
- * rangeLiteral : ws ( integerLiteral ws )? ( '..' ws ( integerLiteral ws )? )? ;
+ * oC_RangeLiteral : '*' SP? ( oC_IntegerLiteral SP? )? ( '..' SP? ( oC_IntegerLiteral SP? )? )? ;
  * 
  * Comment: Format of IntegerLiteral is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkRangeLiteralFormat(RangeLiteral)
  */
-	{RangeLiteral} '*' (lower=Number? ('..' upper=Number? )? )?;
+	{RangeLiteral} '*' (lower=Number? ('..' upper=Number?)?)?;
 
 LabelName:
 /*
- * labelName : symbolicName ;
+ * oC_LabelName : oC_SchemaName ;
  */
+ // TODO
 	SYMBOLIC_NAME_X;
 
 RelTypeName:
 /*
- * relTypeName : symbolicName ;
+ * oC_RelTypeName : oC_SchemaName ;
  */
+  // TODO
 	SYMBOLIC_NAME_X;
 
 Expression:
 /*
- * expression : expression12 ;
+ * oC_Expression : oC_OrExpression ;
  */
-	ExpressionOr;
+	OrExpression;
 
-ExpressionOr returns Expression:
+OrExpression returns Expression:
 /*
- * expression12 : expression11 ( sp OR sp expression11 )* ;
+ * oC_OrExpression : oC_XorExpression ( SP OR SP oC_XorExpression )* ;
  */
-	ExpressionXor ({ExpressionOr.left=current} operator='OR' right=ExpressionXor)*;
+	XorExpression ({OrExpression.left=current} operator='OR' right=XorExpression)*;
 
-ExpressionXor returns Expression:
+XorExpression returns Expression:
 /*
- * expression11 : expression10 ( sp XOR sp expression10 )* ;
+ * oC_XorExpression : oC_AndExpression ( SP XOR SP oC_AndExpression )* ;
  */
-	ExpressionAnd ({ExpressionXor.left=current} operator='XOR' right=ExpressionAnd)*;
+	AndExpression ({ExpressionXor.left=current} operator='XOR' right=AndExpression)*;
 
-ExpressionAnd returns Expression:
+AndExpression returns Expression:
 /*
- * expression10 : expression9 ( sp AND sp expression9 )* ;
+ * oC_AndExpression : oC_NotExpression ( SP AND SP oC_NotExpression )* ;
  */
-	ExpressionNot ({ExpressionAnd.left=current} operator='AND' right=ExpressionNot)*;
+	NotExpression ({ExpressionAnd.left=current} operator='AND' right=NotExpression)*;
 
-ExpressionNot returns Expression:
+NotExpression returns Expression:
 /*
- * expression9 : ( sp NOT sp )* expression8 ;
+ * oC_NotExpression : ( NOT SP? )* oC_ComparisonExpression ;
  * 
  * Comment: Clause is modeled on the former antlr clause 'expression9 : ( sp NOT sp expression9 ) | expression8;'
  * We should eventually adjust this...
  */
-	({ExpressionNot} operator='NOT' left=ExpressionNot) | ExpressionComparison;
+//TODO
+	({ExpressionNot} operator='NOT' left=NotExpression) | ComparisonExpression;
 
-ExpressionComparison returns Expression:
+ComparisonExpression returns Expression:
 /*
- * expression8 : expression7 ( ws partialComparisonExpression )* ;
+ * oC_ComparisonExpression : oC_AddOrSubtractExpression ( SP? oC_PartialComparisonExpression )* ;
  * 
- * partialComparisonExpression : ( '=' ws expression7 )
- *                             | ( '<>' ws expression7 )
- *                             | ( '<' ws expression7 )
- *                             | ( '>' ws expression7 )
- *                             | ( '<=' ws expression7 )
- *                             | ( '>=' ws expression7 );
+ * oC_PartialComparisonExpression : ( '=' SP? oC_AddOrSubtractExpression )
+ *                                | ( '<>' SP? oC_AddOrSubtractExpression )
+ *                                | ( '<' SP? oC_AddOrSubtractExpression )
+ *                                | ( '>' SP? oC_AddOrSubtractExpression )
+ *                                | ( '<=' SP? oC_AddOrSubtractExpression )
+ *                                | ( '>=' SP? oC_AddOrSubtractExpression )
+ *                                ;
  * 
- * Comment: combined clause for 'expression8' and 'partialComparisonExpression'
+ * Comment: combined clause for 'oC_ComparisonExpression' and 'oC_PartialComparisonExpression'
  */
-	ExpressionPlusMinus ({ExpressionComparison.left=current} operator=('=' | '<>' | '<' | '>' | '<=' | '>=')
-	right=ExpressionPlusMinus)*;
+	AddOrSubtractExpression ({ExpressionComparison.left=current} operator=('=' | '<>' | '<' | '>' | '<=' | '>=')
+	right=AddOrSubtractExpression)*;
 
-ExpressionPlusMinus returns Expression:
+AddOrSubtractExpression returns Expression:
 /*
- * expression7 : expression6 ( ( ws '+' ws expression6 ) | ( ws '-' ws expression6 ) )* ;
+ * oC_AddOrSubtractExpression : oC_MultiplyDivideModuloExpression ( ( SP? '+' SP? oC_MultiplyDivideModuloExpression ) | ( SP? '-' SP? oC_MultiplyDivideModuloExpression ) )* ;
  */
-	ExpressionMulDiv ({ExpressionPlusMinus.left=current} operator=('+' | '-') right=ExpressionMulDiv)*;
+	MultiplyDivideModuloExpression ({ExpressionPlusMinus.left=current} operator=('+' | '-') right=MultiplyDivideModuloExpression)*;
 
-ExpressionMulDiv returns Expression:
+MultiplyDivideModuloExpression returns Expression:
 /*
- * expression6 : expression5 ( ( ws '*' ws expression5 ) | ( ws '/' ws expression5 ) | ( ws '%' ws expression5 ) )* ;
+ * oC_MultiplyDivideModuloExpression : oC_PowerOfExpression ( ( SP? '*' SP? oC_PowerOfExpression ) | ( SP? '/' SP? oC_PowerOfExpression ) | ( SP? '%' SP? oC_PowerOfExpression ) )* ;
  */
-	ExpressionPower ({ExpressionMulDiv.left=current} operator=('*' | '/' | '%') right=ExpressionPower)*;
+	PowerOfExpression ({ExpressionMulDiv.left=current} operator=('*' | '/' | '%') right=PowerOfExpression)*;
 
-ExpressionPower returns Expression:
+PowerOfExpression returns Expression:
 /*
- * expression5 : expression4 ( ws '^' ws expression4 )* ;
+ * oC_PowerOfExpression : oC_UnaryAddOrSubtractExpression ( SP? '^' SP? oC_UnaryAddOrSubtractExpression )* ;
  */
-	ExpressionUnaryPlusMinus ({ExpressionPower.left=current} operator='^' right=ExpressionUnaryPlusMinus)*;
+	UnaryAddOrSubtractExpression ({ExpressionPower.left=current} operator='^' right=UnaryAddOrSubtractExpression)*;
 
-ExpressionUnaryPlusMinus returns Expression:
+UnaryAddOrSubtractExpression returns Expression:
 /*
- * expression4 : ( ( '+' | '-' ) ws )* expression3 ;
+ * oC_UnaryAddOrSubtractExpression : ( ( '+' | '-' ) SP? )* oC_StringListNullOperatorExpression ;
  * 
- * Comment: In order to restrict our model for a single operator at a time, clause is modeled after a rewritetten form of the antlr clause 'expression4 : expression3 | ( ( '+' | '-' ) ws ) expression4;'
+ * Comment: In order to restrict our model for a single operator at a time, clause is modeled after a rewritten form of the antlr clause 'expression4 : expression3 | ( ( '+' | '-' ) ws ) expression4;'
  */
-	Expression3 | {ExpressionUnaryPlusMinus} operator=('+' | '-') left=ExpressionUnaryPlusMinus;
+	Expression3 | {ExpressionUnaryPlusMinus} operator=('+' | '-') left=UnaryAddOrSubtractExpression;
+
+
+
+/******* GW 2018-01-29: PROCEED HERE *******/
 
 Expression3 returns Expression:
 /*
  * expression3 : expression2 ( ( ws '[' expression ']' ) | ( ws '[' expression? '..' expression? ']' ) | ( ( ( ws '=~' ) | ( sp IN ) | ( sp STARTS sp WITH ) | ( sp ENDS sp WITH ) | ( sp CONTAINS ) ) ws expression2 ) | ( sp IS sp NULL ) | ( sp IS sp NOT sp NULL ) )* ;
  */
 	ExpressionNodeLabelsAndPropertyLookup (({IndexExpression.left=current} '[' expression=Expression ('..'
-	upper=Expression)? ']') | ({RegExpMatchingExpression.left=current} '=~'
-	right=ExpressionNodeLabelsAndPropertyLookup) | ({InCollectionExpression.left=current} 'IN'
-	right=ExpressionNodeLabelsAndPropertyLookup) | ({StartsWithExpression.left=current} 'STARTS' 'WITH'
-	right=ExpressionNodeLabelsAndPropertyLookup) | ({EndsWithExpression.left=current} 'ENDS' 'WITH'
-	right=ExpressionNodeLabelsAndPropertyLookup) | ({ContainsExpression.left=current} 'CONTAINS'
-	right=ExpressionNodeLabelsAndPropertyLookup) | ({IsNullExpression.left=current} 'IS' 'NULL') |
-	({IsNotNullExpression.left=current} 'IS' 'NOT' 'NULL'))*;
+	upper=Expression)? ']') | ({RegExpMatchingExpression.left=current} '=~' right=ExpressionNodeLabelsAndPropertyLookup)
+	| ({InCollectionExpression.left=current} 'IN' right=ExpressionNodeLabelsAndPropertyLookup) |
+	({StartsWithExpression.left=current} 'STARTS' 'WITH' right=ExpressionNodeLabelsAndPropertyLookup) |
+	({EndsWithExpression.left=current} 'ENDS' 'WITH' right=ExpressionNodeLabelsAndPropertyLookup) |
+	({ContainsExpression.left=current} 'CONTAINS' right=ExpressionNodeLabelsAndPropertyLookup) |
+	({IsNullExpression.left=current} 'IS' 'NULL') | ({IsNotNullExpression.left=current} 'IS' 'NOT' 'NULL'))*;
 
 ExpressionNodeLabelsAndPropertyLookup returns Expression:
 /*
- * this is a clarified and corrected form of openCypher spec M08 version which had ambiguity
- * oC_PropertyOrLabelsExpression : oC_Atom ( SP? oC_PropertyLookup )* ( SP? oC_NodeLabels )?
- *
- * Note: we want ExpressionPropertyLookup and ExpressionNodeLabelsConstraint to
- * appear in the AST iff property lookups and node label constraints were given, respectively
+ * expression2 : atom ( propertyLookup | nodeLabels )* ;
  */
-	Atom ({ExpressionPropertyLookup.left=current} propertyLookups+=PropertyLookup+)?
-	     ({ExpressionNodeLabels.left=current} nodeLabels+=NodeLabel+)?
-	;
+	Atom ({ExpressionNodeLabelsAndPropertyLookup.left=current} propertyLookups+=PropertyLookup |
+	nodeLabelList+=NodeLabel)*;
 
 /* Expression1 */
 Atom returns Expression:
@@ -706,30 +792,15 @@ Atom returns Expression:
  *      | variable
  *      ;
  */
-	{NumberConstant} value=Number |
-	{StringConstant} value=STRING_LITERAL |
-	Parameter |
-	LegacyParameter |
-	{BoolConstant} value=('TRUE' | 'FALSE') |
-	{NullConstant} 'NULL' |
-	CaseExpression |
-	{Count} 'COUNT' '(' '*' ')' |
-	MapLiteral |
-	ListComprehension |
-	PatternComprehension |
-	{ExpressionList} ('[' ( expressions+=Expression (',' expressions+=Expression)* )? ']') |
-	{Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|' expression=Expression)? ')' |
-	Reduce |
-	{Filter} 'FILTER' '(' filterExpression=FilterExpression ')' |
-	{All} 'ALL' '(' filterExpression=FilterExpression ')' |
-	{Any} 'ANY' '(' filterExpression=FilterExpression ')' |
-	{None} 'NONE' '(' filterExpression=FilterExpression ')' |
-	{Single} 'SINGLE' '(' filterExpression=FilterExpression ')' |
-	ShortestPathPattern |
-	RelationshipsPattern |
-	ParenthesizedExpression |
-	FunctionInvocation |
-	{VariableRef} variableRef=[VariableDeclaration|SYMBOLIC_NAME_X];
+	{NumberConstant} value=Number | {StringConstant} value=STRING_LITERAL | Parameter | LegacyParameter | {BoolConstant}
+	value=('TRUE' | 'FALSE') | {NullConstant} 'NULL' | CaseExpression | {Count} 'COUNT' '(' '*' ')' | MapLiteral |
+	ListComprehension | PatternComprehension | {ExpressionList} ('[' (expressions+=Expression (','
+	expressions+=Expression)*)? ']') | {Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|'
+	expression=Expression)? ')' | Reduce | {Filter} 'FILTER' '(' filterExpression=FilterExpression ')' | {All} 'ALL' '('
+	filterExpression=FilterExpression ')' | {Any} 'ANY' '(' filterExpression=FilterExpression ')' | {None} 'NONE' '('
+	filterExpression=FilterExpression ')' | {Single} 'SINGLE' '(' filterExpression=FilterExpression ')' |
+	ShortestPathPattern | RelationshipsPattern | ParenthesizedExpression | FunctionInvocation | {VariableRef}
+	variableRef=[VariableDeclaration|SYMBOLIC_NAME_X];
 
 Reduce:
 /*
@@ -755,6 +826,33 @@ FilterExpression:
  * filterExpression : idInColl ( ws where )? ;
  */
 	idInColl=IdInColl (where=Where)?;
+
+
+
+
+
+Clause:
+/*
+ * clause : loadCSV
+ *        | start
+ *        | match
+ *        | unwind
+ *        | merge
+ *        | create
+ *        | createUnique
+ *        | set
+ *        | delete
+ *        | remove
+ *        | foreach
+ *        | with
+ *        | return
+ *        ;
+ * 
+ * Comment: We handle 'createUnique' within the 'create' clause
+ */
+	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return | InQueryCall;
+
+
 
 IdInColl:
 /*
@@ -792,19 +890,17 @@ ImplicitProcedureInvocation:
  */
 	ProcedureName;
 
-
 ProcedureName:
 /*
  * ProcedureName : Namespace SymbolicName ;
  */
-	 namespace=Namespace name=SYMBOLIC_NAME_X;
+	namespace=Namespace name=SYMBOLIC_NAME_X;
 
 Namespace:
 /**
  * Namespace : ( SymbolicName '.' )* ;
  */
 	(SYMBOLIC_NAME_X '.')*;
-
 
 ListComprehension:
 /*
@@ -816,7 +912,8 @@ PatternComprehension:
 /*
  * patternComprehension : '['  ( variable '=' )? relationshipsPattern ( WHERE expression )? '|' expression ']' ;
  */
- 	'[' ( pathVariable=VariableDeclaration '=' )? pattern=RelationshipsPattern ( where=Where )? '|' expression=Expression ']';
+	'[' (pathVariable=VariableDeclaration '=')? pattern=RelationshipsPattern (where=Where)? '|' expression=Expression
+	']';
 
 PropertyLookup:
 /*
@@ -876,7 +973,7 @@ PropertyExpression:
 /*
  * propertyExpression : atom ( ws propertyLookup )+ ;
  */
-	left=Atom propertyLookups+=PropertyLookup+;
+	Atom (propertyLookups+=PropertyLookup)+;
 
 PropertyKeyName:
 /*
@@ -994,19 +1091,19 @@ SYMBOLIC_NAME_X:
  *                  | L_0X
  *                   ;
  */
-	ID | 'CYPHER' | 'EXPLAIN' | 'PROFILE' | 'USING' | 'PERIODIC' | 'COMMIT' | 'UNION' | 'ALL' | 'CREATE' |
-	'INDEX' | 'ON' | 'DROP' | 'CONSTRAINT' | 'ASSERT' | 'IS' | 'UNIQUE' | 'EXISTS' | 'LOAD' | 'CSV' | 'WITH' | 'HEADERS'
-	| 'FROM' | 'AS' | 'FIELDTERMINATOR' | 'OPTIONAL' | 'MATCH' | 'UNWIND' | 'MERGE' | 'SET' | 'DELETE' | 'DETACH' |
-	'REMOVE' | 'FOREACH' | 'IN' | 'DISTINCT' | 'RETURN' | 'ORDER' | 'BY' | 'SKIP' | 'LIMIT' | 'DESCENDING' | 'DESC' |
-	'ASCENDING' | 'ASC' | 'JOIN' | 'SCAN' | 'START' | 'NODE' | 'RELATIONSHIP' | 'REL' | 'WHERE' | 'SHORTESTPATH' |
-	'ALLSHORTESTPATHS' | 'OR' | 'XOR' | 'AND' | 'NOT' | 'STARTS' | 'ENDS' | 'CONTAINS' | 'NULL' | 'TRUE' | 'FALSE' |
-	'COUNT' | 'FILTER' | 'EXTRACT' | 'ANY' | 'NONE' | 'SINGLE' | 'REDUCE' | 'CASE' | 'ELSE' | 'END' | 'WHEN' | 'THEN';
+	ID | 'CYPHER' | 'EXPLAIN' | 'PROFILE' | 'USING' | 'PERIODIC' | 'COMMIT' | 'UNION' | 'ALL' | 'CREATE' | 'INDEX' | 'ON'
+	| 'DROP' | 'CONSTRAINT' | 'ASSERT' | 'IS' | 'UNIQUE' | 'EXISTS' | 'LOAD' | 'CSV' | 'WITH' | 'HEADERS' | 'FROM' | 'AS'
+	| 'FIELDTERMINATOR' | 'OPTIONAL' | 'MATCH' | 'UNWIND' | 'MERGE' | 'SET' | 'DELETE' | 'DETACH' | 'REMOVE' | 'FOREACH'
+	| 'IN' | 'DISTINCT' | 'RETURN' | 'ORDER' | 'BY' | 'SKIP' | 'LIMIT' | 'DESCENDING' | 'DESC' | 'ASCENDING' | 'ASC' |
+	'JOIN' | 'SCAN' | 'START' | 'NODE' | 'RELATIONSHIP' | 'REL' | 'WHERE' | 'SHORTESTPATH' | 'ALLSHORTESTPATHS' | 'OR' |
+	'XOR' | 'AND' | 'NOT' | 'STARTS' | 'ENDS' | 'CONTAINS' | 'NULL' | 'TRUE' | 'FALSE' | 'COUNT' | 'FILTER' | 'EXTRACT' |
+	'ANY' | 'NONE' | 'SINGLE' | 'REDUCE' | 'CASE' | 'ELSE' | 'END' | 'WHEN' | 'THEN';
 
 terminal ID:
 /*
  * Comment: reduced character set
  */
-	('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')* | ('`' -> '`');
+	('a'..'z' | 'A'..'Z' | '_') ('a'..'z' | 'A'..'Z' | '_' | '0'..'9')* | ('`'->'`');
 
 terminal ML_COMMENT:
 	'/*'->'*/';
