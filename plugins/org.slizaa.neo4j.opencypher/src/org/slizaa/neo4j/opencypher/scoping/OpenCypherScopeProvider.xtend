@@ -50,7 +50,7 @@ import org.slizaa.neo4j.opencypher.openCypher.MergeAction
 class OpenCypherScopeProvider extends AbstractOpenCypherScopeProvider {
 
 	override getScope(EObject context, EReference reference) {
-		if (context instanceof VariableRef && reference === OpenCypherPackage.Literals.VARIABLE_REF__VARIABLE_REF) {
+		if (context instanceof VariableRef && reference === OpenCypherPackage.eINSTANCE.variableRef_VariableRef) {
 			val elementsFromStatement = context.extractDeclarationsFromClauses
 			val elementsFromExpression = context.extractDeclarationsFromExpression
 			val elementsFromForeach = context.extractDeclarationsFromForeach

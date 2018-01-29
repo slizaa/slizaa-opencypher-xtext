@@ -12,7 +12,10 @@ import org.slizaa.neo4j.opencypher.openCypher.Cypher
 import org.slizaa.neo4j.opencypher.openCypher.CombinedQuery
 import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 import org.slizaa.neo4j.opencypher.openCypher.Statement
-import org.slizaa.neo4j.opencypher.openCypher.Clause
+import org.slizaa.neo4j.opencypher.openCypher.UpdatingStartClause
+import org.slizaa.neo4j.opencypher.openCypher.UpdatingClause
+import org.slizaa.neo4j.opencypher.openCypher.ReadingClause
+import org.slizaa.neo4j.opencypher.openCypher.Return
 
 /**
  * Customization of the default outline structure.
@@ -21,7 +24,15 @@ import org.slizaa.neo4j.opencypher.openCypher.Clause
  */
 class OpenCypherOutlineTreeProvider extends DefaultOutlineTreeProvider {
 
-	def boolean _isLeaf(Clause clause) {
+	def boolean _isLeaf(UpdatingClause clause) {
+		return true;
+	}
+
+	def boolean _isLeaf(ReadingClause clause) {
+		return true;
+	}
+
+	def boolean _isLeaf(Return r) {
 		return true;
 	}
 
@@ -53,8 +64,9 @@ class OpenCypherOutlineTreeProvider extends DefaultOutlineTreeProvider {
 	}
 
 	def void _addSingleQueryClauses(IOutlineNode parentNode, SingleQuery singleQuery) {
-		for (clause : singleQuery.clauses) {
-			createNode(parentNode, clause);
-		}
+// TODO
+//		for (clause : singleQuery.clauses) {
+//			createNode(parentNode, clause);
+//		}
 	}
 }

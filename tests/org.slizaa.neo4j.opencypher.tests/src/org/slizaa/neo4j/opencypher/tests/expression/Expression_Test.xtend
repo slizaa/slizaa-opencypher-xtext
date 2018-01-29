@@ -2,14 +2,14 @@ package org.slizaa.neo4j.opencypher.tests.expression
 
 import org.eclipse.xtext.EcoreUtil2
 import org.junit.Test
-import org.slizaa.neo4j.opencypher.openCypher.BoolConstant
+import org.slizaa.neo4j.opencypher.openCypher.BooleanLiteral
 import org.slizaa.neo4j.opencypher.openCypher.Cypher
 import org.slizaa.neo4j.opencypher.openCypher.Expression
-import org.slizaa.neo4j.opencypher.openCypher.ExpressionOr
-import org.slizaa.neo4j.opencypher.openCypher.ExpressionXor
-import org.slizaa.neo4j.opencypher.openCypher.NumberConstant
+import org.slizaa.neo4j.opencypher.openCypher.NumberLiteral
+import org.slizaa.neo4j.opencypher.openCypher.OrExpression
 import org.slizaa.neo4j.opencypher.openCypher.ParenthesizedExpression
 import org.slizaa.neo4j.opencypher.openCypher.Where
+import org.slizaa.neo4j.opencypher.openCypher.XorExpression
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
 import static org.junit.Assert.*
@@ -56,11 +56,11 @@ class Expression_Test extends AbstractCypherTest {
 
 	def String stringRepr(Expression e) {
 		switch (e) {
-			ExpressionOr: '''(«e.left.stringRepr» OR «e.right.stringRepr»)'''
-			ExpressionXor: '''(«e.left.stringRepr» XOR «e.right.stringRepr»)'''
+			OrExpression: '''(«e.left.stringRepr» OR «e.right.stringRepr»)'''
+			XorExpression: '''(«e.left.stringRepr» XOR «e.right.stringRepr»)'''
 			ParenthesizedExpression: '''«e.expression.stringRepr»'''
-			BoolConstant: '''«e.value»'''
-			NumberConstant: '''«e.value»'''
+			BooleanLiteral: '''«e.value»'''
+			NumberLiteral: '''«e.value»'''
 		}.toString
 	}
 }

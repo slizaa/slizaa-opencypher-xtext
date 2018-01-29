@@ -7,12 +7,12 @@ import java.util.regex.Pattern
 import org.eclipse.xtext.EcoreUtil2
 import org.eclipse.xtext.validation.Check
 import org.slizaa.neo4j.opencypher.openCypher.DecimalInteger
+import org.slizaa.neo4j.opencypher.openCypher.LegacyParameter
 import org.slizaa.neo4j.opencypher.openCypher.OpenCypherPackage
+import org.slizaa.neo4j.opencypher.openCypher.Parameter
+import org.slizaa.neo4j.opencypher.openCypher.RangeLiteral
 import org.slizaa.neo4j.opencypher.openCypher.Return
 import org.slizaa.neo4j.opencypher.openCypher.VersionNumber
-import org.slizaa.neo4j.opencypher.openCypher.RangeLiteral
-import org.slizaa.neo4j.opencypher.openCypher.LegacyParameter
-import org.slizaa.neo4j.opencypher.openCypher.Parameter
 
 /**
  * This class contains custom validation rules. 
@@ -39,7 +39,7 @@ class OpenCypherValidator extends AbstractOpenCypherValidator {
 	@Check
 	def checkLegacyParameterFormat(LegacyParameter legacyParameter) {
 		// TODO check!
-		 // legacyParameter : '{' ws ( symbolicName | DecimalInteger ) ws '}' ;
+		// legacyParameter : '{' ws ( symbolicName | DecimalInteger ) ws '}' ;
 	}
 
 	@Check
@@ -60,7 +60,7 @@ class OpenCypherValidator extends AbstractOpenCypherValidator {
 	def checkDecimalIntegerFormat(DecimalInteger decimalInteger) {
 		if (!DECIMAL_INTEGER_FORMAT.matcher(decimalInteger.value).matches()) {
 			error('Version number must have the following format: (digit)+\'.\'(digit)+',
-				OpenCypherPackage.Literals.DECIMAL_INTEGER__VALUE, INVALID_DECIMAL_INTEGER_FORMAT)
+				OpenCypherPackage.eINSTANCE.decimalInteger_Value, INVALID_DECIMAL_INTEGER_FORMAT)
 		}
 	}
 
@@ -69,7 +69,7 @@ class OpenCypherValidator extends AbstractOpenCypherValidator {
 		if (versionNumber.versionNumber != null) {
 			if (!VERSION_NUMBER_FORMAT.matcher(versionNumber.versionNumber).matches()) {
 				error('Version number must have the following format: (digit)+\'.\'(digit)+',
-					OpenCypherPackage.Literals.VERSION_NUMBER__VERSION_NUMBER, INVALID_VERSION_NUMBER_FORMAT)
+					OpenCypherPackage.eINSTANCE.versionNumber_VersionNumber, INVALID_VERSION_NUMBER_FORMAT)
 			}
 		}
 	}
@@ -78,7 +78,7 @@ class OpenCypherValidator extends AbstractOpenCypherValidator {
 	def checkReturn(Return ret) {
 		if (EcoreUtil2.getNextSibling(ret) != null) {
 			error('RETURN can only be used once at the end of the query', ret,
-				OpenCypherPackage.Literals.RETURN__RETURN, RETURN_NOT_AT_THE_END)
+				OpenCypherPackage.eINSTANCE.return_Return, RETURN_NOT_AT_THE_END)
 		}
 	}
 }

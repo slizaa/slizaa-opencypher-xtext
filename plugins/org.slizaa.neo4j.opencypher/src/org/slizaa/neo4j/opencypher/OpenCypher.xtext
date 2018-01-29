@@ -230,7 +230,7 @@ DropUniqueConstraint:
  * oC_DropUniqueConstraint : DROP SP oC_UniqueConstraint ;
  */
 	'DROP' uniqueConstraint=UniqueConstraint;
-	
+
 DropNodePropertyExistenceConstraint:
 /*
  * oC_DropNodePropertyExistenceConstraint : DROP SP oC_NodePropertyExistenceConstraint ;
@@ -254,21 +254,20 @@ Index:
  * oC_Index : INDEX SP ON SP? oC_NodeLabel '(' oC_PropertyKeyName ')' ;
  */
 	'INDEX' 'ON' nodeLabel=NodeLabel '(' propertyKeyName=PropertyKeyName ')';
-	
+
 UniqueConstraint:
 /*
  * oC_UniqueConstraint : CONSTRAINT SP ON SP? '(' oC_Variable oC_NodeLabel ')' SP? ASSERT SP oC_PropertyExpression SP IS SP UNIQUE ;
  */
 	'CONSTRAINT' 'ON' '(' variable=VariableDeclaration nodeLabel=NodeLabel ')' 'ASSERT'
-	propertyExpression=PropertyExpression 'IS'
-	'UNIQUE';
+	propertyExpression=PropertyExpression 'IS' 'UNIQUE';
 
 NodePropertyExistenceConstraint:
 /*
  * oC_NodePropertyExistenceConstraint : CONSTRAINT SP ON SP? '(' oC_Variable oC_NodeLabel ')' SP? ASSERT SP EXISTS SP? '(' oC_PropertyExpression ')' ;
  */
 	'CONSTRAINT' 'ON' '(' variable=VariableDeclaration nodeLabel=NodeLabel ')' 'ASSERT' 'EXISTS' '('
-	propertyExpression=PropertyExpression ')';		
+	propertyExpression=PropertyExpression ')';
 
 RelationshipPropertyExistenceConstraint:
 /*
@@ -289,13 +288,12 @@ RelationshipPatternSyntax:
 
 LoadCSV:
 /*
- * loadCSV : LOAD sp CSV sp ( WITH sp HEADERS sp )? FROM sp expression sp AS sp variable sp ( FIELDTERMINATOR sp StringLiteral )? ;
+ * oC_LoadCSV : LOAD SP CSV SP ( WITH SP HEADERS SP )? FROM SP oC_Expression SP AS SP oC_Variable SP ( FIELDTERMINATOR SP StringLiteral )? ;
  * 
  * Comment: For simplicity we split up the antlr clause in xtext clauses 'LoadCSV' and 'LoadCSVWithHeaders'
  */
 	{LoadCSV} 'LOAD' 'CSV' withHeaders?=LoadCSVWithHeaders? 'FROM' expression=Expression 'AS'
-	variable=VariableDeclaration
-	('FIELDTERMINATOR' fieldterminator=STRING_LITERAL)?;
+	variable=VariableDeclaration ('FIELDTERMINATOR' fieldterminator=STRING_LITERAL)?;
 
 LoadCSVWithHeaders:
 	'WITH' 'HEADERS';
@@ -325,7 +323,7 @@ MergeAction:
  *                ;
  */
 	'ON' action=('MATCH' | 'CREATE') set=Set;
-	
+
 Create:
 /*
  * oC_Create : CREATE SP? oC_Pattern ;
@@ -335,9 +333,9 @@ Create:
 CreateUnique:
 /*
  * oC_CreateUnique : CREATE SP UNIQUE SP? oC_Pattern ;
- */	
+ */
 	'CREATE' uniqueContraint=UniqueConstraint;
-	
+
 Set:
 /*
  * oC_Set : SET SP? oC_SetItem ( ',' oC_SetItem )* ;
@@ -354,7 +352,7 @@ SetItem:
  */
 	(propertyExpression=PropertyExpression '=' expression=Expression) | (variable=VariableDeclaration '='
 	expression=Expression) | (variable=VariableDeclaration '+=' expression=Expression) | (variable=VariableDeclaration
-	nodeLabels=NodeLabels);	
+	nodeLabels=NodeLabels);
 
 Delete:
 /*
@@ -380,7 +378,7 @@ Foreach:
 /*
  * oC_Foreach : FOREACH SP? '(' SP? oC_Variable SP IN SP oC_Expression SP? '|' ( SP oC_UpdatingClause )+ SP? ')' ;
  */
-	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (clauses+=Clause)+ ')';
+	'FOREACH' '(' variable=VariableDeclaration 'IN' expression=Expression '|' (updatingClauses+=UpdatingClause)+ ')';
 
 InQueryCall:
 /*
@@ -652,14 +650,14 @@ LabelName:
 /*
  * oC_LabelName : oC_SchemaName ;
  */
- // TODO
+// TODO
 	SYMBOLIC_NAME_X;
 
 RelTypeName:
 /*
  * oC_RelTypeName : oC_SchemaName ;
  */
-  // TODO
+// TODO
 	SYMBOLIC_NAME_X;
 
 Expression:
@@ -678,13 +676,13 @@ XorExpression returns Expression:
 /*
  * oC_XorExpression : oC_AndExpression ( SP XOR SP oC_AndExpression )* ;
  */
-	AndExpression ({ExpressionXor.left=current} operator='XOR' right=AndExpression)*;
+	AndExpression ({XorExpression.left=current} operator='XOR' right=AndExpression)*;
 
 AndExpression returns Expression:
 /*
  * oC_AndExpression : oC_NotExpression ( SP AND SP oC_NotExpression )* ;
  */
-	NotExpression ({ExpressionAnd.left=current} operator='AND' right=NotExpression)*;
+	NotExpression ({AndExpression.left=current} operator='AND' right=NotExpression)*;
 
 NotExpression returns Expression:
 /*
@@ -694,7 +692,7 @@ NotExpression returns Expression:
  * We should eventually adjust this...
  */
 //TODO
-	({ExpressionNot} operator='NOT' left=NotExpression) | ComparisonExpression;
+	({NotExpression} operator='NOT' left=NotExpression) | ComparisonExpression;
 
 ComparisonExpression returns Expression:
 /*
@@ -710,239 +708,242 @@ ComparisonExpression returns Expression:
  * 
  * Comment: combined clause for 'oC_ComparisonExpression' and 'oC_PartialComparisonExpression'
  */
-	AddOrSubtractExpression ({ExpressionComparison.left=current} operator=('=' | '<>' | '<' | '>' | '<=' | '>=')
+	AddOrSubtractExpression ({ComparisonExpression.left=current} operator=('=' | '<>' | '<' | '>' | '<=' | '>=')
 	right=AddOrSubtractExpression)*;
 
 AddOrSubtractExpression returns Expression:
 /*
  * oC_AddOrSubtractExpression : oC_MultiplyDivideModuloExpression ( ( SP? '+' SP? oC_MultiplyDivideModuloExpression ) | ( SP? '-' SP? oC_MultiplyDivideModuloExpression ) )* ;
  */
-	MultiplyDivideModuloExpression ({ExpressionPlusMinus.left=current} operator=('+' | '-') right=MultiplyDivideModuloExpression)*;
+	MultiplyDivideModuloExpression ({AddOrSubtractExpression.left=current} operator=('+' | '-')
+	right=MultiplyDivideModuloExpression)*;
 
 MultiplyDivideModuloExpression returns Expression:
 /*
  * oC_MultiplyDivideModuloExpression : oC_PowerOfExpression ( ( SP? '*' SP? oC_PowerOfExpression ) | ( SP? '/' SP? oC_PowerOfExpression ) | ( SP? '%' SP? oC_PowerOfExpression ) )* ;
  */
-	PowerOfExpression ({ExpressionMulDiv.left=current} operator=('*' | '/' | '%') right=PowerOfExpression)*;
+	PowerOfExpression ({MultiplyDivideModuloExpression.left=current} operator=('*' | '/' | '%') right=PowerOfExpression)*;
 
 PowerOfExpression returns Expression:
 /*
  * oC_PowerOfExpression : oC_UnaryAddOrSubtractExpression ( SP? '^' SP? oC_UnaryAddOrSubtractExpression )* ;
  */
-	UnaryAddOrSubtractExpression ({ExpressionPower.left=current} operator='^' right=UnaryAddOrSubtractExpression)*;
+	UnaryAddOrSubtractExpression ({PowerOfExpression.left=current} operator='^' right=UnaryAddOrSubtractExpression)*;
 
 UnaryAddOrSubtractExpression returns Expression:
 /*
  * oC_UnaryAddOrSubtractExpression : ( ( '+' | '-' ) SP? )* oC_StringListNullOperatorExpression ;
- * 
- * Comment: In order to restrict our model for a single operator at a time, clause is modeled after a rewritten form of the antlr clause 'expression4 : expression3 | ( ( '+' | '-' ) ws ) expression4;'
  */
-	Expression3 | {ExpressionUnaryPlusMinus} operator=('+' | '-') left=UnaryAddOrSubtractExpression;
+	StringListNullOperatorExpression | {UnaryAddOrSubtractExpression} operator=('+' | '-') left=UnaryAddOrSubtractExpression;
 
-
-
-/******* GW 2018-01-29: PROCEED HERE *******/
-
-Expression3 returns Expression:
+StringListNullOperatorExpression returns Expression:
 /*
- * expression3 : expression2 ( ( ws '[' expression ']' ) | ( ws '[' expression? '..' expression? ']' ) | ( ( ( ws '=~' ) | ( sp IN ) | ( sp STARTS sp WITH ) | ( sp ENDS sp WITH ) | ( sp CONTAINS ) ) ws expression2 ) | ( sp IS sp NULL ) | ( sp IS sp NOT sp NULL ) )* ;
+ * oC_StringListNullOperatorExpression : oC_PropertyOrLabelsExpression ( ( SP? '[' oC_Expression ']' ) | ( SP? '[' oC_Expression? '..' oC_Expression? ']' ) | ( ( oC_RegularExpression | ( SP IN ) | ( SP STARTS SP WITH ) | ( SP ENDS SP WITH ) | ( SP CONTAINS ) ) SP? oC_PropertyOrLabelsExpression ) | ( SP IS SP NULL ) | ( SP IS SP NOT SP NULL ) )* ;
  */
-	ExpressionNodeLabelsAndPropertyLookup (({IndexExpression.left=current} '[' expression=Expression ('..'
-	upper=Expression)? ']') | ({RegExpMatchingExpression.left=current} '=~' right=ExpressionNodeLabelsAndPropertyLookup)
-	| ({InCollectionExpression.left=current} 'IN' right=ExpressionNodeLabelsAndPropertyLookup) |
-	({StartsWithExpression.left=current} 'STARTS' 'WITH' right=ExpressionNodeLabelsAndPropertyLookup) |
-	({EndsWithExpression.left=current} 'ENDS' 'WITH' right=ExpressionNodeLabelsAndPropertyLookup) |
-	({ContainsExpression.left=current} 'CONTAINS' right=ExpressionNodeLabelsAndPropertyLookup) |
+	PropertyOrLabelsExpression (({IndexExpression.left=current} '[' expression=Expression ('..' upper=Expression)? ']') |
+	({RegExpMatchingExpression.left=current} '=~' right=PropertyOrLabelsExpression) |
+	({InCollectionExpression.left=current} 'IN' right=PropertyOrLabelsExpression) | ({StartsWithExpression.left=current}
+	'STARTS' 'WITH' right=PropertyOrLabelsExpression) | ({EndsWithExpression.left=current} 'ENDS' 'WITH'
+	right=PropertyOrLabelsExpression) | ({ContainsExpression.left=current} 'CONTAINS' right=PropertyOrLabelsExpression) |
 	({IsNullExpression.left=current} 'IS' 'NULL') | ({IsNotNullExpression.left=current} 'IS' 'NOT' 'NULL'))*;
 
-ExpressionNodeLabelsAndPropertyLookup returns Expression:
+PropertyOrLabelsExpression returns Expression:
 /*
- * expression2 : atom ( propertyLookup | nodeLabels )* ;
+ * oC_PropertyOrLabelsExpression : oC_Atom ( SP? oC_PropertyLookup )* ( SP? oC_NodeLabels )? ;
  */
-	Atom ({ExpressionNodeLabelsAndPropertyLookup.left=current} propertyLookups+=PropertyLookup |
+	Atom ({PropertyOrLabelsExpression.left=current} propertyLookups+=PropertyLookup |
 	nodeLabelList+=NodeLabel)*;
 
-/* Expression1 */
 Atom returns Expression:
 /*
- * atom : numberLiteral
- *      | StringLiteral
- *      | parameter
- *      | legacyParameter
- *      | TRUE
- *      | FALSE
- *      | NULL
- *      | caseExpression
- *      | ( COUNT '(' '*' ')' )
- *      | mapLiteral
- *      | listComprehension
- *      | patternComprehension
- *      | ( '[' ws expression ws ( ',' ws expression ws )* ']' )
- *      | ( FILTER ws '(' ws filterExpression ws ')' )
- *      | ( EXTRACT ws '(' ws filterExpression ws ( ws '|' expression )? ')' )
- *      | reduce
- *      | ( ALL ws '(' ws filterExpression ws ')' )
- *      | ( ANY ws '(' ws filterExpression ws ')' )
- *      | ( NONE ws '(' ws filterExpression ws ')' )
- *      | ( SINGLE ws '(' ws filterExpression ws ')' )
- *      | shortestPathPattern
- *      | relationshipsPattern
- *      | parenthesizedExpression
- *      | functionInvocation
- *      | variable
- *      ;
+ * oC_Atom : oC_Literal
+ *         | oC_Parameter
+ *         | oC_LegacyParameter
+ *         | oC_CaseExpression
+ *         | ( COUNT SP? '(' SP? '*' SP? ')' )
+ *         | oC_ListComprehension
+ *         | oC_PatternComprehension
+ *         | ( FILTER SP? '(' SP? oC_FilterExpression SP? ')' )
+ *         | ( EXTRACT SP? '(' SP? oC_FilterExpression SP? ( SP? '|' oC_Expression )? ')' )
+ *         | oC_Reduce
+ *         | ( ALL SP? '(' SP? oC_FilterExpression SP? ')' )
+ *         | ( ANY SP? '(' SP? oC_FilterExpression SP? ')' )
+ *         | ( NONE SP? '(' SP? oC_FilterExpression SP? ')' )
+ *         | ( SINGLE SP? '(' SP? oC_FilterExpression SP? ')' )
+ *         | oC_ShortestPathPattern
+ *         | oC_RelationshipsPattern
+ *         | oC_ParenthesizedExpression
+ *         | oC_FunctionInvocation
+ *         | oC_Variable
+ *         ;
  */
-	{NumberConstant} value=Number | {StringConstant} value=STRING_LITERAL | Parameter | LegacyParameter | {BoolConstant}
-	value=('TRUE' | 'FALSE') | {NullConstant} 'NULL' | CaseExpression | {Count} 'COUNT' '(' '*' ')' | MapLiteral |
-	ListComprehension | PatternComprehension | {ExpressionList} ('[' (expressions+=Expression (','
-	expressions+=Expression)*)? ']') | {Extract} 'EXTRACT' '(' filterExpression=FilterExpression ('|'
-	expression=Expression)? ')' | Reduce | {Filter} 'FILTER' '(' filterExpression=FilterExpression ')' | {All} 'ALL' '('
+	Literal | Parameter | LegacyParameter | CaseExpression | {Count} 'COUNT' '(' '*' ')' | ListComprehension |
+	PatternComprehension | {Filter} 'FILTER' '(' filterExpression=FilterExpression ')' | {Extract} 'EXTRACT' '('
+	filterExpression=FilterExpression ('|' expression=Expression)? ')' | Reduce | {All} 'ALL' '('
 	filterExpression=FilterExpression ')' | {Any} 'ANY' '(' filterExpression=FilterExpression ')' | {None} 'NONE' '('
 	filterExpression=FilterExpression ')' | {Single} 'SINGLE' '(' filterExpression=FilterExpression ')' |
-	ShortestPathPattern | RelationshipsPattern | ParenthesizedExpression | FunctionInvocation | {VariableRef}
-	variableRef=[VariableDeclaration|SYMBOLIC_NAME_X];
+	ShortestPathPattern | RelationshipsPattern | ParenthesizedExpression | FunctionInvocation |
+	// TODO 
+	{VariableRef} variableRef=[VariableDeclaration|SYMBOLIC_NAME_X];
+
+Literal:
+/*
+ * oC_Literal : oC_NumberLiteral
+ *            | StringLiteral
+ *            | oC_BooleanLiteral
+ *            | NULL
+ *            | oC_MapLiteral
+ *            | oC_ListLiteral
+ *            ;
+ */
+	NumberLiteral | StringLiteral | {NULL} 'NULL' | BooleanLiteral | MapLiteral | ListLiteral;
+
+BooleanLiteral:
+/*
+ * oC_BooleanLiteral : TRUE
+ *                   | FALSE
+ *                   ;
+ */
+	{BooleanLiteral} value=('TRUE' | 'FALSE');
+
+ListLiteral:
+/*
+ * oC_ListLiteral : '[' SP? ( oC_Expression SP? ( ',' SP? oC_Expression SP? )* )? ']' ;
+ */
+	{ListLiteral} '[' (expressions+=Expression (',' expressions+=Expression)*)? ']';
 
 Reduce:
 /*
- * reduce : REDUCE ws '(' variable '=' expression ',' idInColl '|' expression ')' ;
+ * REDUCE SP? '(' oC_Variable '=' oC_Expression ',' oC_IdInColl '|' oC_Expression ')' ;
  */
 	'REDUCE' '(' accumulator=VariableDeclaration '=' accumulatorExpression=Expression ',' idInColl=IdInColl '|'
 	expression=Expression ')';
 
 ParenthesizedExpression:
 /*
- * parenthesizedExpression : '(' ws expression ws ')' ;
+ * oC_ParenthesizedExpression : '(' SP? oC_Expression SP? ')' ;
  */
 	'(' expression=Expression ')';
 
 RelationshipsPattern:
 /*
- * relationshipsPattern : nodePattern ( ws patternElementChain )+ ;
+ * oC_RelationshipsPattern : oC_NodePattern ( SP? oC_PatternElementChain )+ ;
  */
 	nodePattern=NodePattern (chain+=PatternElementChain)+;
 
 FilterExpression:
 /*
- * filterExpression : idInColl ( ws where )? ;
+ * oC_FilterExpression : oC_IdInColl ( SP? oC_Where )? ;
  */
 	idInColl=IdInColl (where=Where)?;
 
-
-
-
-
-Clause:
-/*
- * clause : loadCSV
- *        | start
- *        | match
- *        | unwind
- *        | merge
- *        | create
- *        | createUnique
- *        | set
- *        | delete
- *        | remove
- *        | foreach
- *        | with
- *        | return
- *        ;
- * 
- * Comment: We handle 'createUnique' within the 'create' clause
- */
-	LoadCSV | Start | Match | Unwind | Merge | Create | Set | Delete | Remove | Foreach | With | Return | InQueryCall;
-
-
-
 IdInColl:
 /*
- * idInColl : variable sp IN sp expression ;
+ * oC_IdInColl : oC_Variable SP IN SP oC_Expression ;
  */
 	variable=VariableDeclaration 'IN' expression=Expression;
 
 FunctionInvocation:
 /*
- * functionInvocation : functionName ws '(' ws DISTINCT? ( expression ( ',' ws expression )* )? ws ')' ;
+ * oC_FunctionInvocation : oC_FunctionName SP? '(' SP? ( DISTINCT SP? )? ( oC_Expression SP? ( ',' SP? oC_Expression SP? )* )? ')' ;
  */
 	functionName=FunctionName '(' distinct?='DISTINCT'? (parameter+=Expression (',' parameter+=Expression)*)? ')';
 
 FunctionName:
 /*
- * functionName : symbolicName ;
+ * oC_FunctionName : oC_SymbolicName
+ *                 | EXISTS
+ *                 ;
  */
 	SYMBOLIC_NAME_X;
 
 ExplicitProcedureInvocation:
 /*
- * ExplicitProcedureInvocation : ProcedureName '(' ( Expression ( ',' Expression )* )? ')' ;
+ * oC_ExplicitProcedureInvocation : oC_ProcedureName SP? '(' SP? ( oC_Expression SP? ( ',' SP? oC_Expression SP? )* )? ')' ;
  */
 	procedureName=ProcedureName '(' (parameter+=Expression (',' parameter+=Expression)*)? ')';
 
+ImplicitProcedureInvocation:
+/*
+ * oC_ImplicitProcedureInvocation : oC_ProcedureName ;
+ */
+	{ImplicitProcedureInvocation} procedureName=ProcedureName;
+
 ProcedureResultField:
 /*
- * ProcedureResultField : SymbolicName ;
+ * oC_ProcedureResultField : oC_SymbolicName ;
  */
 	SYMBOLIC_NAME_X;
 
-ImplicitProcedureInvocation:
-/*
- * ImplicitProcedureInvocation : ProcedureName ;
- */
-	ProcedureName;
-
 ProcedureName:
 /*
- * ProcedureName : Namespace SymbolicName ;
+ * oC_ProcedureName : oC_Namespace oC_SymbolicName ;
  */
 	namespace=Namespace name=SYMBOLIC_NAME_X;
 
 Namespace:
 /**
- * Namespace : ( SymbolicName '.' )* ;
+ * oC_Namespace : ( oC_SymbolicName '.' )* ;
  */
 	(SYMBOLIC_NAME_X '.')*;
 
 ListComprehension:
 /*
- * listComprehension : '[' filterExpression ( ws '|' expression )? ']' ;
+ * oC_ListComprehension : '[' SP? oC_FilterExpression ( SP? '|' SP? oC_Expression )? SP? ']' ;
  */
 	'[' filterExpression=FilterExpression ('|' expression=Expression)? ']';
 
 PatternComprehension:
 /*
- * patternComprehension : '['  ( variable '=' )? relationshipsPattern ( WHERE expression )? '|' expression ']' ;
+ * oC_PatternComprehension : '[' SP? ( oC_Variable SP? '=' SP? )? oC_RelationshipsPattern SP? ( WHERE SP? oC_Expression SP? )? '|' SP? oC_Expression SP? ']' ;
  */
 	'[' (pathVariable=VariableDeclaration '=')? pattern=RelationshipsPattern (where=Where)? '|' expression=Expression
 	']';
 
 PropertyLookup:
 /*
- * propertyLookup : ws '.' ws ( ( propertyKeyName ( '?' | '!' ) ) | propertyKeyName ) ;
+ * oC_PropertyLookup : '.' SP? ( oC_PropertyKeyName ) ;
  */
 	'.' (propertyKeyName=PropertyKeyName propertyOperator=('?' | '!') | propertyKeyName=PropertyKeyName);
 
 CaseExpression:
 /*
- * caseExpression : ( ( CASE ( ws caseAlternatives )+ ) | ( CASE expression ( ws caseAlternatives )+ ) ) ( ws ELSE ws expression )? ws END ;
+ * oC_CaseExpression : ( ( CASE ( SP? oC_CaseAlternatives )+ ) | ( CASE SP? oC_Expression ( SP? oC_CaseAlternatives )+ ) ) ( SP? ELSE SP? oC_Expression )? SP? END ;
  */
 	(('CASE' (caseAlternatives+=CaseAlternatives)+) | ('CASE' caseExpression=Expression
 	(caseAlternatives+=CaseAlternatives)+)) ('ELSE' elseExpression=Expression)? 'END';
 
 CaseAlternatives:
 /*
- * caseAlternatives : WHEN ws expression ws THEN ws expression ;
+ * oC_CaseAlternatives : WHEN SP? oC_Expression SP? THEN SP? oC_Expression ;
  */
 	'WHEN' when=Expression 'THEN' then=Expression;
 
 VariableDeclaration returns VariableDeclaration:
 /*
- * variable : symbolicName ;
+ * oC_Variable : oC_SymbolicName ;
  */
 	{VariableDeclaration} name=SYMBOLIC_NAME_X;
 
+StringLiteral:
+/*
+ * StringLiteral : ( '"' ( StringLiteral_0 | EscapedChar )* '"' )
+ *               | ( '\'' ( StringLiteral_1 | EscapedChar )* '\'' )
+ *               ;
+ */
+	value=STRING_LITERAL;
+
+NumberLiteral:
+/*
+ * oC_NumberLiteral : oC_DoubleLiteral
+ *                  | oC_IntegerLiteral
+ *                  ;
+ */
+	value=Number;
+
 MapLiteral:
 /*
- * mapLiteral : '{' ws ( propertyKeyName ws ':' ws expression ws ( ',' ws propertyKeyName ws ':' ws expression ws )* )? '}' ;
+ * oC_MapLiteral : '{' SP? ( oC_PropertyKeyName SP? ':' SP? oC_Expression SP? ( ',' SP? oC_PropertyKeyName SP? ':' SP? oC_Expression SP? )* )? '}' ;
  * 
  * Comment: For simplicity we split up the antlr clause in 'MapLiteral' and 'MapLiteralEntry'
  */
@@ -953,7 +954,7 @@ MapLiteralEntry:
 
 LegacyParameter:
 /*
- * legacyParameter : '{' ws ( symbolicName | DecimalInteger ) ws '}' ;
+ * oC_LegacyParameter : '{' SP? ( oC_SymbolicName | DecimalInteger ) SP? '}' ;
  * 
  * Comment: Format of DecimalInteger is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkLegacyParameterFormat(LegacyParameter)
@@ -962,7 +963,7 @@ LegacyParameter:
 
 Parameter:
 /*
- * parameter : '$' ( symbolicName | DecimalInteger ) ;
+ * oC_Parameter : '$' ( oC_SymbolicName | DecimalInteger ) ;
  * 
  * Comment: Format of DecimalInteger is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkParameterFormat(Parameter)
@@ -971,16 +972,25 @@ Parameter:
 
 PropertyExpression:
 /*
- * propertyExpression : atom ( ws propertyLookup )+ ;
+ * oC_PropertyExpression : oC_Atom ( SP? oC_PropertyLookup )+ ;
  */
 	Atom (propertyLookups+=PropertyLookup)+;
 
 PropertyKeyName:
 /*
- * propertyKeyName : symbolicName ;
+ * oC_PropertyKeyName : oC_SchemaName ;
  */
 	SYMBOLIC_NAME_X;
 
+/******* GW 2018-01-29: PROCEED HERE *******/
+
+/**
+  {StringConstant} value=STRING_LITERAL | 
+  * {BoolConstant}
+	value=('TRUE' | 'FALSE') | {NullConstant} 'NULL' |
+	* MapLiteral |
+	*  
+	*/
 LeftArrowHead:
 /*
  * Comment: reduced character set
