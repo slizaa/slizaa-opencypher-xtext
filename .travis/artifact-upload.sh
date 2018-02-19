@@ -18,5 +18,5 @@ cd $PRODUCTS_DIR
 for localFile in $filesToUpload;
 do
   echo "Uploading $localFile"
-  curl -T $localFile ftp://"$user":"$password"@"$ftp_ip/$target_dir/$localFile"
+  curl --ssl -k -T $localFile ftp://"$user":"$password"@"$ftp_ip/$target_dir/$localFile"
 done
