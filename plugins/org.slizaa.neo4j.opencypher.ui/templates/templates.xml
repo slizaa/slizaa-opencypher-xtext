@@ -64,8 +64,7 @@
 	<!-- Node -->
 	<template id="opencypher.build-in.node" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.PatternPart" deleted="false"
-		description="Node" enabled="true" name="node"><![CDATA[(${cursor})]]>
-	</template>
+		description="Node" enabled="true" name="node"><![CDATA[(${cursor})]]></template>
 
 	<!-- Outgoing Relation -->
 	<template id="opencypher.build-in.outgoingRelation"
@@ -89,8 +88,7 @@
 	<!-- Return -->
 	<template id="opencypher.build-in.return" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_RETURN" deleted="false"
-		description="return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]>
-	</template>
+		description="return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
 
 	<!-- Order by properties -->
 	<template id="opencypher.build-in.orderByProperties"
@@ -124,19 +122,16 @@
 	<!-- starts with -->
 	<template id="opencypher.build-in.startsWith" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_STARTS" deleted="false"
-		description="starts with" enabled="true" name="starts with"><![CDATA[STARTS WITH '${string}${cursor}']]>
-	</template>
+		description="starts with" enabled="true" name="starts with"><![CDATA[STARTS WITH '${string}${cursor}']]></template>
 	
 	<!-- ends with -->
 	<template id="opencypher.build-in.endsWith" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_ENDS" deleted="false"
-		description="ends with" enabled="true" name="ends with"><![CDATA[ENDS WITH '${string}${cursor}']]>
-	</template>
+		description="ends with" enabled="true" name="ends with"><![CDATA[ENDS WITH '${string}${cursor}']]></template>
 	
 	<!-- contains -->
 	<template id="opencypher.build-in.contains" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_CONTAINS" deleted="false"
-		description="contains" enabled="true" name="contains"><![CDATA[CONTAINS '${string}${cursor}']]>
-	</template>
+		description="contains" enabled="true" name="contains"><![CDATA[CONTAINS '${string}${cursor}']]></template>
 
 </templates>
