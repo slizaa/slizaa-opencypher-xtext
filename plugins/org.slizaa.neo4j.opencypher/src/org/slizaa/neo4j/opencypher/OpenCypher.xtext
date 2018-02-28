@@ -740,7 +740,8 @@ StringListNullOperatorExpression returns Expression:
 /*
  * oC_StringListNullOperatorExpression : oC_PropertyOrLabelsExpression ( ( SP? '[' oC_Expression ']' ) | ( SP? '[' oC_Expression? '..' oC_Expression? ']' ) | ( ( oC_RegularExpression | ( SP IN ) | ( SP STARTS SP WITH ) | ( SP ENDS SP WITH ) | ( SP CONTAINS ) ) SP? oC_PropertyOrLabelsExpression ) | ( SP IS SP NULL ) | ( SP IS SP NOT SP NULL ) )* ;
  */
-	PropertyOrLabelsExpression (({IndexExpression.left=current} '[' expression=Expression ('..' upper=Expression)? ']') |
+	PropertyOrLabelsExpression (({ListExpression.left=current} '[' expression=Expression ']') |
+	({IndexExpression.left=current} '[' (lower=Expression)? '..' (upper=Expression)? ']') |
 	({RegExpMatchingExpression.left=current} '=~' right=PropertyOrLabelsExpression) |
 	({InCollectionExpression.left=current} 'IN' right=PropertyOrLabelsExpression) | ({StartsWithExpression.left=current}
 	'STARTS' 'WITH' right=PropertyOrLabelsExpression) | ({EndsWithExpression.left=current} 'ENDS' 'WITH'
