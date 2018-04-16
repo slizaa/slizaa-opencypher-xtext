@@ -88,7 +88,12 @@
 	<!-- Return -->
 	<template id="opencypher.build-in.return" autoinsert="true"
 		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_RETURN" deleted="false"
-		description="return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
+		description="Return" enabled="true" name="return"><![CDATA[RETURN ${variableRef:CrossReference(Expression.variableRef)}${cursor}]]></template>
+
+	<!-- Limit -->
+	<template id="opencypher.build-in.limit" autoinsert="true" 
+		context="org.slizaa.neo4j.opencypher.OpenCypher.kw_LIMIT" deleted="false" 
+		description="Limit" enabled="true" name="limit"><![CDATA[LIMIT ${limit}${cursor}]]></template>
 
 	<!-- Order by properties -->
 	<template id="opencypher.build-in.orderByProperties"
