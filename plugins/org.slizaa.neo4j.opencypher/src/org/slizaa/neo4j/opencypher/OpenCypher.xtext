@@ -355,7 +355,7 @@ SetItem:
  */
 	(propertyExpression=PropertyExpression '=' expression=Expression) | (variable=VariableDeclaration '='
 	expression=Expression) | (variable=VariableDeclaration '+=' expression=Expression) | (variable=VariableDeclaration
-	nodeLabels=NodeLabels);
+	NodeLabels);
 
 Delete:
 /*
@@ -375,7 +375,7 @@ RemoveItem:
  *               | oC_PropertyExpression
  *               ;
  */
-	({RemoveItemLabel} variable=VariableDeclaration nodeLabels=NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
+	({RemoveItemLabel} variable=VariableDeclaration NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
 
 Foreach:
 /*
@@ -582,7 +582,7 @@ NodePattern:
 /*
  * oC_NodePattern : '(' SP? ( oC_Variable SP? )? ( oC_NodeLabels SP? )? ( oC_Properties SP? )? ')' ;
  */
-	{NodePattern} '(' variable=VariableDeclaration? nodeLabels=NodeLabels? properties=Properties? ')';
+	{NodePattern} '(' variable=VariableDeclaration? NodeLabels? properties=Properties? ')';
 
 PatternElementChain:
 /*
@@ -628,11 +628,11 @@ RelationshipTypes:
  */
 	':' relTypeName+=RelTypeName ('|' ':'? relTypeName+=RelTypeName)*;
 
-NodeLabels:
+fragment NodeLabels:
 /*
  * oC_NodeLabels : oC_NodeLabel ( SP? oC_NodeLabel )* ;
  */
-	nodeLabels+=NodeLabel (nodeLabels+=NodeLabel)*;
+	nodeLabels+=NodeLabel+;
 
 NodeLabel:
 /*
@@ -759,7 +759,7 @@ PropertyOrLabelsExpression returns Expression:
  * appear in the AST iff property lookups and node label constraints were given, respectively
  */
 	Atom ({PropertyLookupExpression.left=current} propertyLookups+=PropertyLookup+)?
-	     ({NodeLabelsExpression.left=current} nodeLabels+=NodeLabel+)?
+	     ({NodeLabelsExpression.left=current} NodeLabels)?
 	;
 
 Atom returns Expression:
