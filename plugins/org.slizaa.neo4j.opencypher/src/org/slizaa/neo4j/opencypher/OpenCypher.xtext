@@ -115,13 +115,13 @@ ReadUpdateEnd:
 /*
  * oC_ReadUpdateEnd : oC_ReadingClause ( SP? oC_ReadingClause )* ( SP? oC_UpdatingClause )+ ( SP? oC_Return )? ;
  */
-	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return?=Return;
+	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return=Return?;
 
 UpdatingEnd:
 /*
  * oC_UpdatingEnd : oC_UpdatingStartClause ( SP? oC_UpdatingClause )* ( SP? oC_Return )? ;
  */
-	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return?=Return;
+	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return=Return?;
 
 MultiPartQuery:
 /*
@@ -150,6 +150,9 @@ UpdatingPart:
  * oC_UpdatingPart : ( oC_UpdatingClause SP? )* ;
  */
 	{UpdatingPart} updatingClauses+=UpdatingClause*;
+
+Clause:
+	UpdatingStartClause | UpdatingClause | ReadingClause | Return | With;
 
 UpdatingStartClause:
 /*
