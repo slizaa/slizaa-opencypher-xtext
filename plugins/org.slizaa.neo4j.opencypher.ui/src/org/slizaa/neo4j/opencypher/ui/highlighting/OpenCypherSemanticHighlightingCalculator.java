@@ -55,7 +55,7 @@ public class OpenCypherSemanticHighlightingCalculator extends DefaultSemanticHig
     //
     for (RelationshipTypes relTypes : EcoreUtil2.getAllContentsOfType(rootObject, RelationshipTypes.class)) {
       for (INode node : NodeModelUtils.findNodesForFeature(relTypes,
-          OpenCypherPackage.eINSTANCE.getRelationshipTypes_RelTypeName())) {
+          OpenCypherPackage.eINSTANCE.getRelationshipTypes_RelTypeNames())) {
         acceptor.addPosition(node.getOffset(), node.getLength(),
             OpenCypherHighlightingConfiguration.RELATIONSHIP_TYPES_ID);
       }

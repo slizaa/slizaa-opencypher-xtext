@@ -604,7 +604,7 @@ RelationshipDetail:
 /*
  * oC_RelationshipDetail : '[' SP? ( oC_Variable SP? )? ( oC_RelationshipTypes SP? )? oC_RangeLiteral? ( oC_Properties SP? )? ']' ;
  */
-	{RelationshipDetail} '[' variable=VariableDeclaration? optional?='?'? types=RelationshipTypes? (range=RangeLiteral)?
+	{RelationshipDetail} '[' variable=VariableDeclaration? optional?='?'? RelationshipTypes? (range=RangeLiteral)?
 	properties=Properties? ']';
 
 Properties:
@@ -622,11 +622,11 @@ RelType:
  */
 	':' RelTypeName;
 
-RelationshipTypes:
+fragment RelationshipTypes:
 /*
  * oC_RelationshipTypes : ':' SP? oC_RelTypeName ( SP? '|' ':'? SP? oC_RelTypeName )* ;
  */
-	':' relTypeName+=RelTypeName ('|' ':'? relTypeName+=RelTypeName)*;
+	':' relTypeNames+=RelTypeName ('|' ':'? relTypeNames+=RelTypeName)*;
 
 fragment NodeLabels:
 /*
