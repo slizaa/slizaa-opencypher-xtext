@@ -115,13 +115,13 @@ ReadUpdateEnd:
 /*
  * oC_ReadUpdateEnd : oC_ReadingClause ( SP? oC_ReadingClause )* ( SP? oC_UpdatingClause )+ ( SP? oC_Return )? ;
  */
-	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return?=Return;
+	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return=Return?;
 
 UpdatingEnd:
 /*
  * oC_UpdatingEnd : oC_UpdatingStartClause ( SP? oC_UpdatingClause )* ( SP? oC_Return )? ;
  */
-	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return?=Return;
+	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return=Return?;
 
 MultiPartQuery:
 /*
@@ -150,6 +150,9 @@ UpdatingPart:
  * oC_UpdatingPart : ( oC_UpdatingClause SP? )* ;
  */
 	{UpdatingPart} updatingClauses+=UpdatingClause*;
+
+Clause:
+	UpdatingStartClause | UpdatingClause | ReadingClause | Return | With;
 
 UpdatingStartClause:
 /*
@@ -352,7 +355,7 @@ SetItem:
  */
 	(propertyExpression=PropertyExpression '=' expression=Expression) | (variable=VariableDeclaration '='
 	expression=Expression) | (variable=VariableDeclaration '+=' expression=Expression) | (variable=VariableDeclaration
-	nodeLabels=NodeLabels);
+	NodeLabels);
 
 Delete:
 /*
@@ -372,7 +375,7 @@ RemoveItem:
  *               | oC_PropertyExpression
  *               ;
  */
-	(variable=VariableDeclaration nodeLabels=NodeLabels) | PropertyExpression;
+	({RemoveItemLabel} variable=VariableDeclaration NodeLabels) | {RemoveItemProperty} propertyExpression=PropertyExpression;
 
 Foreach:
 /*
@@ -579,7 +582,7 @@ NodePattern:
 /*
  * oC_NodePattern : '(' SP? ( oC_Variable SP? )? ( oC_NodeLabels SP? )? ( oC_Properties SP? )? ')' ;
  */
-	{NodePattern} '(' variable=VariableDeclaration? nodeLabels=NodeLabels? properties=Properties? ')';
+	{NodePattern} '(' variable=VariableDeclaration? NodeLabels? properties=Properties? ')';
 
 PatternElementChain:
 /*
@@ -601,7 +604,7 @@ RelationshipDetail:
 /*
  * oC_RelationshipDetail : '[' SP? ( oC_Variable SP? )? ( oC_RelationshipTypes SP? )? oC_RangeLiteral? ( oC_Properties SP? )? ']' ;
  */
-	{RelationshipDetail} '[' variable=VariableDeclaration? optional?='?'? types=RelationshipTypes? (range=RangeLiteral)?
+	{RelationshipDetail} '[' variable=VariableDeclaration? optional?='?'? RelationshipTypes? (range=RangeLiteral)?
 	properties=Properties? ']';
 
 Properties:
@@ -619,17 +622,17 @@ RelType:
  */
 	':' RelTypeName;
 
-RelationshipTypes:
+fragment RelationshipTypes:
 /*
  * oC_RelationshipTypes : ':' SP? oC_RelTypeName ( SP? '|' ':'? SP? oC_RelTypeName )* ;
  */
-	':' relTypeName+=RelTypeName ('|' ':'? relTypeName+=RelTypeName)*;
+	':' relTypeNames+=RelTypeName ('|' ':'? relTypeNames+=RelTypeName)*;
 
-NodeLabels:
+fragment NodeLabels:
 /*
  * oC_NodeLabels : oC_NodeLabel ( SP? oC_NodeLabel )* ;
  */
-	nodeLabels+=NodeLabel (nodeLabels+=NodeLabel)*;
+	nodeLabels+=NodeLabel+;
 
 NodeLabel:
 /*
@@ -740,8 +743,8 @@ StringListNullOperatorExpression returns Expression:
 /*
  * oC_StringListNullOperatorExpression : oC_PropertyOrLabelsExpression ( ( SP? '[' oC_Expression ']' ) | ( SP? '[' oC_Expression? '..' oC_Expression? ']' ) | ( ( oC_RegularExpression | ( SP IN ) | ( SP STARTS SP WITH ) | ( SP ENDS SP WITH ) | ( SP CONTAINS ) ) SP? oC_PropertyOrLabelsExpression ) | ( SP IS SP NULL ) | ( SP IS SP NOT SP NULL ) )* ;
  */
-	PropertyOrLabelsExpression (({ListExpression.left=current} '[' expression=Expression ']') |
-	({IndexExpression.left=current} '[' (lower=Expression)? '..' (upper=Expression)? ']') |
+	PropertyOrLabelsExpression (({IndexLookupExpression.left=current} '[' expression=Expression ']') |
+	({IndexRangeExpression.left=current} '[' (lower=Expression)? '..' (upper=Expression)? ']') |
 	({RegExpMatchingExpression.left=current} '=~' right=PropertyOrLabelsExpression) |
 	({InCollectionExpression.left=current} 'IN' right=PropertyOrLabelsExpression) | ({StartsWithExpression.left=current}
 	'STARTS' 'WITH' right=PropertyOrLabelsExpression) | ({EndsWithExpression.left=current} 'ENDS' 'WITH'
@@ -751,9 +754,13 @@ StringListNullOperatorExpression returns Expression:
 PropertyOrLabelsExpression returns Expression:
 /*
  * oC_PropertyOrLabelsExpression : oC_Atom ( SP? oC_PropertyLookup )* ( SP? oC_NodeLabels )? ;
+ *
+ * Note: we want PropertyLookupExpression and NodeLabelsExpression to
+ * appear in the AST iff property lookups and node label constraints were given, respectively
  */
-	Atom ({PropertyOrLabelsExpression.left=current} propertyLookups+=PropertyLookup |
-	nodeLabelList+=NodeLabel)*;
+	Atom ({PropertyLookupExpression.left=current} propertyLookups+=PropertyLookup+)?
+	     ({NodeLabelsExpression.left=current} NodeLabels)?
+	;
 
 Atom returns Expression:
 /*
