@@ -647,7 +647,7 @@ RangeLiteral:
  * Comment: Format of IntegerLiteral is checked via 
  * org.slizaa.neo4j.opencypher.validation.OpenCypherValidator.checkRangeLiteralFormat(RangeLiteral)
  */
-	{RangeLiteral} '*' (lower=Number? ('..' upper=Number?)?)?;
+	{RangeLiteral} '*' (lower=Number? (variableLength?='..' upper=Number?)?)?;
 
 LabelName:
 /*
