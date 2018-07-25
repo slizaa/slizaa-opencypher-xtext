@@ -45,7 +45,7 @@ class CypherOptions_Test extends AbstractCypherTest {
 	def void rightVersionNumber() {
 		test('''
 			CYPHER 1.5
-			MATCH p =(p1)-[*]->(p2)
+			MATCH p =(p1)-[*]->(p2) RETURN p
 		''');
 	}
 
@@ -53,7 +53,7 @@ class CypherOptions_Test extends AbstractCypherTest {
 	def void configurationOptions_1() {
 		test('''
 			CYPHER 1.5 hola=hallo
-			MATCH p =(p1)-[*]->(p2)
+			MATCH p =(p1)-[*]->(p2) RETURN p
 		''');
 	}
 
@@ -61,7 +61,7 @@ class CypherOptions_Test extends AbstractCypherTest {
 	def void configurationOptions_2() {
 		test('''
 			CYPHER 1.5 neo4j=rules hola=hallo
-			MATCH p =(p1)-[*]->(p2)
+			MATCH p =(p1)-[*]->(p2) RETURN p
 		''');
 	}
 
@@ -69,49 +69,49 @@ class CypherOptions_Test extends AbstractCypherTest {
 	def void simple_1() {
 		test('''
 			CYPHER 1.0
-			EXPLAIN PROFILE MATCH (n)
+			EXPLAIN PROFILE MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_2() {
 		test('''
-			PROFILE MATCH (n)
+			PROFILE MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_3() {
 		test('''
-			EXPLAIN CYPHER test=hurz test=spest MATCH (n)
+			EXPLAIN CYPHER test=hurz test=spest MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_4() {
 		test('''
-			EXPLAIN CYPHER test=hurz MATCH (n)
+			EXPLAIN CYPHER test=hurz MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_5() {
 		test('''
-			EXPLAIN CYPHER 23.24 test=hurz MATCH (n)
+			EXPLAIN CYPHER 23.24 test=hurz MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_6() {
 		test('''
-			EXPLAIN CYPHER 23.24 test=hurz CYPHER 23.25 test=hurz MATCH (n)
+			EXPLAIN CYPHER 23.24 test=hurz CYPHER 23.25 test=hurz MATCH (n) RETURN n
 		''');
 	}
 
 	@Test
 	def void simple_7() {
 		test('''
-			MATCH (matchedNode:Type:FILE)-[a?:DEPENDS_ON|:LOVES]-(other:FILE) where matchedNode='HONZIPONZIE'
+			MATCH (matchedNode:Type:FILE)-[a?:DEPENDS_ON|:LOVES]-(other:FILE) where matchedNode='HONZIPONZIE' RETURN matchedNode
 		''');
 	}
 }

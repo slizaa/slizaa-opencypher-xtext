@@ -93,76 +93,34 @@ SingleQuery:
  * oC_SingleQuery : oC_SinglePartQuery
  *                | oC_MultiPartQuery
  *                ;
+ * 
+ * Comment: For some obscure reason the order is important here!
  */
-	SinglePartQuery | MultiPartQuery;
+	MultiPartQuery | SinglePartQuery;
 
 SinglePartQuery:
 /*
- * oC_SinglePartQuery : oC_ReadOnlyEnd
- *                    | oC_ReadUpdateEnd
- *                    | oC_UpdatingEnd
+ * oC_SinglePartQuery : ( ( oC_ReadingClause SP? )* oC_Return )
+ *                    | ( ( oC_ReadingClause SP? )* oC_UpdatingClause ( SP? oC_UpdatingClause )* ( SP? oC_Return )? )
  *                    ;
  */
-	ReadOnlyEnd | ReadUpdateEnd | UpdatingEnd;
-
-ReadOnlyEnd:
-/*
- * oC_ReadOnlyEnd : oC_ReadPart oC_Return ;
- */
-	readPart=ReadPart return=Return;
-
-ReadUpdateEnd:
-/*
- * oC_ReadUpdateEnd : oC_ReadingClause ( SP? oC_ReadingClause )* ( SP? oC_UpdatingClause )+ ( SP? oC_Return )? ;
- */
-	(readingClauses+=ReadingClause)+ (updatingClauses+=UpdatingClause)+ return=Return?;
-
-UpdatingEnd:
-/*
- * oC_UpdatingEnd : oC_UpdatingStartClause ( SP? oC_UpdatingClause )* ( SP? oC_Return )? ;
- */
-	updatingStartClause=UpdatingStartClause (updatingClauses+=UpdatingClause)* return=Return?;
+	(readingClauses+=ReadingClause)* return=Return | 
+	(readingClauses+=ReadingClause)* (updatingClauses+=UpdatingClause)+ (return=Return)? ;
 
 MultiPartQuery:
 /*
- * oC_MultiPartQuery : ( oC_ReadPart | ( oC_UpdatingStartClause SP? oC_UpdatingPart ) ) oC_With SP? ( oC_ReadPart oC_UpdatingPart oC_With SP? )* oC_SinglePartQuery ;
+ * oC_MultiPartQuery : ( ( oC_ReadingClause SP? )* ( oC_UpdatingClause SP? )* oC_With SP? )+ oC_SinglePartQuery ;
  * 
- * Comment: withPart instead of with as 'with' is a key word of xtext
- * Comment: introduced MultiPartSubQuery to encapsulate the repeating group
+ * Comment: used the name 'withPart' instead of with as 'with' is a key word of xtext
+ * Comment: introduced MultiPartSubQuery to encapsulate the repeating group '( oC_ReadingClause SP? )* ( oC_UpdatingClause SP? )* oC_With SP?'
  */
-	(readPart=ReadPart | updatingStartClause=UpdatingStartClause updatingPart=UpdatingPart) withPart=With
-	(subQueries+=MultiPartSubQuery)* singlePartQuery=SinglePartQuery;
+	(subQueries+=MultiPartSubQuery)+ singlePartQuery=SinglePartQuery;
 
 MultiPartSubQuery:
 /*
- * readPart updatingPart with
+ * ( oC_ReadingClause SP? )* ( oC_UpdatingClause SP? )* oC_With SP?
  */
-	readPart=ReadPart updatingPart=UpdatingPart withPart=With;
-
-ReadPart:
-/*
- * oC_ReadPart : ( oC_ReadingClause SP? )* 
- */
-	{ReadPart} readingClause+=ReadingClause*;
-
-UpdatingPart:
-/*
- * oC_UpdatingPart : ( oC_UpdatingClause SP? )* ;
- */
-	{UpdatingPart} updatingClauses+=UpdatingClause*;
-
-Clause:
-	UpdatingStartClause | UpdatingClause | ReadingClause | Return | With;
-
-UpdatingStartClause:
-/*
- * oC_UpdatingStartClause : oC_Create
- *                        | oC_Merge
- *                        | oC_CreateUnique
- *                        | oC_Foreach
- *                        ;
- */
-	Create | Merge | CreateUnique | Foreach;
+	(readingClause+=ReadingClause)* (updatingClauses+=UpdatingClause)* withPart=With;
 
 UpdatingClause:
 /*
@@ -989,8 +947,6 @@ PropertyKeyName:
  * oC_PropertyKeyName : oC_SchemaName ;
  */
 	SYMBOLIC_NAME_X;
-
-/******* GW 2018-01-29: PROCEED HERE *******/
 
 /**
   {StringConstant} value=STRING_LITERAL | 

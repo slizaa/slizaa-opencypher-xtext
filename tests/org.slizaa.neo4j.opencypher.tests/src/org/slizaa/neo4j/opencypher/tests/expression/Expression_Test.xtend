@@ -19,7 +19,7 @@ class Expression_Test extends AbstractCypherTest {
 	@Test
 	def void expression_OR() {
 		val Cypher cypher = test('''
-			START n=Node(2) where 1 OR false OR false OR false;
+			START n=Node(2) where 1 OR false OR false OR false RETURN n;
 		''');
 		assertEquals("(((1 OR false) OR false) OR false)", strRep(cypher));
 	}
@@ -27,7 +27,7 @@ class Expression_Test extends AbstractCypherTest {
 	@Test
 	def void expression_XOR_1() {
 		val Cypher cypher = test('''
-			START n=Node(2) where 1 XOR false XOR false XOR false;
+			START n=Node(2) where 1 XOR false XOR false XOR false RETURN n;
 		''');
 		assertEquals("(((1 XOR false) XOR false) XOR false)", strRep(cypher));
 	}
@@ -35,7 +35,7 @@ class Expression_Test extends AbstractCypherTest {
 	@Test
 	def void expression_XOR_2() {
 		val Cypher cypher = test('''
-			START n=Node(2) where 1 XOR false OR false XOR false;
+			START n=Node(2) where 1 XOR false OR false XOR false RETURN n;
 		''');
 		assertEquals("((1 XOR false) OR (false XOR false))", strRep(cypher));
 	}
@@ -43,7 +43,7 @@ class Expression_Test extends AbstractCypherTest {
 	@Test
 	def void expression_XOR_3() {
 		val Cypher cypher = test('''
-			START n=Node(2) where 1 XOR (false OR false) XOR false;
+			START n=Node(2) where 1 XOR (false OR false) XOR false RETURN n;
 		''');
 
 		assertEquals("((1 XOR (false OR false)) XOR false)", strRep(cypher));

@@ -12,7 +12,6 @@ import org.slizaa.neo4j.opencypher.openCypher.Cypher
 import org.slizaa.neo4j.opencypher.openCypher.CombinedQuery
 import org.slizaa.neo4j.opencypher.openCypher.SingleQuery
 import org.slizaa.neo4j.opencypher.openCypher.Statement
-import org.slizaa.neo4j.opencypher.openCypher.UpdatingStartClause
 import org.slizaa.neo4j.opencypher.openCypher.UpdatingClause
 import org.slizaa.neo4j.opencypher.openCypher.ReadingClause
 import org.slizaa.neo4j.opencypher.openCypher.Return
