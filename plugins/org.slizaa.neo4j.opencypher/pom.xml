@@ -13,6 +13,10 @@
 	<artifactId>org.slizaa.neo4j.opencypher</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
+	<properties>
+		<jdt-core-version>3.12.2</jdt-core-version>
+	</properties>
+
 	<build>
 
 		<sourceDirectory>src</sourceDirectory>
@@ -141,6 +145,14 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+				<dependencies>
+					<!-- https://github.com/eclipse/xtext/issues/1231#issuecomment-402193047 -->
+					<dependency>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.core</artifactId>
+						<version>${jdt-core-version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
