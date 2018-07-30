@@ -122,6 +122,12 @@ MultiPartSubQuery:
  */
 	(readingClause+=ReadingClause)* (updatingClauses+=UpdatingClause)* withPart=With;
 
+Clause:
+/*
+ * Comment: introduced Clause to have a common superinterface for the different clause types. This comes handy when dealing with the ASG.
+ */
+	UpdatingClause | ReadingClause | Return | With;
+
 UpdatingClause:
 /*
  * oC_UpdatingClause : oC_Create
