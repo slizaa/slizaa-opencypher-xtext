@@ -120,7 +120,7 @@ MultiPartSubQuery:
 /*
  * ( oC_ReadingClause SP? )* ( oC_UpdatingClause SP? )* oC_With SP?
  */
-	(readingClause+=ReadingClause)* (updatingClauses+=UpdatingClause)* withPart=With;
+	(readingClauses+=ReadingClause)* (updatingClauses+=UpdatingClause)* withPart=With;
 
 Clause:
 /*
