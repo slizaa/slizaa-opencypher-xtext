@@ -77,15 +77,6 @@ class Chapter_3 extends AbstractCypherTest {
 	}
 
 	@Test
-	def void example_47_1() {
-		test('''
-			MATCH (theater:Venue {name:'Theatre Royal'}),
-			(newcastle:City {name:'Newcastle'}),
-			(bard:Author {lastname:'Shakespeare'})
-		''');
-	}
-
-	@Test
 	def void example_47_2() {
 		test('''
 			CREATE INDEX ON :Venue(name)
