@@ -3,7 +3,7 @@ package org.slizaa.neo4j.opencypher.external.tests.neo4jdoc
 import org.junit.Test
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
-class Reading_Clauses_Aggregation extends AbstractCypherTest {
+class Reading_Clauses_Aggregation_Test extends AbstractCypherTest {
 
 	@Test
 	def void example_Query() {

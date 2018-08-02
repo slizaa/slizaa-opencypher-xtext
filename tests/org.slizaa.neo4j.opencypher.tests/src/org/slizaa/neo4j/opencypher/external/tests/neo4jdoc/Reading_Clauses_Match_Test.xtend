@@ -4,7 +4,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
-class Reading_Clauses_Match extends AbstractCypherTest {
+class Reading_Clauses_Match_Test extends AbstractCypherTest {
 
   @Test
   def void example_GetAllNodes() {

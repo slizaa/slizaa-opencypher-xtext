@@ -3,7 +3,7 @@ package org.slizaa.neo4j.opencypher.external.tests.book_Graph_Databases_2nd
 import org.junit.Test
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
-class Chapter_3 extends AbstractCypherTest {
+class Chapter_3_Test extends AbstractCypherTest {
 
 	@Test
 	def void example_29_1() {

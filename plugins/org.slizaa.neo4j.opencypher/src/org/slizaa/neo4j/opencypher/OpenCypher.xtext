@@ -138,8 +138,10 @@ UpdatingClause:
  *                   | oC_Set
  *                   | oC_Remove
  *                   ;
+ * 
+ * Comment: We handle both 'oC_Create' and 'oC_CreateUnique' in the 'Create' clause
  */
-	Create | Merge | CreateUnique | Foreach | Delete | Set | Remove;
+	Create | Merge | Foreach | Delete | Set | Remove;
 
 ReadingClause:
 /*
@@ -294,14 +296,9 @@ MergeAction:
 Create:
 /*
  * oC_Create : CREATE SP? oC_Pattern ;
- */
-	'CREATE' pattern=Pattern;
-
-CreateUnique:
-/*
  * oC_CreateUnique : CREATE SP UNIQUE SP? oC_Pattern ;
  */
-	'CREATE' uniqueContraint=UniqueConstraint;
+	'CREATE' uniqueContraint?='UNIQUE'? pattern=Pattern;
 
 Set:
 /*

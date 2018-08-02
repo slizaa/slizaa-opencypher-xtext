@@ -4,7 +4,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
-class General_Clauses_Return extends AbstractCypherTest {
+class General_Clauses_Return_Test extends AbstractCypherTest {
 
 	@Test
 	def void example_ReturnNodes() {

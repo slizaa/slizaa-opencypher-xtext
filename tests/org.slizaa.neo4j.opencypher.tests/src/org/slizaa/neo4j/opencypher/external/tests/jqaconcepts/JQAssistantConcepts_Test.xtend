@@ -3,7 +3,7 @@ package org.slizaa.neo4j.opencypher.external.tests.jqaconcepts
 import org.junit.Test
 import org.slizaa.neo4j.opencypher.tests.AbstractCypherTest
 
-class JQAssistantConcepts extends AbstractCypherTest {
+class JQAssistantConcepts_Test extends AbstractCypherTest {
 
 	@Test
 	def void example_01() {
