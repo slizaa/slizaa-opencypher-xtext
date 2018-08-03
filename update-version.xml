@@ -1,0 +1,54 @@
+<project name="update-version" basedir="." default="update-version">
+
+	<property name="old.mvn.version" value="1.0.0-SNAPSHOT" />
+	<property name="new.mvn.version" value="10.0.0-SNAPSHOT" />
+	
+	<property name="old.pde.version" value="1.0.0.qualifier" />
+	<property name="new.pde.version" value="10.0.0.qualifier" />
+
+	<property name="old.pde.requirebundle.version" value="1.0.0" />
+	<property name="new.pde.requirebundle.version" value="10.0.0" />
+
+	<!-- ================================= 
+          target: update-version              
+         ================================= -->
+	<target name="update-version">
+
+		<!-- pom.xml - version -->
+		<replaceregexp byline="true">
+			<regexp pattern="&lt;version&gt;${old.mvn.version}&lt;/version&gt;" />
+			<substitution expression="&lt;version&gt;${new.mvn.version}&lt;/version&gt;" />
+			<fileset dir=".">
+				<include name="**/*pom.xml" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- MANIFEST.MF - Bundle-Version -->
+		<replaceregexp byline="true">
+			<regexp pattern="Bundle-Version: ${old.pde.version}" />
+			<substitution expression="Bundle-Version: ${new.pde.version}" />
+			<fileset dir=".">
+				<include name="**/META-INF/MANIFEST.MF" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- MANIFEST.MF - Require-Bundle -->
+		<replaceregexp>
+			<regexp pattern="org.slizaa.([^;]*);bundle-version=&quot;${old.pde.requirebundle.version}&quot;;" />
+			<substitution expression="org.slizaa.\1;bundle-version=&quot;${new.pde.requirebundle.version}&quot;;" />
+			<fileset dir=".">
+				<include name="**/META-INF/MANIFEST.MF" />
+			</fileset>
+		</replaceregexp>
+
+		<!-- feature.xml - version -->
+		<replaceregexp byline="true">
+			<regexp pattern="version=&quot;${old.pde.version}&quot;>" />
+			<substitution expression="version=&quot;${new.pde.version}&quot;>" />
+			<fileset dir=".">
+				<include name="releng/org.slizaa.neo4j.opencypher.feature/feature.xml" />
+			</fileset>
+		</replaceregexp>
+
+	</target>
+</project>
