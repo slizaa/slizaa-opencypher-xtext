@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.slizaa.neo4j.opencypher</groupId>
 		<artifactId>org.slizaa.neo4j.opencypher.parent</artifactId>
-		<version>9.10.0-SNAPSHOT</version>
+		<version>9.11.0-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 	<packaging>eclipse-target-definition</packaging>
