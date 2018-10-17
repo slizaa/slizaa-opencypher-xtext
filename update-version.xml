@@ -1,13 +1,13 @@
 <project name="update-version" basedir="." default="update-version">
 
-	<property name="old.mvn.version" value="9.10.0-SNAPSHOT" />
-	<property name="new.mvn.version" value="9.11.0-SNAPSHOT" />
+	<property name="old.mvn.version" value="9.11.0-SNAPSHOT" />
+	<property name="new.mvn.version" value="9.12.0-SNAPSHOT" />
 	
-	<property name="old.pde.version" value="9.10.0.qualifier" />
-	<property name="new.pde.version" value="9.11.0.qualifier" />
+	<property name="old.pde.version" value="9.11.0.qualifier" />
+	<property name="new.pde.version" value="9.12.0.qualifier" />
 
-	<property name="old.pde.requirebundle.version" value="9.10.0" />
-	<property name="new.pde.requirebundle.version" value="9.11.0" />
+	<property name="old.pde.requirebundle.version" value="9.11.0" />
+	<property name="new.pde.requirebundle.version" value="9.12.0" />
 
 	<!-- ================================= 
           target: update-version              
